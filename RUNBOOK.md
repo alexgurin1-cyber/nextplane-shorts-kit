@@ -67,7 +67,7 @@ Adapt the copy by setting `ROOT = os.environ["WORK"]` in place of the hard-coded
 
 1. Write `<slug>_POST_COPY.md`: three hook-style titles of 70 characters or fewer (question, comparison or dollar-figure format), plus a Layer 0.5 description that converts to nextplane.us rather than summarizing the statistics. Also write `<slug>_FOOTAGE_CREDITS.md`.
 2. Write `$WORK/meta.json` as `{"title","description"}`, then upload with `python3 $KIT/lib/yt.py upload $WORK/nextplane_<slug>.mp4 $WORK/meta.json $WORK/<slug>_yt_result.json`. The upload is always private with publishAt set to the next free daily 15:00Z slot at least 24 hours out.
-3. Upload the DATA_PACK, POST_COPY, FOOTAGE_CREDITS and yt_result files to the Google Drive folder **"NextPlane Shorts"**, creating it if missing. **Do not upload the MP4.** YouTube is the video's home, which keeps Drive storage flat.
+3. Upload the DATA_PACK, POST_COPY, FOOTAGE_CREDITS and yt_result files to the Google Drive folder **"NextPlane Shorts"** (folder id `1wZYvI2CODvCZpSCLSGsy-fe9QXYw5A71`; pass it as parentId). **Do not upload the MP4.** YouTube is the video's home, which keeps Drive storage flat.
 4. Email Alex (alex.gurin1@gmail.com) through the Gmail connector. Use a concise, professional tone. Include the topic and format, the one key statistic, the three title options, the YouTube Studio link, the scheduled publish time, and anything that needs his review, such as depleted Veo credits or any data caveat.
 5. Update memory: write a new `project-<slug>-video` file and update `project-shorts-queue` if a queued topic was consumed.
 
