@@ -8,6 +8,8 @@ Usage:
   yt.py auth                      -> prints channel title (verifies credentials)
   yt.py slots [n]                 -> lists the last n uploads with privacy/publishAt
   yt.py next-slot                 -> next free daily 15:00Z publish slot >= now+24h
+  yt.py playlist-add <video_id> "<playlist title>"  -> adds video to playlist (creates it, private, if missing)
+  yt.py thumbnail <video_id> <jpg|png>             -> sets custom thumbnail (long-form only)
   yt.py upload <mp4> <meta.json>  -> resumable private upload with publishAt
        meta.json = {"title": ..., "description": ..., "publishAt": "optional ISO8601Z"}
        prints and returns {"id", "title", "publishAt", "status", "studio_url"}
@@ -51,7 +53,8 @@ def recent(tok, n=25):
 
 
 def next_slot(tok):
-    taken = {x["publishAt"][:10] for x in recent(tok, 50) if x.get("publishAt")}
+    # Only 15:00Z publishes are Shorts slots; long-form episodes publish at 16:00Z and must not block a day.
+    taken = {x["publishAt"][:10] for x in recent(tok, 50) if (x.get("publishAt") or "")[11:16] == "15:00"}
     now = dt.datetime.now(dt.timezone.utc)
     day = (now + dt.timedelta(hours=24)).date()
     while True:
@@ -85,6 +88,39 @@ def upload(mp4, meta_path):
     return out
 
 
+def send(url, tok, body=None, method="POST", ctype="application/json; charset=UTF-8"):
+    req = urllib.request.Request(url, data=body, method=method,
+                                 headers={"Authorization": f"Bearer {tok}", "Content-Type": ctype})
+    return json.load(urllib.request.urlopen(req, timeout=300))
+
+
+def playlist_add(video_id, title):
+    tok = token()
+    pid, page = None, ""
+    while pid is None:
+        r = get(f"playlists?part=snippet&mine=true&maxResults=50{page}", tok)
+        for it in r.get("items", []):
+            if it["snippet"]["title"].strip().lower() == title.strip().lower():
+                pid = it["id"]
+        if pid or not r.get("nextPageToken"):
+            break
+        page = f"&pageToken={r['nextPageToken']}"
+    if pid is None:
+        pid = send(f"{API}/playlists?part=snippet,status", tok, json.dumps(
+            {"snippet": {"title": title}, "status": {"privacyStatus": "public"}}).encode())["id"]
+    send(f"{API}/playlistItems?part=snippet", tok, json.dumps(
+        {"snippet": {"playlistId": pid, "resourceId": {"kind": "youtube#video", "videoId": video_id}}}).encode())
+    print(json.dumps({"playlistId": pid, "videoId": video_id}))
+
+
+def thumbnail(video_id, path):
+    tok = token()
+    ctype = "image/png" if path.lower().endswith(".png") else "image/jpeg"
+    r = send(f"https://www.googleapis.com/upload/youtube/v3/thumbnails/set?videoId={video_id}", tok,
+             open(path, "rb").read(), ctype=ctype)
+    print(json.dumps(r)[:300])
+
+
 if __name__ == "__main__":
     cmd = sys.argv[1] if len(sys.argv) > 1 else "auth"
     if cmd == "auth":
@@ -96,6 +132,10 @@ if __name__ == "__main__":
             print(x["id"], x["privacy"], x["publishAt"] or "-", "|", x["title"][:60])
     elif cmd == "next-slot":
         print(next_slot(token()))
+    elif cmd == "playlist-add":
+        playlist_add(sys.argv[2], sys.argv[3])
+    elif cmd == "thumbnail":
+        thumbnail(sys.argv[2], sys.argv[3])
     elif cmd == "upload":
         res = upload(sys.argv[2], sys.argv[3])
         if len(sys.argv) > 4:
