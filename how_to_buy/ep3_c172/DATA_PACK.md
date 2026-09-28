@@ -117,3 +117,19 @@ Compliance status is not derivable from FAA data — the buyer's logbook check.
 
 ## Depreciation
 - `pct_depreciated` returns null; `msrp_new` null in the valuation payload (while `msrp_retention_pct` = 55.0). No verifiable depreciation figure — omit from the episode.
+
+## v2 story-cut additions (2026-09-28)
+### Shortlist funnel: latest scrape (last_seen ≥ 2026-09-25), is_active, US N-reg, deduplicated by N-number, fixed-gear 172 (no RG/Cutlass/177), share ads excluded
+| Step | Count |
+|---|---|
+| Cessna 172s for sale | 205 |
+| …with a published price | 151 |
+| 172M + 172N with a price | 44 |
+| 172N with a price | 21 |
+| 172N asking $115K–$140K | 12 |
+| …not sold or pending (N737LR's ad says "SOLD"; N1043S's says "Pending") | **10** |
+Shortlist: N3306E $119,000 · N733EN $119,900 · N833CB $120,000 · N73864 $125,000 · N738PV $129,000 · **N733JE $129,900** · N1591E $129,900 · N739NT $134,900 · N173SK $135,000 · N6212G $137,500.
+
+### Keep watching: Cessna 172 panel, 2026-09-14 → 2026-09-27
+- New 172 listings (distinct N-numbers, created in the window): **27**, of which **8** are 172M/172N.
+- Price cuts recorded in `aircraft_price_history` (new < old, cut smaller than 40% to exclude jitter): **22**.
