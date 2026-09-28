@@ -26,6 +26,7 @@ Check the ask against the raw listing row. Exclude share or partnership ads and 
 For the high-performance class, the jet and turboprop price guardrail still applies to fleet medians. Verify the hero's individual ask on the listing row, and quote only that.
 
 ## 3. Capture the live report
+- Before capturing, grant the capture account (`capture@nextplane.us`, a normal user and not an admin) this week's tail. Insert a `public.purchased_reports` row with `amount_cents=0`, `expires_at = now()+30 days`, `email_sent_at = now()` and `report_data = {"internal":"How to Buy episode capture grant (no charge)"}`. The user id is in memory `reference-nextplane-capture-login`. Never change `enforce_admin_role`.
 - Run `python3 $KIT/lib/report_capture.py <N-number> $WORK/report`. It signs in, captures one 1600×900 PNG per section, and writes `sections.json` with the text of each section.
 - **Exit code 3 means the report is still locked.** Stop production, then:
   - build the data pack and script;
