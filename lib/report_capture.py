@@ -47,8 +47,12 @@ def main(tail, out):
             sys.exit(3)
         pg.screenshot(path=f"{out}/full.png", full_page=True)
         # Frame recipe from Episode 1: keep scrollY=0, hide fixed chrome, widen container, translate main per section.
-        pg.add_style_tag(content="header,nav,aside,[class*=sidebar]{display:none!important}"
-                                 ".max-w-6xl{max-width:1600px!important}")
+        # 2026-09-28: the old CSS rule `[class*=sidebar]{display:none}` also matched the layout wrapper that
+        # contains <main>, hid the whole report and produced 0 sections. Hide only the siblings of main's ancestors.
+        pg.evaluate("""() => { const m=document.querySelector('main'); let n=m;
+          while(n && n.parentElement){ for(const s of n.parentElement.children){ if(s!==n) s.style.display='none'; } n=n.parentElement; }
+          if(m) m.style.marginLeft='0'; }""")
+        pg.add_style_tag(content=".max-w-6xl{max-width:1600px!important}")
         secs = pg.evaluate("""() => {
           const hs=[...document.querySelectorAll('main h2, main h3')].filter(h=>h.offsetParent);
           return hs.map(h=>{const r=h.getBoundingClientRect(); const box=h.closest('section')||h.parentElement;

@@ -1,4 +1,4 @@
-# How to Buy a Cessna 172 — POST COPY (draft, not uploaded)
+# How to Buy a Cessna 172 — POST COPY
 
 **Title:** How to Buy a Cessna 172
 
@@ -13,8 +13,23 @@ In this episode we take one real 172N that is for sale right now and walk it thr
 
 Check any aircraft before you call the broker: https://nextplane.us
 
+0:00 Cold open
+0:47 Where this aircraft sits
+1:04 The 172 price ladder
+2:01 The NextPlane Aircraft Report
+2:18 Ask vs. value
+2:46 The comparables
+3:07 Hours vs. market
+3:33 Price history
+4:09 Ownership & registration
+4:46 Flight activity
+5:04 Airworthiness directives
+5:42 Damage & service records
+5:59 True cost per mile
+6:43 Who is selling
+6:57 The offer
+7:56 Verdict
+
+Photos: Huhu Uet (CC BY 3.0, Wikimedia Commons); Steve Hambleton, Signe Karin (CC BY 2.0, Flickr).
+
 #nextplane #buythedata #aviation #aircraftforsale #generalaviation
-
-**Chapters:** generated from the VO word timestamps at production time (beats: Cold open · Where this aircraft sits · Ask vs value · Comparables · Hours · Price history · Ownership & registration · Flight activity · ADs · Damage & records · Cost per mile · Who's selling · The offer · Verdict).
-
-**Planned publish:** Wednesday 2026-09-30 16:00 UTC (private + publishAt), playlist "How to Buy a…". On hold until the report capture works.

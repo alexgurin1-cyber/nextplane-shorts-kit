@@ -2,7 +2,7 @@
 
 - Slot: Wednesday 2026-09-30 16:00:00Z (class: piston single; rotation next = Cessna 172)
 - Built: 2026-09-28 (scheduled cloud run). Supabase project `uiprgookspqnvyumkyse`.
-- **Status: PRE-PRODUCTION.** Live report capture returned exit code 3 (report locked; no cloud capture login in memory). No video was produced or uploaded. Every figure below comes from Supabase queries run on 2026-09-28; the on-screen report sections still need to be captured and cross-checked (see `REPORT_ISSUES.md` for what the report's own RPCs return today).
+- **Status: PRODUCED** (see STATUS.md). The live report was captured and cross-checked on 2026-09-28; see `REPORT_ISSUES.md`. Every on-screen number traces to this pack or to a verified report section.
 - Internal note: listing source is kept here for verification only. Never name it on air.
 
 ## Hero aircraft
