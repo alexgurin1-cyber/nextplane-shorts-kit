@@ -18,5 +18,6 @@ The scheduled task "Weekly how to buy episode" reads and updates this file on ev
 |---|---|---|---|---|---|---|---|
 | 1 | 2026-09-13 | Piston single | Cirrus SR22 | N2428E | $325,000 | uploaded | shipped |
 | 2 | wk of 2026-09-14 | Dealers | Five kinds of dealer | — | — | — | status unconfirmed |
-| 3 | 2026-09-30 16:00 | Piston single | Cessna 172 (172N) | N733JE | $129,900 | c01EvT-J-rk (v2, private, unscheduled) | v2 story cut uploaded — awaiting Alex review before scheduling |
-| 4 | 2026-10-07 16:00 | High-performance | Piper M350 (or TBM / M500 by listing quality) | | | | planned |
+| 3 | 2026-09-30 16:00 | Piston single | Cessna 172 (172N) | N733JE | $129,900 | c01EvT-J-rk (v2, public as of 2026-10-05) | shipped (v2 story cut) |
+| 4 | 2026-10-07 16:00 | High-performance | Piper M350 (2022) | N333WR | $1,475,000 | BUOQcsYG3JY (private, scheduled 2026-10-07 16:00Z) | uploaded — scheduled, awaiting Alex review |
+| 5 | 2026-10-14 16:00 | Piston single | Cessna 182 | | | | planned |
