@@ -40,7 +40,7 @@ The live report was captured three times: `lib/report_capture.py` (50 sections, 
 | 14 | Header title | "2022 Piper PA-46 Meridian/M-Class (M350)" | A piston M350 is labelled with the turboprop family name throughout (valuation footer, depreciation, operating cost). | Low |
 | 15 | Listing row | `price_reduced` = false | Two cuts in the history table. | Low |
 | 16 | Ownership-chain RPC | `report_ownership_chain` returns current = null | The UI timeline renders the owner from another path (same as Ep3 #13). | Low |
-| 17 | Price model | `model_price_forecasts.fair_value` for this listing moved $915,508 → $1,260,562 → $1,159,617 → $1,145,728 in four September scorings; class recorded as `single_piston` and once `turboprop` | Not stable enough to quote for this class; only p_cut90 was used. | Medium |
+| 17 | Price model | `model_price_forecasts.fair_value` for this listing moved $915,508 → $1,260,562 → $1,159,617 → $1,145,728 in four September scorings (the sale-forecast table also once scored this piston as class `turboprop`) | Not stable enough to quote for this class; only p_cut90 was used. | Medium |
 
 ## Capture tooling
 - `lib/report_capture.py` worked unchanged (exit 0). Its per-section text is thin for most cards, so the cross-check used `src/capture.py`, which also saves every leaf text box per card for callouts and blurs.
