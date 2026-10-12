@@ -1,0 +1,20 @@
+# Ep5 — live report issues found on N23383 (captured 2026-10-12)
+
+Cross-check of the nextplane.us single-aircraft report against Supabase. On-screen handling noted for each.
+
+1. **Price history amounts render "—".** All five rows (Sep 13 → Oct 6) show dates but no prices; `aircraft_price_history` has all five $10,000 cuts. Same bug as Ep1/Ep3/Ep4. *On screen: replaced by a panel-built chart from the table.*
+2. **Valuation "71 active listings".** `get_aircraft_valuation` returns 53 rows, which include duplicate tails (N821DH ×4, N7274Q ×5, N78WE ×3 …), two non-US rows (Salzburg, plus foreign rows in the competitive list) and listings no longer active. Our clean recompute (16 active US 182S) gives $319,950 vs the report's $319,000, so the estimate is used; the count tile is blurred.
+3. **Valuation ignores engine time.** "Adjusted value (your hours)" shows $319,000 with "Net adjustment +$0" although the form is pre-filled with 1,699 h SMOH on a 2,000 h TBO engine. The cost-per-mile card, three cards later, prices the same gap at $1.16/nm. *On air we do the adjustment explicitly (−$29,055).*
+4. **Two contradictory percentiles.** "Price position vs. market: 11th percentile of 27 comps" vs "N23383 sits at the 49th percentile · Below median" under the price distribution. The ask ($279,000) is 3rd lowest of 16 active 182S; the 49th figure is wrong. *Not shown.*
+5. **Header "Last sold Apr 2023"** is the registration certificate date, not a sale. **"Location Knightdale, NC"** is the owner's mailing city; the listing is in Erwin, NC. *Location blurred; "last sold" not narrated.*
+6. **Flight activity internally inconsistent.** Verdict tile "~43 hrs/yr"; operational summary "EST ANNUAL HOURS 23"; period card "last 12 months ~10.9 h, last 24 months ~48.6 h" while the 24-month total is 43.6 h and the monthly series sums to 7.3 h for Oct 2025–Sep 2026. *On air we quote only the monthly series (32.2 h Nov 2024–Mar 2025; 11.0 h since).* The second capture matched the DB row written by the first capture (flight data was fetched on first open).
+7. **Top Routes impossible distances.** "? → ? 47 flights, 0.9 h, 2,430 nm"; the usage section repeats "53 nm" for every route. *Not shown.*
+8. **Annual inspection flagged as the "critical item" and due "Dec 2026"** (schedule anchored to the airworthiness date), while the listing says "Fresh annual inspection 09/01/26". *On air: "check that entry".*
+9. **"Original new price: MSRP data not available"** and an empty depreciation chart, although `model_msrp_history` has a sourced 2000 182S row ($227,900 base / $229,000 equipped). *Not shown.*
+10. **"Original specifications: Specs not available for this variant"**, while cost-per-mile and operating cost both resolve the 182S spec (IO-540-AB1A5, 230 hp). Performance table shows horsepower "—", cruise 145 kt (cost card uses 140 kt). *Not shown.*
+11. **Competitive listings show the source marketplace name** in a "Source" column and include duplicate rows (N4007S in KY and VA; N78WE twice) and foreign listings. *Not shown. Repeat of Ep3/Ep4 issue — still open.*
+12. **"Time to Sell" card**: "54 days AVG DAYS ON MARKET … based on 469 Cessna 182 transactions" vs "Market comparison: average 82 days, median 79". Mean days-on-market is not quoted on air. *Not shown.*
+13. **Investment grade chips**: "71 comps" (see #2), "Long ownership tenure" for 3.5 years, and SDR scored "−" while the tile says "0 in 5 yrs". *Grade strip shown only for the "Engine near TBO" chip.*
+14. **Conditional ADs that likely do not apply**: 2024-14-03 (Garmin GFC 500; this airplane has a KAP 140), 2008-02-18 (BRS parachute), 77-23-11 / 78-01-14 (ELT kits from 1973). They are correctly marked conditional; the header count "11 applicable" overstates. *On air: "seven only apply if certain parts are installed".*
+15. **Listing data**: `useful_load_lbs` = 3,100 (that is max gross weight). Scraper-side.
+16. **Seller card** "Time on market 37 days · private listings avg ~45 days" — fine; the seller name is not displayed (good).
