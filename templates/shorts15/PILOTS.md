@@ -65,3 +65,10 @@ Two A36 Bonanzas, both $299,000. One price hasn't moved since April. The other w
 - **End card time.** The locked end card and verbatim CTA take about 3 s of every 12 to 15 s video (about 22%). A shorter end card for this format is an option.
 - **Correction for the long SR20 Short** (yt NTDuBvCCMmY, publishes Oct 10 15:00Z). The new ad says the factory-remanufactured engine "was installed in September 2020". It does not offer a new engine with the sale. If that video presents the engine as included in the $354,900 price, it should be fixed before it goes public.
 - **TikTok in Buffer.** TikTok is not yet connected to Buffer. Instagram is.
+
+## Daily run log
+
+### 2026-10-14 PRICE JUMP (down): Cherokee Six (`pa32`, 14.97 s)
+- N123BE, 1967 PA-32-300, serial 32-40271, dealer. Ad 258040639 at $192,000, Jul 9 to Aug 7. Ad 261177871 at $142,000 from Oct 9, still listed Oct 13. Same seller, same ad text, 5,262.7 TT and 1,139.7 SMOH in both.
+- VO: "One hundred forty-two thousand dollars for this Piper Cherokee Six. / In July, same seller, same hours: one hundred ninety-two thousand. The new ad doesn't say. / CTA"
+- Photos: kitmasterbloke (G-AVFS PA-32-300) and Ian A Gratton (N199MW Cherokee Six), both CC BY 2.0, registrations blurred.

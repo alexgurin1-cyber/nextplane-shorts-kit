@@ -24,16 +24,17 @@ Read memory `feedback-plain-language-videos`, `feedback-no-source-sites`, `feedb
 - Instagram caption: plain takeaway first, then "Plug the N-number into nextplane.us before you call.", then credits line, then **at most 5 hashtags** (Instagram rejects more): `#aviation #generalaviation #aircraftforsale #<make> #nextplane`. TikTok uses the same text.
 
 ## 3. Produce
-- Copy `templates/shorts15/*` into `$WORK`, `cd $WORK`. Edit `gen_vo.py` (dict `S` → one entry for today's slug), `gen_music.py` (dict `P` → one prompt, not monotone), and `render15.py`: add `CAPS[<slug>]`, a `scene_<slug>()` modeled on the closest pilot scene, and the `SCENE` / `TAILS` maps. Keep the platform safe zones (text in x 64–940, y 210–1440), `lookup()` beat and `draw_endcard` untouched.
+- Copy `templates/shorts15/*` into `$WORK`, `cd $WORK`. Edit `gen_vo.py` (add today's slug to dict `S`; keep earlier entries, the slug argument selects one), `gen_music.py` (add one prompt to `P`, not monotone), and `render15.py`: add `CAPS[<slug>]`, a `scene_<slug>()` modeled on the closest pilot scene, and the `SCENE` / `TAILS` maps. Keep the platform safe zones (text in x 64–940, y 210–1440), `lookup()` beat and `draw_endcard` untouched.
+- Landscape-only photos (common for older models): use `blur_backdrop()` + `photo_card()` as in `scene_pa32()` instead of a full-bleed crop, which upscales ~5x and looks soft. Blur other aircraft's registrations with a feathered mask.
 - Photos: `python3 $KIT/lib/photos.py fetch <slug> "<make model>" $WORK/photos` — real photos of the exact model only; crop out other aircraft's registrations; record CC credits.
-- `python3 gen_vo.py` (check no SMEAR) → `python3 gen_music.py` → render frames in 4 workers: `for w in 0 1 2 3; do timeout 500 python3 render15.py <slug> $w 4 & done; wait` → `python3 mux15.py <slug>` → `nextplane15_<slug>.mp4`.
+- `python3 gen_vo.py <slug>` (check no SMEAR; total must stay ≤15.0 s — check `python3 render15.py <slug> info`, trim beat 2 if over) → `python3 gen_music.py <slug>` → render frames in 4 workers: `for w in 0 1 2 3; do timeout 500 python3 render15.py <slug> $w 4 & done; wait` → `python3 mux15.py <slug>` → `nextplane15_<slug>.mp4`.
 - QA: 12–15 s, 1080×1920, audio 48 kHz, -13.5 LUFS ±1; extract frames at 1 s, hook, finding, lookup, end card and **look at them** (numbers match DATA.md, nothing cropped by safe zones, captions legible). Fix and re-render on any failure.
 
 ## 4. Publish
 - `url=$(python3 $KIT/lib/social_upload.py s15_<slug>_<yyyymmdd> nextplane15_<slug>.mp4)`.
 - `python3 $KIT/lib/np_buffer.py queue` → choose the next free 16:00Z (9 AM PT) day per channel, independently for TikTok (`tt`) and Instagram (`ig`), starting tomorrow.
 - `python3 $KIT/lib/np_buffer.py post tt "$url" <dueISO> caption.txt` and the same with `ig`.
-- Insert a row into `social_shorts15` (run_date, slug, format, tails, hook, video_url, tt_post_id, ig_post_id, due_at).
+- Insert a row into `social_shorts15` (run_date, slug, format, tails, hook, video_url, tt_post_id, ig_post_id, due_at). `due_at` holds the TikTok time; the Instagram time can differ (IG queue is shared with backfill), so report both in the email.
 
 ## 5. Library backfill top-up (every run)
 - `select ord,slug,body,ig_tags from social_backfill where ig_post_id is null order by ord limit 1`.

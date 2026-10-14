@@ -16,6 +16,7 @@ Tip: short literal queries work best ("Cirrus SR22T", "Piper Arrow", "Beechcraft
 import json
 import os
 import sys
+import urllib.error
 import urllib.parse
 import urllib.request
 
@@ -53,9 +54,24 @@ def commons_try(query, n=10):
     return out
 
 
-def openverse(query, n=20):
+def openverse(query, n=20, tries=4):
+    """Anonymous Openverse: page_size is capped at 20 (larger -> HTTP 401, seen 2026-10-14);
+    on 429/503 back off and retry instead of crashing; returns [] if still failing."""
+    import time
+    n = min(n, 20)  # anonymous Openverse returns HTTP 401 for page_size > 20
     q = urllib.parse.urlencode({"q": query, "source": "flickr", "license": LICENSES, "page_size": str(n)})
-    d = json.load(_get(f"{OV}?{q}"))
+    d = None
+    for i in range(tries):
+        try:
+            d = json.load(_get(f"{OV}?{q}"))
+            break
+        except urllib.error.HTTPError as e:
+            if e.code not in (429, 503) or i == tries - 1:
+                print("openverse", query, "HTTP", e.code, "- giving up", file=sys.stderr)
+                return []
+            time.sleep(20 * (i + 1))
+    if d is None:
+        return []
     out = []
     for r in d.get("results", []):
         lic = f"CC {r['license'].upper()} {r.get('license_version') or ''}".strip()

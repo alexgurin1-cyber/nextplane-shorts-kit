@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """NextPlane 15-second vertical (TikTok / Instagram Reels) renderer.
-Usage: render15.py <video> [worker nworkers]   video in {sr20, a36, mirage}
+Usage: render15.py <video> [worker nworkers]   video in {sr20, a36, mirage, pa32}
+       render15.py <video> info                 -> timeline JSON (used by gen_music.py / mux15.py)
 Layout respects platform UI safe zones: text inside x 64..940, y 210..1440."""
 import json, os, sys, math
 from PIL import Image, ImageDraw, ImageFont, ImageEnhance, ImageFilter
@@ -62,6 +63,9 @@ CAPS = {
  "mirage": [(1, "$550,000,", 0, 1), (1, "for the lowest-time Malibu Mirage on the market,", 2, 9),
             (1, "says the ad.", 10, 12), (2, "What it leaves out:", 0, 3), (2, "a 2020 NTSB report.", 4, 11),
             (2, "Substantial damage.", 12, 13)],
+ "pa32": [(1, "$142,000", 0, 4), (1, "for this Piper Cherokee Six", 5, 9),
+          (2, "In July, same seller, same hours:", 0, 5), (2, "$192,000", 6, 9),
+          (2, "The new ad doesn't say.", 10, 14)],
 }[V] + [(3, "Before you call the broker,", 0, 4)]
 
 def draw_caption(im, tt):
@@ -398,6 +402,105 @@ def scene_mirage(im, tt):
             d.text((110, 880 + yo), "SUBSTANTIAL", font=BCB(110), fill=(*CYAN, int(255 * r2)), anchor="lm")
         stamp(im, 620, 1040 + yo, "NOT IN THE AD", ease((tt - wt(2, 12) - 0.35) / 0.25) * a, ang=-6, col=WHITE, size=68)
 
+_BB = {}
+def blur_backdrop(path, dark=0.45, radius=18):
+    """Full-bleed blurred, darkened backdrop for landscape photos too small to fill 1080x1920 sharply."""
+    k = (path, dark, radius)
+    if k not in _BB:
+        src = Image.open(path).convert("RGB")
+        tr = W / H; nh = src.height; nw = int(nh * tr)
+        x0 = (src.width - nw) // 2
+        im = src.crop((x0, 0, x0 + nw, nh)).resize((W, H), Image.LANCZOS).filter(ImageFilter.GaussianBlur(radius))
+        im = ImageEnhance.Brightness(ImageEnhance.Color(im).enhance(0.7)).enhance(dark)
+        _BB[k] = Image.blend(im, Image.new("RGB", (W, H), NAVY), 0.25).convert("RGBA")
+    return _BB[k]
+
+def photo_card(im, path, box, tt, t0, dur, sat=0.9):
+    """Sharp landscape photo card (slow push-in) inside box=(x0,y0,x1,y1)."""
+    x0, y0, x1, y1 = [int(v) for v in box]; bw, bh = x1 - x0, y1 - y0
+    k = ("card", path, bw, bh)
+    if k not in _BB:
+        src = Image.open(path).convert("RGB"); sr = src.width / src.height; tr = bw / bh
+        if sr > tr:
+            nw = int(src.height * tr); c = src.crop(((src.width - nw) // 2, 0, (src.width - nw) // 2 + nw, src.height))
+        else:
+            nh = int(src.width / tr); c = src.crop((0, (src.height - nh) // 2, src.width, (src.height - nh) // 2 + nh))
+        c = ImageEnhance.Color(c.resize((int(bw * 1.08), int(bh * 1.08)), Image.LANCZOS)).enhance(sat)
+        _BB[k] = c
+    L = _BB[k]
+    z = lerp(1.0, 1.08, min(max((tt - t0) / max(dur, 0.1), 0), 1))
+    cw, ch = int(L.width / z), int(L.height / z)
+    fr = L.crop(((L.width - cw) // 2, (L.height - ch) // 2, (L.width - cw) // 2 + cw, (L.height - ch) // 2 + ch)).resize((bw, bh), Image.BILINEAR)
+    m = Image.new("L", (bw, bh), 0); ImageDraw.Draw(m).rounded_rectangle([0, 0, bw - 1, bh - 1], radius=26, fill=255)
+    im.paste(fr, (x0, y0), m)
+    ImageDraw.Draw(im, "RGBA").rounded_rectangle([x0, y0, x1, y1], radius=26, outline=(*CYAN, 160), width=3)
+
+def scene_pa32(im, tt):
+    """PRICE JUMP (down): N123BE, same dealer, same hours, $192,000 (Jul 9-Aug 7) -> $142,000 (Oct 9)."""
+    hook = tt < T_B2 + 0.3
+    im.alpha_composite(blur_backdrop(f"{PH}/pa32-0.jpg" if hook else f"{PH}/pa32-1.jpg", 0.5 if hook else 0.36))
+    im.alpha_composite(GRAD)
+    d = ImageDraw.Draw(im, "RGBA")
+    brand_bug(im)
+    if tt < T_B2 + 0.25:
+        fade = 1 - ease((tt - T_B2) / 0.25)
+        chip(d, W / 2, 360, "FOR SALE NOW", fade, anchor="c")
+        shadow_text(d, (W / 2, 460), "1967 PIPER CHEROKEE SIX", BCB(80), OFF, fade)
+        punch(im, (W / 2, 640), "$142,000", BCB(236), tt, 0.0, fade)
+        if fade > 0.02:
+            card = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+            photo_card(card, f"{PH}/pa32-0.jpg", (70, 800, 1010, 1197), tt, 0, T_B2)
+            if fade < 1: card.putalpha(card.getchannel("A").point(lambda v: int(v * fade)))
+            im.alpha_composite(card)
+        d = ImageDraw.Draw(im, "RGBA")
+        la = ease((tt - wt(1, 5)) / 0.2) * fade
+        if la > 0:
+            chip(d, W / 2, 1250, "DEALER AD · LISTED OCT 9", la, anchor="c", f=SMB(30), col=OFF, outline=GREY)
+        return
+    a = ease((tt - T_B2 - 0.1) / 0.3) * (1 - ease((tt - T_LOOK) / 0.2))
+    if a <= 0: return
+    yo = lerp(40, 0, eout((tt - T_B2 - 0.1) / 0.35))
+    panel(d, (64, 330 + yo, 948, 1230 + yo), a, sub="PRICE HISTORY")
+    x0, x1, y0, y1 = 120, 890, 560 + yo, 1000 + yo
+    X = lambda f: x0 + f * (x1 - x0)
+    Y = lambda v: y1 - (v - 120000) / (210000 - 120000) * (y1 - y0)
+    # ad 1: Jul 9 -> Aug 7 at $192,000 (white); off market Aug 7 -> Oct 9 (dashed); ad 2: Oct 9 -> now at $142,000 (cyan)
+    p1 = min(max((tt - wt(2, 0)) / 0.5, 0), 1)
+    if p1 > 0:
+        d.line([(X(0), Y(192000)), (X(lerp(0, 0.36, p1)), Y(192000))], fill=(*WHITE, int(255 * a)), width=8)
+        d.ellipse([X(0) - 9, Y(192000) - 9, X(0) + 9, Y(192000) + 9], fill=(*OFF, int(255 * a)))
+        d.text((X(0), y1 + 46), "JUL 9", font=SMR(26), fill=(*GREY, int(255 * a)), anchor="ls")
+    la = ease((tt - wt(2, 6)) / 0.25) * a
+    if la > 0:
+        d.text((X(0.18), Y(192000) - 26), "$192,000", font=SMB(34), fill=(*OFF, int(255 * la)), anchor="ms")
+        d.text((X(0.36), y1 + 46), "AUG 7", font=SMR(26), fill=(*GREY, int(255 * la)), anchor="ms")
+    p2 = min(max((tt - wt(2, 6)) / 0.6, 0), 1)
+    if p2 > 0:
+        xe = lerp(0.36, 0.72, p2); xx = 0.36
+        while xx < xe:
+            d.line([(X(xx), Y(192000)), (X(min(xx + 0.018, xe)), Y(192000))], fill=(*GREY, int(200 * a)), width=4); xx += 0.036
+        if p2 > 0.4:
+            d.text((X(0.54), Y(192000) + 44), "OFF THE MARKET", font=SMR(24), fill=(*GREY, int(255 * a * ease((p2 - 0.4) / 0.3))), anchor="mm")
+    p3 = min(max((tt - wt(2, 9, True)) / 0.45, 0), 1)
+    if p3 > 0:
+        yd = lerp(Y(192000), Y(142000), eout(min(p3 * 2, 1)))
+        d.line([(X(0.72), Y(192000)), (X(0.72), yd)], fill=(*CYAN, int(255 * a)), width=8)
+        if p3 > 0.5:
+            d.line([(X(0.72), Y(142000)), (X(lerp(0.72, 1.0, (p3 - 0.5) * 2)), Y(142000))], fill=(*CYAN, int(255 * a)), width=8)
+            d.ellipse([X(0.72) - 9, Y(142000) - 9, X(0.72) + 9, Y(142000) + 9], fill=(*OFF, int(255 * a)))
+            d.text((X(0.86), Y(142000) - 26), "$142,000", font=SMB(34), fill=(*CYAN, int(255 * a)), anchor="ms")
+            d.text((X(0.72), y1 + 46), "OCT 9", font=SMR(26), fill=(*GREY, int(255 * a)), anchor="ms")
+        ba = ease((p3 - 0.3) / 0.4) * a
+        if ba > 0:
+            v = counter(50000, tt, wt(2, 9, True) + 0.15, 0.5)
+            ym = (Y(192000) + Y(142000)) / 2
+            d.rounded_rectangle([X(0.72) - 290, ym - 40, X(0.72) - 24, ym + 40], radius=12, fill=(8, 20, 31, int(230 * ba)))
+            d.text((X(0.72) - 157, ym), "-" + money(round(v / 100) * 100), font=BCB(62), fill=(*CYAN, int(255 * ba)), anchor="mm")
+    c1 = ease((tt - wt(2, 2)) / 0.2) * a; c2 = ease((tt - wt(2, 4)) / 0.2) * a
+    if c1 > 0: chip(d, 110, 1150 + yo, "SAME SELLER", c1, f=SMB(28))
+    if c2 > 0: chip(d, 400, 1150 + yo, "SAME 5,262.7 HOURS", c2, f=SMB(28))
+    stamp(im, W / 2, 1290, "NOT IN THE NEW AD", ease((tt - wt(2, 12)) / 0.25) * a, ang=-4, col=WHITE, size=58)
+
 _EB = []
 def endbg():
     if not _EB:
@@ -408,8 +511,8 @@ def endbg():
         _EB.append(g.resize((W, H)).convert("RGBA"))
     return _EB[0]
 
-SCENE = {"sr20": scene_sr20, "a36": scene_a36, "mirage": scene_mirage}[V]
-TAILS = {"sr20": ["N881PF"], "a36": ["N29DL", "N72MD"], "mirage": ["N27RZ"]}[V]
+SCENE = {"sr20": scene_sr20, "a36": scene_a36, "mirage": scene_mirage, "pa32": scene_pa32}[V]
+TAILS = {"sr20": ["N881PF"], "a36": ["N29DL", "N72MD"], "mirage": ["N27RZ"], "pa32": ["N123BE"]}[V]
 
 def frame(i):
     global GRAD

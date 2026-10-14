@@ -10,7 +10,12 @@ S={
         "One hasn't moved since April. The other was two ninety in August, then went up.", CTA],
  "mirage":["Five fifty, for the lowest-time Malibu Mirage on the market, says the ad.",
            "What it leaves out: a twenty twenty N T S B report. Substantial damage.", CTA],
+ # 2026-10-14 daily run (plain-dollar standard: speak prices in full words, exact figures on screen)
+ "pa32":["One hundred forty-two thousand dollars for this Piper Cherokee Six.",
+         "In July, same seller, same hours: one hundred ninety-two thousand. The new ad doesn't say.", CTA],
 }
+# usage: gen_vo.py [slug]  -> only that slug (no need to delete the pilot entries)
+if len(sys.argv) > 1: S = {sys.argv[1]: S[sys.argv[1]]}
 def gen(bid,text):
     if os.path.exists(f"{OUT}/{bid}.json"): return
     body=json.dumps({"text":text,"model_id":"eleven_turbo_v2_5","voice_settings":{"stability":0.62,"similarity_boost":0.85,"style":0.25,"use_speaker_boost":True}}).encode()
