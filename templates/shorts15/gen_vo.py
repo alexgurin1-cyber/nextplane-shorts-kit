@@ -13,6 +13,9 @@ S={
  # 2026-10-14 daily run (plain-dollar standard: speak prices in full words, exact figures on screen)
  "pa32":["One hundred forty-two thousand dollars for this Piper Cherokee Six.",
          "In July, same seller, same hours: one hundred ninety-two thousand. The new ad doesn't say.", CTA],
+ # 2026-10-15 daily run: SAME PRICE TWINS, Mooney M20K 231 (N3594H unchanged + 1984 accident record; N231HB cut twice)
+ "m20k":["Two Mooney two thirty-ones. Both one hundred forty-nine thousand dollars.",
+         "One was cut twice. The other has a federal accident record from nineteen eighty-four.", CTA],
 }
 # usage: gen_vo.py [slug]  -> only that slug (no need to delete the pilot entries)
 if len(sys.argv) > 1: S = {sys.argv[1]: S[sys.argv[1]]}

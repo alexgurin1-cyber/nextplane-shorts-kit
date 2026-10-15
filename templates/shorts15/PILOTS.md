@@ -72,3 +72,12 @@ Two A36 Bonanzas, both $299,000. One price hasn't moved since April. The other w
 - N123BE, 1967 PA-32-300, serial 32-40271, dealer. Ad 258040639 at $192,000, Jul 9 to Aug 7. Ad 261177871 at $142,000 from Oct 9, still listed Oct 13. Same seller, same ad text, 5,262.7 TT and 1,139.7 SMOH in both.
 - VO: "One hundred forty-two thousand dollars for this Piper Cherokee Six. / In July, same seller, same hours: one hundred ninety-two thousand. The new ad doesn't say. / CTA"
 - Photos: kitmasterbloke (G-AVFS PA-32-300) and Ian A Gratton (N199MW Cherokee Six), both CC BY 2.0, registrations blurred.
+
+### 2026-10-15 SAME PRICE TWINS: Mooney 231s (`m20k`, 14.77 s)
+- Both MOONEY M20K 231, dealer ads, $149,000, both active in the Oct 15 06:39Z scan.
+- A: N231HB, 1979, serial 25-0091, ad 240192679. $167,500 (Apr 14) → $159,000 May 14 → $149,000 Jun 27. No federal accident record by serial or N-number.
+- B: N3594H, 1980, serial 25-0428, ad 242440151. $149,000 unchanged since Apr 14. NTSB FTW84LA341, Aug 6 1984, Thibodaux LA, substantial damage, no injuries, serial matched. Ad damage field false; ad text silent.
+- VO: "Two Mooney two thirty-ones. Both one hundred forty-nine thousand dollars. / One was cut twice. The other has a federal accident record from nineteen eighty-four. / CTA" (b2 trimmed from "cut twice to get there" to keep total ≤15 s).
+- Photos: Armchair Aviator (1981 M20K, CC BY 2.0, flickr 4788652849) and Huhu Uet (M20K, CC BY 3.0, Commons "Mooney M20K (N252WS) 02"), registrations blurred.
+- Template notes: twins hook now shows both prices from frame 0 (punch, not a counter from $0) and the SAME PRICE stamp lands on "Both", so it is on screen ~0.7 s instead of ~0.3 s. Keep caption phrases ≤ ~26 characters under a lower panel ending at y≈1335, or a two-line caption collides with the panel.
+- Data note: skip pairs whose price history has one-day up/down flips (e.g. 515,000 → 300,000 → 515,000); they read as parse glitches, not real moves.

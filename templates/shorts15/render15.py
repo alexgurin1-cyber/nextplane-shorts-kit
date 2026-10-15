@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """NextPlane 15-second vertical (TikTok / Instagram Reels) renderer.
-Usage: render15.py <video> [worker nworkers]   video in {sr20, a36, mirage, pa32}
+Usage: render15.py <video> [worker nworkers]   video in {sr20, a36, mirage, pa32, m20k}
        render15.py <video> info                 -> timeline JSON (used by gen_music.py / mux15.py)
 Layout respects platform UI safe zones: text inside x 64..940, y 210..1440."""
 import json, os, sys, math
@@ -66,6 +66,9 @@ CAPS = {
  "pa32": [(1, "$142,000", 0, 4), (1, "for this Piper Cherokee Six", 5, 9),
           (2, "In July, same seller, same hours:", 0, 5), (2, "$192,000", 6, 9),
           (2, "The new ad doesn't say.", 10, 14)],
+ "m20k": [(1, "Two Mooney 231s.", 0, 3), (1, "Both $149,000.", 4, 9),
+          (2, "One was cut twice.", 0, 3), (2, "The other has", 4, 6), (2, "a federal accident record", 7, 10),
+          (2, "from 1984.", 11, 13)],
 }[V] + [(3, "Before you call the broker,", 0, 4)]
 
 def draw_caption(im, tt):
@@ -501,6 +504,57 @@ def scene_pa32(im, tt):
     if c2 > 0: chip(d, 400, 1150 + yo, "SAME 5,262.7 HOURS", c2, f=SMB(28))
     stamp(im, W / 2, 1290, "NOT IN THE NEW AD", ease((tt - wt(2, 12)) / 0.25) * a, ang=-4, col=WHITE, size=58)
 
+def scene_m20k(im, tt):
+    """SAME PRICE TWINS: Mooney M20K 231s at $149,000. A = N231HB (1979, cut twice from $167,500);
+    B = N3594H (1980, unchanged since Apr 14; 1984 federal accident record FTW84LA341, serial 25-0428, not in the ad).
+    Photos are the model (registrations blurred), not the subject tails."""
+    HH = 960
+    dark = 0.6 if tt < T_B2 else 0.36
+    LA = bg_layer(f"{PH}/b.jpg", 0.55, dark=dark, size=(W, HH))
+    LB = bg_layer(f"{PH}/a.jpg", 0.55, dark=dark, size=(W, HH))
+    paste_bg(im, LA, tt, 0, T_LOOK, size=(W, HH), box=(0, 0))
+    paste_bg(im, LB, tt, 0, T_LOOK, size=(W, HH), box=(0, HH), zoom_in=False)
+    im.alpha_composite(GRAD)
+    d = ImageDraw.Draw(im, "RGBA")
+    d.rectangle([0, HH - 3, W, HH + 3], fill=(*CYAN, 255))
+    brand_bug(im)
+    fade = 1 - ease((tt - T_LOOK) / 0.2)
+    if fade <= 0: return
+    if tt < T_B2 + 0.25:
+        pf = (1 - ease((tt - T_B2) / 0.25)) * fade
+        for yy, lab in ((360, "A · 1979 MOONEY 231"), (1040, "B · 1980 MOONEY 231")):
+            d.rounded_rectangle([70, yy - 34, 70 + d.textlength(lab, font=SMB(30)) + 40, yy + 34], radius=12,
+                                fill=(8, 20, 31, int(200 * pf)))
+            d.text((90, yy), lab, font=SMB(30), fill=(*OFF, int(255 * pf)), anchor="lm")
+        for yy, t0 in ((580, 0.0), (1225, 0.12)):   # price on screen from the first frame (spec)
+            punch(im, (W / 2, yy), "$149,000", BCB(190), tt, t0, pf)
+        stamp(im, W / 2, HH, "SAME PRICE", ease((tt - wt(1, 4)) / 0.25) * pf)
+        return
+    a = ease((tt - T_B2) / 0.3) * fade
+    # A: cut twice, $167,500 -> $159,000 (May 14) -> $149,000 (Jun 27)
+    aa = ease((tt - wt(2, 0)) / 0.3) * a
+    if aa > 0:
+        panel(d, (64, 400, 948, 880), aa, title="A · N231HB", sub="PRICE HISTORY")
+        step_chart(d, (120, 590, 880, 770),
+                   [(0.0, 167500, "APR"), (0.20, 159000, "MAY 14"), (0.50, 149000, "JUN 27")],
+                   wt(2, 0), wt(2, 3, True) + 0.3, tt, 140000, 175000, aa)
+        ca = ease((tt - wt(2, 2)) / 0.3) * aa
+        if ca > 0:
+            d.text((900, 548), "CUT TWICE · -$18,500", font=BCB(46), fill=(*CYAN, int(255 * ca)), anchor="rm")
+    # B: same price since April, but a 1984 federal accident record
+    ab = ease((tt - wt(2, 4)) / 0.3) * a
+    if ab > 0:
+        panel(d, (64, 990, 948, 1335), ab, title="B · N3594H", sub="SAFETY RECORD")
+        r1 = ease((tt - wt(2, 8)) / 0.3) * ab
+        if r1 > 0:
+            d.text((110, 1112), "NTSB FTW84LA341", font=SMB(30), fill=(*GREY, int(255 * r1)), anchor="lm")
+        r2 = ease((tt - wt(2, 12)) / 0.25) * ab
+        if r2 > 0:
+            d.text((110, 1185), "AUG 6, 1984", font=BCB(84), fill=(*WHITE, int(255 * r2)), anchor="lm")
+            d.text((110, 1258), "SUBSTANTIAL DAMAGE · NO INJURIES", font=BCB(50), fill=(*CYAN, int(255 * r2)), anchor="lm")
+            d.text((110, 1308), "SERIAL 25-0428 MATCHES THE AD", font=SMR(24), fill=(*OFF, int(255 * r2)), anchor="lm")
+        stamp(im, 735, 1170, "NOT IN THE AD", ease((tt - wt(2, 12) - 0.1) / 0.25) * ab, ang=-6, col=WHITE, size=54)
+
 _EB = []
 def endbg():
     if not _EB:
@@ -511,8 +565,8 @@ def endbg():
         _EB.append(g.resize((W, H)).convert("RGBA"))
     return _EB[0]
 
-SCENE = {"sr20": scene_sr20, "a36": scene_a36, "mirage": scene_mirage, "pa32": scene_pa32}[V]
-TAILS = {"sr20": ["N881PF"], "a36": ["N29DL", "N72MD"], "mirage": ["N27RZ"], "pa32": ["N123BE"]}[V]
+SCENE = {"sr20": scene_sr20, "a36": scene_a36, "mirage": scene_mirage, "pa32": scene_pa32, "m20k": scene_m20k}[V]
+TAILS = {"sr20": ["N881PF"], "a36": ["N29DL", "N72MD"], "mirage": ["N27RZ"], "pa32": ["N123BE"], "m20k": ["N231HB", "N3594H"]}[V]
 
 def frame(i):
     global GRAD
