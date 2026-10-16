@@ -81,3 +81,11 @@ Two A36 Bonanzas, both $299,000. One price hasn't moved since April. The other w
 - Photos: Armchair Aviator (1981 M20K, CC BY 2.0, flickr 4788652849) and Huhu Uet (M20K, CC BY 3.0, Commons "Mooney M20K (N252WS) 02"), registrations blurred.
 - Template notes: twins hook now shows both prices from frame 0 (punch, not a counter from $0) and the SAME PRICE stamp lands on "Both", so it is on screen ~0.7 s instead of ~0.3 s. Keep caption phrases ≤ ~26 characters under a lower panel ending at y≈1335, or a two-line caption collides with the panel.
 - Data note: skip pairs whose price history has one-day up/down flips (e.g. 515,000 → 300,000 → 515,000); they read as parse glitches, not real moves.
+
+### 2026-10-16 WHAT THE AD LEFT OUT: Cirrus SR22T (`sr22t`, 14.87 s, -13.4 LUFS)
+- N236CB, 2021 SR22T G6, serial 2336, dealer ad 259479463 at $798,900, active in the Oct 15 06:39Z scan. Ad: "meticulously maintained by its original owner, always hangared"; damage field false; ad text silent on any accident.
+- NTSB CEN24LA309: Aug 6 2024, Salem IN, substantial damage, 3 aboard, no injuries, Part 91 personal; serial 2336 and N-number both match.
+- VO: "About eight hundred thousand dollars, for a meticulously maintained Cirrus S R twenty-two, says the ad. / What it leaves out: a twenty twenty-four federal accident record. Substantial damage. / CTA"
+- Photos: lynothehammer1978 (N65TL SR22T, CC BY 2.0, flickr 32645960107) hook card; Ian A Gratton (N25VL SR22T, CC BY 2.0, flickr 52188862526) blurred backdrop; registrations blurred.
+- Template notes: `scene_sr22t()` combines the pa32 landscape pattern (blur_backdrop + photo_card) with the mirage "FROM THE AD" quote card, which slides over the lower part of the photo card. Keep the NOT IN THE AD stamp below the last record line (stamp at y≈1112, last line ≤1000) or it clips the text.
+- Data notes: reject NTSB matches by N-number when the serial differs (N152BT: record serial P21000486 vs listing P21000846). Prefer listings seen in the newest scan of the primary source; the secondary source's last scan can lag 2 days. Spare: N256DB 1998 A36 $459,900 ("truly exceptional", NTSB ERA13CA100 2012); N26533 1979 421C $550,000 ("well-maintained", LAX03LA106 2003); N664RS 2000 Malibu Mirage $419,000 (ERA09CA518 2009).

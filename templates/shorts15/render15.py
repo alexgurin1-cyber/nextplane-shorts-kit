@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """NextPlane 15-second vertical (TikTok / Instagram Reels) renderer.
-Usage: render15.py <video> [worker nworkers]   video in {sr20, a36, mirage, pa32, m20k}
+Usage: render15.py <video> [worker nworkers]   video in {sr20, a36, mirage, pa32, m20k, sr22t}
        render15.py <video> info                 -> timeline JSON (used by gen_music.py / mux15.py)
 Layout respects platform UI safe zones: text inside x 64..940, y 210..1440."""
 import json, os, sys, math
@@ -69,6 +69,9 @@ CAPS = {
  "m20k": [(1, "Two Mooney 231s.", 0, 3), (1, "Both $149,000.", 4, 9),
           (2, "One was cut twice.", 0, 3), (2, "The other has", 4, 6), (2, "a federal accident record", 7, 10),
           (2, "from 1984.", 11, 13)],
+ "sr22t": [(1, "$798,900,", 0, 4), (1, "for a meticulously maintained", 5, 8),
+           (1, "Cirrus SR22T, says the ad.", 9, 15), (2, "What it leaves out:", 0, 3),
+           (2, "a 2024 federal accident record.", 4, 9), (2, "Substantial damage.", 10, 11)],
 }[V] + [(3, "Before you call the broker,", 0, 4)]
 
 def draw_caption(im, tt):
@@ -555,6 +558,52 @@ def scene_m20k(im, tt):
             d.text((110, 1308), "SERIAL 25-0428 MATCHES THE AD", font=SMR(24), fill=(*OFF, int(255 * r2)), anchor="lm")
         stamp(im, 735, 1170, "NOT IN THE AD", ease((tt - wt(2, 12) - 0.1) / 0.25) * ab, ang=-6, col=WHITE, size=54)
 
+def scene_sr22t(im, tt):
+    """WHAT THE AD LEFT OUT: N236CB, 2021 Cirrus SR22T, dealer ad 259479463 at $798,900, "meticulously maintained
+    by its original owner, always hangared"; NTSB CEN24LA309, Aug 6 2024, Salem IN, substantial damage, 3 aboard,
+    no injuries, serial 2336 matched. Photos are the model (registrations blurred), not the subject tail.
+    Landscape photos -> blur_backdrop + photo_card (pa32 pattern) with the mirage quote card."""
+    hook = tt < T_B2 + 0.3
+    im.alpha_composite(blur_backdrop(f"{PH}/hook.jpg" if hook else f"{PH}/find.jpg", 0.5 if hook else 0.36))
+    im.alpha_composite(GRAD)
+    d = ImageDraw.Draw(im, "RGBA")
+    brand_bug(im)
+    if tt < T_B2 + 0.25:
+        fade = 1 - ease((tt - T_B2) / 0.25)
+        chip(d, W / 2, 360, "FOR SALE NOW", fade, anchor="c")
+        shadow_text(d, (W / 2, 460), "2021 CIRRUS SR22T", BCB(84), OFF, fade)
+        punch(im, (W / 2, 640), "$798,900", BCB(236), tt, 0.0, fade)
+        if fade > 0.02:
+            card = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+            photo_card(card, f"{PH}/hook.jpg", (70, 790, 1010, 1180), tt, 0, T_B2)
+            if fade < 1: card.putalpha(card.getchannel("A").point(lambda v: int(v * fade)))
+            im.alpha_composite(card)
+        d = ImageDraw.Draw(im, "RGBA")
+        qa = ease((tt - wt(1, 7)) / 0.25) * fade
+        if qa > 0:
+            yo = lerp(30, 0, eout((tt - wt(1, 7)) / 0.3))
+            d.rounded_rectangle([90, 1010 + yo, 940, 1270 + yo], radius=22, fill=(226, 232, 236, int(240 * qa)))
+            d.text((130, 1056 + yo), "FROM THE AD", font=SMB(26), fill=(90, 100, 110, int(255 * qa)), anchor="lm")
+            d.text((130, 1130 + yo), "\u201cMeticulously maintained", font=BCS(58), fill=(*NAVY, int(255 * qa)), anchor="lm")
+            d.text((130, 1200 + yo), "by its original owner\u2026\u201d", font=BCS(58), fill=(*NAVY, int(255 * qa)), anchor="lm")
+        return
+    a = ease((tt - T_B2 - 0.1) / 0.3) * (1 - ease((tt - T_LOOK) / 0.2))
+    if a <= 0: return
+    yo = lerp(40, 0, eout((tt - T_B2 - 0.1) / 0.35))
+    panel(d, (64, 360 + yo, 948, 1180 + yo), a, sub="SAFETY RECORD")
+    r1 = ease((tt - wt(2, 4)) / 0.3) * a
+    if r1 > 0:
+        d.text((110, 520 + yo), "FEDERAL ACCIDENT RECORD", font=SMB(32), fill=(*GREY, int(255 * r1)), anchor="lm")
+        d.text((110, 610 + yo), "AUG 6, 2024", font=BCB(104), fill=(*WHITE, int(255 * r1)), anchor="lm")
+        d.text((110, 700 + yo), "SALEM, INDIANA \u00b7 NTSB CEN24LA309", font=SMB(28), fill=(*OFF, int(255 * r1)), anchor="lm")
+        d.text((110, 748 + yo), "SERIAL 2336 MATCHES THE AD", font=SMR(26), fill=(*OFF, int(255 * r1)), anchor="lm")
+    r2 = ease((tt - wt(2, 10)) / 0.25) * a
+    if r2 > 0:
+        d.text((110, 840 + yo), "DAMAGE", font=SMB(30), fill=(*GREY, int(255 * r2)), anchor="lm")
+        d.text((110, 925 + yo), "SUBSTANTIAL", font=BCB(110), fill=(*CYAN, int(255 * r2)), anchor="lm")
+        d.text((110, 1000 + yo), "3 ABOARD \u00b7 NO INJURIES", font=SMB(28), fill=(*OFF, int(255 * r2)), anchor="lm")
+    stamp(im, 700, 1112 + yo, "NOT IN THE AD", ease((tt - wt(2, 10) - 0.3) / 0.25) * a, ang=-6, col=WHITE, size=64)
+
 _EB = []
 def endbg():
     if not _EB:
@@ -565,8 +614,8 @@ def endbg():
         _EB.append(g.resize((W, H)).convert("RGBA"))
     return _EB[0]
 
-SCENE = {"sr20": scene_sr20, "a36": scene_a36, "mirage": scene_mirage, "pa32": scene_pa32, "m20k": scene_m20k}[V]
-TAILS = {"sr20": ["N881PF"], "a36": ["N29DL", "N72MD"], "mirage": ["N27RZ"], "pa32": ["N123BE"], "m20k": ["N231HB", "N3594H"]}[V]
+SCENE = {"sr20": scene_sr20, "a36": scene_a36, "mirage": scene_mirage, "pa32": scene_pa32, "m20k": scene_m20k, "sr22t": scene_sr22t}[V]
+TAILS = {"sr20": ["N881PF"], "a36": ["N29DL", "N72MD"], "mirage": ["N27RZ"], "pa32": ["N123BE"], "m20k": ["N231HB", "N3594H"], "sr22t": ["N236CB"]}[V]
 
 def frame(i):
     global GRAD
