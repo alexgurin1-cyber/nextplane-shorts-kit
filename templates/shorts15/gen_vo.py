@@ -19,6 +19,9 @@ S={
  # 2026-10-16 daily run: WHAT THE AD LEFT OUT, 2021 Cirrus SR22T N236CB ("meticulously maintained"; NTSB CEN24LA309 Aug 6 2024, serial 2336)
  "sr22t":["About eight hundred thousand dollars, for a meticulously maintained Cirrus S R twenty-two, says the ad.",
           "What it leaves out: a twenty twenty-four federal accident record. Substantial damage.", CTA],
+ # 2026-10-17 daily run: PRICE JUMP (down, same ad), 1980 Beechcraft A36 Bonanza N614MM, $310,000 (Aug 5) -> $229,000 (Oct 15), three cuts
+ "a36cut":["Two hundred twenty-nine thousand dollars for this Beechcraft Bonanza A36.",
+           "In August, the same ad asked three hundred ten thousand. It's been cut three times.", CTA],
 }
 # usage: gen_vo.py [slug]  -> only that slug (no need to delete the pilot entries)
 if len(sys.argv) > 1: S = {sys.argv[1]: S[sys.argv[1]]}

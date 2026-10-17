@@ -1,4 +1,4 @@
-import json, os, sys, subprocess, urllib.request, threading
+import json, os, sys, subprocess, urllib.request, urllib.error, threading
 KEY=os.environ["ELEVENLABS_API_KEY"]
 P={
 "sr20":"punchy modern electronic pulse for a 12-second social video, 112 BPM, starts immediately on a hard downbeat with a sub bass hit, tight hi-hats and plucked synth, a quick riser into a bigger hit at about 3.4 seconds where the reveal lands, confident and curious, clean resolve in the final 3 seconds, no vocals, no samba",
@@ -7,6 +7,7 @@ P={
 "pa32":"bright driving modern electronic groove for a 14-second social video, 108 BPM, starts instantly on a hard downbeat with a punchy kick, plucked synth and tight claps, a falling synth sweep into a heavier drop at about 3.4 seconds where the old price is revealed, a lift at 7 seconds, confident clean resolve in the final 3 seconds, no vocals, not monotone, no samba",
 "m20k":"tense, curious modern electronic groove for a 15-second social video, 100 BPM, starts instantly on a hard downbeat with a deep kick and a two-note synth motif that answers itself like a comparison, tight hats and muted bass, a dark stab at about 4.5 seconds and a lift at about 6.5 seconds where the reveal lands, confident clean resolve in the final 3 seconds, no vocals, not monotone, no samba",
 "sr22t":"sleek investigative modern electronic groove for a 15-second social video, 98 BPM, starts instantly on a hard downbeat with a punchy kick and a glossy synth pluck, confident at first, then a dark filtered stab and a tense rise at about 5.6 seconds where the reveal starts, a heavy decisive hit at about 8.5 seconds, warm clean resolve in the final 3 seconds, no vocals, not monotone, no samba",
+"a36cut":"confident modern electronic groove for a 15-second social video, 104 BPM, starts instantly on a hard downbeat with a punchy kick, warm plucked synth and tight claps, a descending three-step synth figure around 4 to 7 seconds like a price stepping down, a heavier hit at about 7.5 seconds, bright clean resolve in the final 3 seconds, no vocals, not monotone, no samba",
 }
 # usage: gen_music.py [slug]  -> only that slug
 if len(sys.argv) > 1: P = {sys.argv[1]: P[sys.argv[1]]}
@@ -15,7 +16,13 @@ def go(v):
     out=f"music_{v}.mp3"
     if os.path.exists(out): return
     body=json.dumps({"prompt":P[v],"music_length_ms":int(i["total"]*1000)}).encode()
-    r=urllib.request.urlopen(urllib.request.Request("https://api.elevenlabs.io/v1/music",data=body,headers={"xi-api-key":KEY,"Content-Type":"application/json"}),timeout=300).read()
+    import time
+    for k in range(5):  # music endpoint often 429s on the first call (seen 2026-10-17); back off and retry
+        try:
+            r=urllib.request.urlopen(urllib.request.Request("https://api.elevenlabs.io/v1/music",data=body,headers={"xi-api-key":KEY,"Content-Type":"application/json"}),timeout=300).read(); break
+        except urllib.error.HTTPError as e:
+            if e.code!=429 or k==4: raise
+            print(v,"429, retrying in",45*(k+1),"s"); time.sleep(45*(k+1))
     open(out,"wb").write(r); print(v,len(r))
 ts=[threading.Thread(target=go,args=(v,)) for v in P]
 [t.start() for t in ts]; [t.join() for t in ts]
