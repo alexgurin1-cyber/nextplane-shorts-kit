@@ -72,6 +72,9 @@ CAPS = {
  "sr22t": [(1, "$798,900,", 0, 4), (1, "for a meticulously maintained", 5, 8),
            (1, "Cirrus SR22T, says the ad.", 9, 15), (2, "What it leaves out:", 0, 3),
            (2, "a 2024 federal accident record.", 4, 9), (2, "Substantial damage.", 10, 11)],
+ "sr20g6": [(1, "Two Cirrus SR20s.", 0, 4), (1, "Both $489,900.", 5, 11),
+            (2, "The newer one has", 0, 3), (2, "less than half the hours", 4, 8), (2, "and was cut twice.", 9, 12),
+            (2, "The other hasn't moved", 13, 16), (2, "since April.", 17, 18)],
  "a36cut": [(1, "$229,000", 0, 4), (1, "for this Beechcraft Bonanza A36", 5, 9),
             (2, "In August, the same ad asked", 0, 5), (2, "$310,000.", 6, 9),
             (2, "It's been cut three times.", 10, 14)],
@@ -662,6 +665,57 @@ def scene_a36cut(im, tt):
     if c2 > 0: chip(d, 300, 1150 + yo, "SAME DEALER", c2, f=SMB(28))
     stamp(im, 700, 1150 + yo, "3 PRICE CUTS", ease((tt - wt(2, 12) - 0.15) / 0.25) * a, ang=-4, col=WHITE, size=54)
 
+def scene_sr20g6(im, tt):
+    """SAME PRICE TWINS: Cirrus SR20 G6s at $489,900. A = N665M (2022, 740 h, cut twice: $534,900 Apr 16 ->
+    $514,900 Jun 2 -> $489,900 Sep 29); B = N34AS (2021, 1,785 h, unchanged since Apr 13). No accident record on either.
+    Photos are the model (registrations blurred), not the subject tails."""
+    HH = 960
+    dark = 0.62 if tt < T_B2 else 0.36
+    LA = bg_layer(f"{PH}/a2.jpg", 0.35, dark=dark, size=(W, HH))
+    LB = bg_layer(f"{PH}/b.jpg", 0.55, dark=dark, size=(W, HH))
+    paste_bg(im, LA, tt, 0, T_LOOK, size=(W, HH), box=(0, 0))
+    paste_bg(im, LB, tt, 0, T_LOOK, size=(W, HH), box=(0, HH), zoom_in=False)
+    im.alpha_composite(GRAD)
+    d = ImageDraw.Draw(im, "RGBA")
+    d.rectangle([0, HH - 3, W, HH + 3], fill=(*CYAN, 255))
+    brand_bug(im)
+    fade = 1 - ease((tt - T_LOOK) / 0.2)
+    if fade <= 0: return
+    if tt < T_B2 + 0.25:
+        pf = (1 - ease((tt - T_B2) / 0.25)) * fade
+        for yy, lab in ((360, "A · 2022 CIRRUS SR20 G6"), (1040, "B · 2021 CIRRUS SR20 G6")):
+            d.rounded_rectangle([70, yy - 34, 70 + d.textlength(lab, font=SMB(30)) + 40, yy + 34], radius=12,
+                                fill=(8, 20, 31, int(200 * pf)))
+            d.text((90, yy), lab, font=SMB(30), fill=(*OFF, int(255 * pf)), anchor="lm")
+        for yy, t0 in ((580, 0.0), (1225, 0.12)):   # price on screen from the first frame (spec)
+            punch(im, (W / 2, yy), "$489,900", BCB(190), tt, t0, pf)
+        stamp(im, W / 2, HH, "SAME PRICE", ease((tt - wt(1, 5)) / 0.25) * pf)
+        return
+    a = ease((tt - T_B2) / 0.3) * fade
+    # A: newer, 740 h, cut twice
+    aa = ease((tt - wt(2, 0)) / 0.3) * a
+    if aa > 0:
+        panel(d, (64, 400, 948, 880), aa, title="A · N665M", sub="PRICE HISTORY")
+        step_chart(d, (120, 600, 880, 770),
+                   [(0.0, 534900, "APR"), (0.30, 514900, "JUN 2"), (0.72, 489900, "SEP 29")],
+                   wt(2, 1), wt(2, 12, True) + 0.25, tt, 480000, 545000, aa)
+        ha = ease((tt - wt(2, 4)) / 0.25) * aa
+        if ha > 0:
+            chip(d, 110, 540, "2022 · 740 HOURS", ha, f=SMB(28))
+        ca = ease((tt - wt(2, 11)) / 0.3) * aa
+        if ca > 0:
+            d.text((900, 540), "CUT TWICE · -$45,000", font=BCB(46), fill=(*CYAN, int(255 * ca)), anchor="rm")
+    # B: older, 1,785 h, unchanged since April
+    ab = ease((tt - wt(2, 13)) / 0.3) * a
+    if ab > 0:
+        panel(d, (64, 990, 948, 1335), ab, title="B · N34AS", sub="PRICE HISTORY")
+        step_chart(d, (120, 1170, 880, 1230), [(0.0, 489900, "APR 13")],
+                   wt(2, 13), wt(2, 18, True), tt, 480000, 545000, ab)
+        chip(d, 110, 1112, "2021 · 1,785 HOURS", ab, f=SMB(28))
+        ua = ease((tt - wt(2, 16)) / 0.3) * ab
+        if ua > 0:
+            d.text((900, 1112), "UNCHANGED SINCE APRIL", font=BCB(46), fill=(*CYAN, int(255 * ua)), anchor="rm")
+
 _EB = []
 def endbg():
     if not _EB:
@@ -672,8 +726,8 @@ def endbg():
         _EB.append(g.resize((W, H)).convert("RGBA"))
     return _EB[0]
 
-SCENE = {"sr20": scene_sr20, "a36": scene_a36, "mirage": scene_mirage, "pa32": scene_pa32, "m20k": scene_m20k, "sr22t": scene_sr22t, "a36cut": scene_a36cut}[V]
-TAILS = {"sr20": ["N881PF"], "a36": ["N29DL", "N72MD"], "mirage": ["N27RZ"], "pa32": ["N123BE"], "m20k": ["N231HB", "N3594H"], "sr22t": ["N236CB"], "a36cut": ["N614MM"]}[V]
+SCENE = {"sr20": scene_sr20, "a36": scene_a36, "mirage": scene_mirage, "pa32": scene_pa32, "m20k": scene_m20k, "sr22t": scene_sr22t, "a36cut": scene_a36cut, "sr20g6": scene_sr20g6}[V]
+TAILS = {"sr20": ["N881PF"], "a36": ["N29DL", "N72MD"], "mirage": ["N27RZ"], "pa32": ["N123BE"], "m20k": ["N231HB", "N3594H"], "sr22t": ["N236CB"], "a36cut": ["N614MM"], "sr20g6": ["N665M", "N34AS"]}[V]
 
 def frame(i):
     global GRAD

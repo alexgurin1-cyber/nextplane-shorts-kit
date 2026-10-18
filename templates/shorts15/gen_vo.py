@@ -20,6 +20,9 @@ S={
  "sr22t":["About eight hundred thousand dollars, for a meticulously maintained Cirrus S R twenty-two, says the ad.",
           "What it leaves out: a twenty twenty-four federal accident record. Substantial damage.", CTA],
  # 2026-10-17 daily run: PRICE JUMP (down, same ad), 1980 Beechcraft A36 Bonanza N614MM, $310,000 (Aug 5) -> $229,000 (Oct 15), three cuts
+ # 2026-10-18 daily run: SAME PRICE TWINS, Cirrus SR20 G6 at $489,900: N665M (2022, 740 h, cut twice from $534,900) vs N34AS (2021, 1,785 h, unchanged since Apr 13)
+ "sr20g6":["Two Cirrus S R twenties. Both about four hundred ninety thousand dollars.",
+           "The newer one has less than half the hours and was cut twice. The other hasn't moved since April.", CTA],
  "a36cut":["Two hundred twenty-nine thousand dollars for this Beechcraft Bonanza A36.",
            "In August, the same ad asked three hundred ten thousand. It's been cut three times.", CTA],
 }
