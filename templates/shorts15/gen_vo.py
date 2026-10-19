@@ -23,6 +23,11 @@ S={
  # 2026-10-18 daily run: SAME PRICE TWINS, Cirrus SR20 G6 at $489,900: N665M (2022, 740 h, cut twice from $534,900) vs N34AS (2021, 1,785 h, unchanged since Apr 13)
  "sr20g6":["Two Cirrus S R twenties. Both about four hundred ninety thousand dollars.",
            "The newer one has less than half the hours and was cut twice. The other hasn't moved since April.", CTA],
+ # 2026-10-19 liquidity campaign Format A "Liquidity check" (model-level, no tail): Cessna 172M Skyhawk, 29 d typical, 14% cut, n=66 sold
+ # b3 = "Check yours." + verbatim CTA (campaign spec); slug prefix "liq" selects scene_liq() in render15.py
+ "liq172m":["Is a Cessna one seventy-two M liquid?",
+            "A month on the market, and most sellers never touch the price. Every flight school wants one.",
+            "Check yours. "+CTA],
  "a36cut":["Two hundred twenty-nine thousand dollars for this Beechcraft Bonanza A36.",
            "In August, the same ad asked three hundred ten thousand. It's been cut three times.", CTA],
 }

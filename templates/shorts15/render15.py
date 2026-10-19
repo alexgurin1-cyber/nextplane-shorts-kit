@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """NextPlane 15-second vertical (TikTok / Instagram Reels) renderer.
-Usage: render15.py <video> [worker nworkers]   video in {sr20, a36, mirage, pa32, m20k, sr22t, a36cut}
+Usage: render15.py <video> [worker nworkers]   video in {sr20, a36, mirage, pa32, m20k, sr22t, a36cut, sr20g6, liq*}
        render15.py <video> info                 -> timeline JSON (used by gen_music.py / mux15.py)
 Layout respects platform UI safe zones: text inside x 64..940, y 210..1440."""
 import json, os, sys, math
@@ -38,7 +38,7 @@ V = sys.argv[1]
 VO = f"{ROOT}/vo"
 BEATS = [f"{V}_b{i}" for i in (1, 2, 3)]
 WD = {b: json.load(open(f"{VO}/{b}.json")) for b in BEATS}
-GAP = {1: 0.30, 2: 0.85}
+GAP = {1: 0.30, 2: 1.20} if V.startswith("liq") else {1: 0.30, 2: 0.85}   # liq: room for the silent verdict word
 OFFS = {}; t = 0.15
 for i, b in enumerate(BEATS):
     OFFS[b] = t
@@ -48,7 +48,10 @@ def wt(bi, wi, end=False):
     return OFFS[b] + (w["e"] if end else w["s"])
 T_B2 = OFFS[BEATS[1]] - 0.12
 T_LOOK = OFFS[BEATS[2]] - 0.70
-T_END = wt(3, 5) - 0.12                      # "check the data at NextPlane.us"
+_w3 = [w["w"] for w in WD[BEATS[2]]["words"]]
+CTA0 = _w3.index("Before")                    # beat 3 may open with extra words ("Check yours." in liq clips)
+CHK = next(i for i in range(CTA0, len(_w3)) if _w3[i].lower() == "check")
+T_END = wt(3, CHK) - 0.12                    # "check the data at NextPlane.us"
 TOTAL = max(OFFS[BEATS[2]] + WD[BEATS[2]]["dur"] + 0.75, T_END + 2.95)
 TOTAL = round(TOTAL * FPS) / FPS
 NF = int(TOTAL * FPS)
@@ -78,7 +81,10 @@ CAPS = {
  "a36cut": [(1, "$229,000", 0, 4), (1, "for this Beechcraft Bonanza A36", 5, 9),
             (2, "In August, the same ad asked", 0, 5), (2, "$310,000.", 6, 9),
             (2, "It's been cut three times.", 10, 14)],
-}[V] + [(3, "Before you call the broker,", 0, 4)]
+ "liq172m": [(1, "Is a Cessna 172M liquid?", 0, 6),
+             (2, "A month on the market,", 0, 4), (2, "and most sellers", 5, 7), (2, "never touch the price.", 8, 11),
+             (2, "Every flight school wants one.", 12, 16), (3, "Check yours.", 0, 1)],
+}[V] + [(3, "Before you call the broker,", CTA0, CTA0 + 4)]
 
 def draw_caption(im, tt):
     d = ImageDraw.Draw(im, "RGBA")
@@ -716,6 +722,68 @@ def scene_sr20g6(im, tt):
         if ua > 0:
             d.text((900, 1112), "UNCHANGED SINCE APRIL", font=BCB(46), fill=(*CYAN, int(255 * ua)), anchor="rm")
 
+# ---------------- liquidity check (campaign Format A, model-level, no tail) ----------------
+# One entry per clip; the slug must start with "liq". nums: (value, label, beat-2 word index where it drops in,
+# optional plain-words note shown under the number, e.g. "ABOUT A MONTH").
+# Third number (value lost per year) only when the campaign table gives one (omit for "—").
+# verdict: LIQUID / AVERAGE / PATIENT MONEY (never "bad"); it lands on word `verdict_at` of beat 2.
+LIQ = {
+ "liq172m": dict(model="CESSNA 172M SKYHAWK", q1="IS A CESSNA 172M", hook="hook.jpg", find="find.jpg", sold=66,
+                 nums=[("29 DAYS", "TYPICAL TIME TO SELL", 1, "ABOUT A MONTH"),
+                       ("14%", "SELLERS WHO CUT THE PRICE", 7, "86 IN 100 SELL WITHOUT A CUT")],
+                 verdict="LIQUID", verdict_at=12),
+}
+VERDICT_COL = {"LIQUID": CYAN, "AVERAGE": OFF, "PATIENT MONEY": (245, 190, 79)}
+
+def drop_in(im, xy, txt, f, col, tt, t0, dur=0.38):
+    """Number drops from above with a small overshoot and fades in."""
+    p = (tt - t0) / dur
+    if p <= 0: return
+    q = min(p, 1.0)
+    y = xy[1] - 90 * (1 - eout(q)) + (8 * math.sin(min((p - 1) / 0.25, 1) * math.pi) if 1 < p < 1.25 else 0)
+    d = ImageDraw.Draw(im, "RGBA")
+    shadow_text(d, (xy[0], y), txt, f, col, ease(q * 1.6), anchor="lm")
+
+def scene_liq(im, tt):
+    c = LIQ[V]
+    hook = tt < T_B2 + 0.3
+    im.alpha_composite(blur_backdrop(f"{PH}/{c['hook']}" if hook else f"{PH}/{c['find']}", 0.5 if hook else 0.34))
+    im.alpha_composite(GRAD)
+    d = ImageDraw.Draw(im, "RGBA")
+    brand_bug(im)
+    if tt < T_B2 + 0.25:
+        fade = 1 - ease((tt - T_B2) / 0.25)
+        chip(d, W / 2, 360, "LIQUIDITY CHECK", fade, anchor="c")
+        shadow_text(d, (W / 2, 470), c["q1"], BCB(92), OFF, fade)
+        punch(im, (W / 2, 640), "LIQUID?", BCB(220), tt, 0.0, fade)
+        if fade > 0.02:
+            card = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+            photo_card(card, f"{PH}/{c['hook']}", (70, 800, 1010, 1197), tt, 0, T_B2)
+            if fade < 1: card.putalpha(card.getchannel("A").point(lambda v: int(v * fade)))
+            im.alpha_composite(card)
+        return
+    a = ease((tt - T_B2 - 0.1) / 0.3) * (1 - ease((tt - T_LOOK) / 0.2))
+    if a <= 0: return
+    yo = lerp(40, 0, eout((tt - T_B2 - 0.1) / 0.35))
+    panel(d, (64, 330 + yo, 948, 1300 + yo), a, title="NEXTPLANE SOLD DATA", sub=f"{c['model'].split()[0]} · {c['sold']} SOLD")
+    d.text((110, 452 + yo), c["model"], font=BCB(54), fill=(*OFF, int(255 * a)), anchor="lm")
+    n = len(c["nums"]); step = 230 if n == 3 else 260
+    for k, (val, lab, wi, *note) in enumerate(c["nums"]):
+        y0 = 560 + yo + k * step; t0 = wt(2, wi) - 0.1
+        la = ease((tt - t0) / 0.25) * a
+        if la <= 0: continue
+        d.text((110, y0), lab, font=SMB(30), fill=(*GREY, int(255 * la)), anchor="lm")
+        drop_in(im, (104, y0 + 100), val, BCB(150 if n < 3 else 130), WHITE if k else CYAN, tt, t0)
+        d = ImageDraw.Draw(im, "RGBA")
+        na = ease((tt - t0 - 0.45) / 0.25) * a
+        if note and note[0] and na > 0 and n < 3:
+            d.text((110, y0 + 192), note[0], font=SMB(28), fill=(*OFF, int(255 * na)), anchor="lm")
+    va = ease((tt - wt(2, c["verdict_at"]) + 0.1) / 0.25) * a
+    if va > 0:
+        vy = 560 + yo + n * step + 90          # clear of the last number's note line
+        d.text((W / 2, vy - 70), "VERDICT", font=SMB(28), fill=(*GREY, int(255 * va)), anchor="mm")
+        stamp(im, W / 2, vy + 30, c["verdict"], va, ang=-4, col=VERDICT_COL[c["verdict"]], size=104)
+
 _EB = []
 def endbg():
     if not _EB:
@@ -726,8 +794,8 @@ def endbg():
         _EB.append(g.resize((W, H)).convert("RGBA"))
     return _EB[0]
 
-SCENE = {"sr20": scene_sr20, "a36": scene_a36, "mirage": scene_mirage, "pa32": scene_pa32, "m20k": scene_m20k, "sr22t": scene_sr22t, "a36cut": scene_a36cut, "sr20g6": scene_sr20g6}[V]
-TAILS = {"sr20": ["N881PF"], "a36": ["N29DL", "N72MD"], "mirage": ["N27RZ"], "pa32": ["N123BE"], "m20k": ["N231HB", "N3594H"], "sr22t": ["N236CB"], "a36cut": ["N614MM"], "sr20g6": ["N665M", "N34AS"]}[V]
+SCENE = scene_liq if V.startswith("liq") else {"sr20": scene_sr20, "a36": scene_a36, "mirage": scene_mirage, "pa32": scene_pa32, "m20k": scene_m20k, "sr22t": scene_sr22t, "a36cut": scene_a36cut, "sr20g6": scene_sr20g6}[V]
+TAILS = ["YOUR N-NUMBER"] if V.startswith("liq") else {"sr20": ["N881PF"], "a36": ["N29DL", "N72MD"], "mirage": ["N27RZ"], "pa32": ["N123BE"], "m20k": ["N231HB", "N3594H"], "sr22t": ["N236CB"], "a36cut": ["N614MM"], "sr20g6": ["N665M", "N34AS"]}[V]
 
 def frame(i):
     global GRAD
