@@ -15,6 +15,6 @@ fc += f"amix=inputs={NB}:normalize=0,aformat=sample_fmts=fltp:sample_rates=44100
 fc += (f"[{NB}:a]atrim=0:{DUR},asetpts=PTS-STARTPTS,volume=-11dB,afade=t=in:d=0.8,afade=t=out:st={DUR-1.6}:d=1.5,apad=whole_dur={DUR},"
        f"aformat=sample_fmts=fltp:sample_rates=44100:channel_layouts=stereo[mu];")
 fc += "[mu][vo2]sidechaincompress=threshold=0.015:ratio=5:attack=25:release=450:makeup=1[mud];"
-fc += "[vo1][mud]amix=inputs=2:normalize=0,loudnorm=I=-13.5:TP=-2.5:linear=true,volume=0.7dB,alimiter=limit=0.75:level=false[aout]"
+fc += "[vo1][mud]amix=inputs=2:normalize=0,loudnorm=I=-13.5:TP=-2.5:linear=true,volume=0.7dB,alimiter=limit=0.6:attack=3:release=60:level=false[aout]"
 cmd = f'ffmpeg -v error {vo_in} -i {MUSIC} -i {ROOT}/video_nosound.mp4 -filter_complex "{fc}" -map {NB+1}:v -map "[aout]" -c:v copy -c:a aac -b:a 192k -shortest {OUT} -y'
 print(os.system(cmd)); os.system(f"ffprobe -v error -show_entries format=duration,size -of default=nw=1 {OUT}")
