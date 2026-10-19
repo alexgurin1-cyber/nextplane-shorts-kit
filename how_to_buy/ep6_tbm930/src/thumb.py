@@ -1,0 +1,18 @@
+from PIL import Image, ImageDraw, ImageFont, ImageFilter
+R="/tmp/htb_tbm"; F=lambda n,s: ImageFont.truetype(f"{R}/fonts/{n}",s)
+W,H=1280,720; NAVY=(8,16,26); CYAN=(37,197,203)
+bg=Image.open(f"{R}/photos/tbm930-0.jpg").convert("RGB"); sc=max(W/bg.width,H/bg.height)*1.15
+bg=bg.resize((int(bg.width*sc),int(bg.height*sc))); x=(bg.width-W)//2; bg=bg.crop((x+60,40,x+60+W,40+H))
+im=Image.alpha_composite(bg.convert("RGBA"),Image.new("RGBA",(W,H),(*NAVY,120)))
+sh=Image.new("RGBA",(W,H),(0,0,0,0)); ImageDraw.Draw(sh).rectangle([0,0,700,H],fill=(*NAVY,215)); im=Image.alpha_composite(im,sh.filter(ImageFilter.GaussianBlur(30)))
+card=Image.open(f"{R}/cap/mktcomp.png").convert("RGB").crop((50,210,1500,500)); card=card.resize((640,int(640*card.height/card.width)))
+im=im.convert("RGB"); im.paste(card,(600,470)); d=ImageDraw.Draw(im)
+d.rectangle([598,468,1242,472+card.height],outline=CYAN,width=3)
+d.text((50,60),"HOW TO BUY A",font=F("BarlowCondensed-Bold.ttf",70),fill=(246,249,250))
+d.text((46,120),"TBM 930",font=F("BarlowCondensed-Bold.ttf",170),fill=CYAN)
+d.text((50,330),"LOWEST ASK.",font=F("BarlowCondensed-Bold.ttf",92),fill=(255,255,255))
+d.text((50,420),"HERE'S WHY.",font=F("BarlowCondensed-Bold.ttf",92),fill=(255,255,255))
+d.rounded_rectangle([50,560,520,640],radius=12,fill=CYAN); d.text((285,600),"REAL REPORT · N24MY",font=F("SpaceMono-Bold.ttf",30),fill=NAVY,anchor="mm")
+reg=im.crop((665,410,835,462)).filter(ImageFilter.GaussianBlur(12)); im.paste(reg,(665,410))
+d.text((1240,700),"REPRESENTATIVE PHOTO · NOT THE AIRCRAFT FOR SALE",font=F("SpaceMono-Regular.ttf",14),fill=(210,220,228),anchor="rm")
+im.save(f"{R}/thumb.jpg",quality=90); print(im.size)

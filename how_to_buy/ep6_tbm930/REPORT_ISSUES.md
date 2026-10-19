@@ -1,0 +1,25 @@
+# Ep6 (N24MY, 2016 TBM 930) — live report issues found in the accuracy cross-check, 2026-10-19
+
+Report captured twice with `lib/report_capture.py` and twice with the element-level `src/capture.py`; text identical across captures. Each item says what was done on screen.
+
+| # | Section | Issue | Evidence | On screen |
+|---|---|---|---|---|
+| 1 | Estimated Market Value / Listings table | "6 active listings" includes 3 tails that are no longer in the latest scan: N11MA (2018, located in Bavaria, last seen 2026-09-01), N813GG (2017, last seen 2026-05-28), N930SR (2017, last seen 2026-06-02). The estimate ($3,444,000) is pulled up by these stale $3.47M–$3.55M asks. | `aircraft_listings` last_seen_at / missed_scan_count | Report card shown, then the listings table with the stale rows boxed and a panel-built card: typical ask of the 5 similar 910/930s for sale today $3,349,000. |
+| 2 | Estimated Market Value | Report figure $3,444,000 ≠ `get_aircraft_valuation('TBM 930',2016,'DAHER')` median $3,374,500 over the same six comps; card text says "Estimated from original MSRP ($4,200,000)" — the blend is not explained. | RPC output | Not voiced beyond "about three point four four million". |
+| 3 | Price position vs. market | "0th percentile of comps" (comp set 2) contradicts the valuation card's "50th percentile … Below median" (6 listings). | card text | Card not shown. |
+| 4 | Flight Activity / Top Routes | Route distances impossible: BFL → ODT "37,827 nm", ODT → BFL "34,763 nm"; the second routes table shows 2.0 h / 542 nm for every route (placeholder). | card text | Not shown. |
+| 5 | Flight Activity | Three different annual-hours figures: verdict "~230 hrs/yr", Operational Summary "221", Flight Hours by Period "~255.9" (last 12 months). | card text | Only the Flight Hours by Period card (sums match `monthly_hours`) is shown. |
+| 6 | Market comparison | Engine card labelled "Engine time (SMOH)" but the listing gives 1,650 as SNEW (since new). | listing `engine_time_label` = SNEW | Card shown; VO says "since new". |
+| 7 | Depreciation | "Your aircraft's value over time" shows "−$0 (+0.0%)" and "$4,200,000 estimated today (2026)" — the curve is flat at MSRP. | card text | Not shown; the Original new price card is used instead. |
+| 8 | Airworthiness & Maintenance Program | Engine overhaul shown "already due FEB 2026" on a 12-year calendar limit marked UNVERIFIED; the PT6A-66D interval row in `component_intervals` is low-confidence (hours blank, "industry figure 3,500 h — confirm"), while Original specifications says TBO 3,600 h. | `component_intervals` id 438; report specs | TBO and "already due" not shown or voiced. HSI row (every 1,800 h, recommended) shown, with "confirm" framing and no cost. |
+| 9 | Airworthiness & Maintenance Program | Projection assumes 130 h/yr ("median hours ÷ age across TBM 700 listings"); this aircraft flew ~256 h in the last 12 months, so the HSI date (Dec 2027) is likely too late. | ADS-B monthly hours | Voiced as "at this pace … about seven months"; on-screen note "report assumes 130 hrs/yr · tracked ~256". |
+| 10 | Verdict strip — Major AD | Shows **2025-02-08** as the "major AD": it requires inserting Temporary Revision 30 into the **TBM 960** POH; applicability to a TBM 930 is doubtful. | `aircraft_ad_matches` summary | Not voiced; strip visible but not called out. |
+| 11 | ADs | AD 98-08-27 has a condition text (MOD 70-019-25 or STC SA2786CE) but is flagged `conditional = false`. | RPC output | Count "6 conditional" voiced as reported. |
+| 12 | Listing history / Competitive listings | Source marketplace name still visible ("Listed on Controller by …", "Source: controller" column, the price chip "CONTROLLER"). Also conflicts with Alex's 2026-10-18 rule (no source/listing-site references on nextplane.us). | card text | Blurred/cropped out on screen. |
+| 13 | Who's Selling | "private listings avg ~45 days" comparison on a dealer listing; dealer "not yet profiled"; element capture returned only the header line. | card text | Replaced by a panel-built card; dealer not named. |
+| 14 | Airworthiness & Maintenance Program | Aircraft shown as "SOCATA TBM 700"; correct for the FAA type certificate but confusing next to "TBM 930" elsewhere — needs a one-line explanation in the UI. | card text | Explained in VO ("the FAA treats the 930 as a version of the TBM 700"). |
+| 15 | Market velocity | "AVG $/HOUR $4,138" and "Median price $3,512,450" disagree with every other card. | card text | Not shown. |
+| 16 | Time to Sell & Pricing Trends | "62 days AVG DAYS ON MARKET … based on 4 transactions" — a mean on n=4. | card text | Not shown (series rule: never quote a mean days-on-market). |
+| 17 | Model price forecast | Fair value swings $2.52M–$3.57M across five weekly scorings for this tail. | `model_price_forecasts` | Fair value not used; only p_cut90 (latest 0.256) voiced as "about one in four". |
+
+Fixed since Ep5: Listing History now shows real amounts and the cut (Sep 9, −$100,000) — matches `aircraft_price_history`.
