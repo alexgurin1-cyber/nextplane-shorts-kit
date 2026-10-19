@@ -1,6 +1,17 @@
 
 # ---------- card text boxes (CSS px, from capture.py) ----------
 SEC = json.load(open(f"{CAP}/sections.json"))
+def _bx(k, t):
+    for b in SEC[k]["boxes"]:
+        if b["t"].startswith(t): return (b["x"], b["y"], b["x"] + b["w"], b["y"] + b["h"])
+    raise KeyError(t)
+# Alex 2026-10-19: never reveal where NextPlane's data comes from (ADS-B, FAA document index, registry, NTSB)
+RELABEL = {"_headercomb": [(_bx("_headercomb", "NTSB DAMAGE"), "ACCIDENT RECORD"), (_bx("_headercomb", "USE TYPE"), "FLIGHT USE"),
+                           (_bx("_headercomb", "FINANCING ·"), "FINANCING"), (_bx("_headercomb", "SDR ·"), "SERVICE PROBLEMS")]}
+EXTRA_BLUR = {"_headercomb": [_bx("_headercomb", "FAA document index"), _bx("_headercomb", "17 applicable FAA"), (95, 580, 700, 612)],
+              "reg": [_bx("reg", t) for t in ("The FAA registry", "Security interests are", "Documents indexed", "Repossession (REP)", "A dereg_removed", "Derived from the FAA Aircraft Document Index. This", "Derived from the FAA Aircraft Document Index. Lien")],
+              "ads": [_bx("ads", "model_specs"), _bx("ads", "not in registry")]}
+RELABEL["sdr"] = [(_bx("sdr", "No Service Difficulty"), "No service problem reports on this aircraft.")]
 def BX(key, txt, n=1, pad=0, x1=None, exact=False):
     k = 0
     for b in SEC[key]["boxes"]:
@@ -277,7 +288,7 @@ def sc_owner(im, t, s0, s1):
     report_slide(im, t, "reg", (0, 80, 1152, 720), cos, blurs=blurs, t0=s0, cy=445, maxh=620)
     d = ImageDraw.Draw(im, "RGBA")
     if t > trig(bid, "Texas"): chip_c(d, 805, "OWNER: A TEXAS COMPANY · LISTED BY A CALIFORNIA DEALER", f=MB(24))
-    items = [("Engine serial → engine lien check", trig(bid, "logbook.")), ("Title search", trig(bid, "title")), ("Escrow · a neutral party holds the money", trig(bid, "escrow,"))]
+    items = [("Engine serial: check for an engine loan", trig(bid, "logbook.")), ("Title search", trig(bid, "title")), ("Escrow · a neutral party holds the money", trig(bid, "escrow,"))]
     x = 60
     for s, tt in items:
         if t > tt:
@@ -333,7 +344,7 @@ def sc_sdr(im, t, s0, s1):
     cos = [(UNION(BX("sdr", "LAST 5 YRS"), BX("sdr", "2", 1)), trig(bid, "two")), (BX("sdr", "No Service", pad=4), trig(bid, "None"))]
     report_slide(im, t, "sdr", (0, 100, 1152, 590), cos, t0=s0, cy=450, maxh=640)
     d = ImageDraw.Draw(im, "RGBA")
-    if t > trig(bid, "accident"): chip(d, 70, 880, "NTSB ACCIDENT RECORDS FOR THIS AIRCRAFT: NONE", f=MB(26))
+    if t > trig(bid, "accident"): chip(d, 70, 880, "ACCIDENT RECORDS FOR THIS AIRCRAFT: NONE", f=MB(26))
     if t > trig(bid, "clean"): chip(d, 1240, 880, "A CLEAN RECORD", fill=CYAN, f=MB(26))
 
 def sc_opcost(im, t, s0, s1):

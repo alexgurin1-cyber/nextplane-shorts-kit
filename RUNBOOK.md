@@ -75,6 +75,7 @@ Adapt the copy by setting `ROOT = os.environ["WORK"]` in place of the hard-coded
 ## Rules
 
 - Tone is transparency, not judgment.
+- Never say or show where NextPlane's data comes from (no ADS-B, FAA registry or document index, NTSB or SDR naming, no explanation of how data is collected). Say "NextPlane's flight data", "ownership records", "accident record", "maintenance data". Write acronyms such as TBM and FAA as one word in VO text so they are spoken fluidly (Alex, 2026-10-19).
 - Never fabricate or extrapolate beyond the queried data. If the planned topic does not verify, say so and pivot.
 - Do not run scrapers in the sandbox.
 - If a run fails midway, still email Alex with what failed and where the run stopped.

@@ -59,6 +59,10 @@ The script runs 7–9 minutes, about 1,100–1,300 VO words, with numbers writte
 | Verdict | Who this aircraft is right for. |
 | Close | CTA verbatim: "Before you call the broker, check the data at NextPlane dot U S." |
 
+Pronunciation and data sources (Alex, 2026-10-19 — applies to every episode):
+- Write model acronyms as one word in the VO text ("TBM", "TBMs", "FAA") so Tyler says them fluidly. Never write them as spaced letters ("T B M"). The locked CTA "NextPlane dot U S" stays as is.
+- Never say or show where NextPlane's data comes from. Say "NextPlane's flight data", "ownership records", "accident record", "maintenance data" or "reported service problems". Do not name ADS-B, the FAA registry or document index, the NTSB or Service Difficulty Reports, and do not explain how the data is collected. On report frames, relabel or blur source labels and fine print (for example "USE TYPE · ADS-B", "FAA DOCUMENT INDEX", "Derived from the FAA…", "NTSB", "SDR"). Regulatory facts (an FAA airworthiness directive, the type certificate) are fine to state.
+
 Tone is transparency, not judgment. Never mock the seller or the aircraft. Every number must trace to a query or to `sections.json`.
 
 ## 6. Production (16:9, 1920×1080@30)

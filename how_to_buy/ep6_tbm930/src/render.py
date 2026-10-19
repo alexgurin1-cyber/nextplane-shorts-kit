@@ -113,10 +113,15 @@ def report_img(key, crop, blurs, maxw=1720, maxh=790):
     k = (key, tuple(crop), maxw, maxh)
     if k in _rc: return _rc[k]
     im = Image.open(f"{CAP}/{key}.png").convert("RGB")
-    for bx in blurs:
+    for bx in list(blurs) + EXTRA_BLUR.get(key, []):
         x0, y0, x1, y1 = [int(v * 2) for v in bx]
         reg = im.crop((x0, y0, x1, y1)).filter(ImageFilter.GaussianBlur(14))
         im.paste(reg, (x0, y0))
+    for bx, txt in RELABEL.get(key, []):
+        x0, y0, x1, y1 = [int(v * 2) for v in bx]
+        col = im.getpixel((max(x0 - 3, 0), y0 + 2))
+        dd = ImageDraw.Draw(im); dd.rectangle([x0, y0, x1, y1], fill=col)
+        dd.text((x0, (y0 + y1) / 2), txt, font=MR(int((y1 - y0) * 0.8)), fill=(150, 165, 178), anchor="lm")
     x0, y0, x1, y1 = [int(v * 2) for v in crop]
     im = im.crop((x0, y0, x1, y1))
     sc = min(maxw / im.width, maxh / im.height)
@@ -148,6 +153,17 @@ def report_slide(im, t, key, crop, callouts, blurs=(), cy=540, t0=0, maxh=790, m
 
 # ---------- card text boxes (CSS px, from capture.py) ----------
 SEC = json.load(open(f"{CAP}/sections.json"))
+def _bx(k, t):
+    for b in SEC[k]["boxes"]:
+        if b["t"].startswith(t): return (b["x"], b["y"], b["x"] + b["w"], b["y"] + b["h"])
+    raise KeyError(t)
+# Alex 2026-10-19: never reveal where NextPlane's data comes from (ADS-B, FAA document index, registry, NTSB)
+RELABEL = {"_headercomb": [(_bx("_headercomb", "NTSB DAMAGE"), "ACCIDENT RECORD"), (_bx("_headercomb", "USE TYPE"), "FLIGHT USE"),
+                           (_bx("_headercomb", "FINANCING ·"), "FINANCING"), (_bx("_headercomb", "SDR ·"), "SERVICE PROBLEMS")]}
+EXTRA_BLUR = {"_headercomb": [_bx("_headercomb", "FAA document index"), _bx("_headercomb", "17 applicable FAA"), (95, 580, 700, 612)],
+              "reg": [_bx("reg", t) for t in ("The FAA registry", "Security interests are", "Documents indexed", "Repossession (REP)", "A dereg_removed", "Derived from the FAA Aircraft Document Index. This", "Derived from the FAA Aircraft Document Index. Lien")],
+              "ads": [_bx("ads", "model_specs"), _bx("ads", "not in registry")]}
+RELABEL["sdr"] = [(_bx("sdr", "No Service Difficulty"), "No service problem reports on this aircraft.")]
 def BX(key, txt, n=1, pad=0, x1=None, exact=False):
     k = 0
     for b in SEC[key]["boxes"]:
@@ -424,7 +440,7 @@ def sc_owner(im, t, s0, s1):
     report_slide(im, t, "reg", (0, 80, 1152, 720), cos, blurs=blurs, t0=s0, cy=445, maxh=620)
     d = ImageDraw.Draw(im, "RGBA")
     if t > trig(bid, "Texas"): chip_c(d, 805, "OWNER: A TEXAS COMPANY · LISTED BY A CALIFORNIA DEALER", f=MB(24))
-    items = [("Engine serial → engine lien check", trig(bid, "logbook.")), ("Title search", trig(bid, "title")), ("Escrow · a neutral party holds the money", trig(bid, "escrow,"))]
+    items = [("Engine serial: check for an engine loan", trig(bid, "logbook.")), ("Title search", trig(bid, "title")), ("Escrow · a neutral party holds the money", trig(bid, "escrow,"))]
     x = 60
     for s, tt in items:
         if t > tt:
@@ -480,7 +496,7 @@ def sc_sdr(im, t, s0, s1):
     cos = [(UNION(BX("sdr", "LAST 5 YRS"), BX("sdr", "2", 1)), trig(bid, "two")), (BX("sdr", "No Service", pad=4), trig(bid, "None"))]
     report_slide(im, t, "sdr", (0, 100, 1152, 590), cos, t0=s0, cy=450, maxh=640)
     d = ImageDraw.Draw(im, "RGBA")
-    if t > trig(bid, "accident"): chip(d, 70, 880, "NTSB ACCIDENT RECORDS FOR THIS AIRCRAFT: NONE", f=MB(26))
+    if t > trig(bid, "accident"): chip(d, 70, 880, "ACCIDENT RECORDS FOR THIS AIRCRAFT: NONE", f=MB(26))
     if t > trig(bid, "clean"): chip(d, 1240, 880, "A CLEAN RECORD", fill=CYAN, f=MB(26))
 
 def sc_opcost(im, t, s0, s1):

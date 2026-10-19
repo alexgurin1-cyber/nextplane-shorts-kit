@@ -12,27 +12,27 @@ Run any tail number before you call the broker: https://nextplane.us
 
 Chapters
 0:00 Cold open: the engine is younger than the airplane
-0:17 Step 1: Choose which TBM
-0:42 The price ladder: TBM 700 to TBM 960
-1:25 Shortlist: the 2016 TBM 930s
-1:46 The one we ran: N24MY
-2:11 Step 2: The report summary
-2:34 Is the price fair? Valuation
-3:08 Hours vs the market
-3:28 The engine: hot section inspection
-4:05 Has the seller moved? Listing history
-4:39 Who owns it? Registry and loans
-5:08 Is it flying? Tracked flights
-5:44 Mandatory safety fixes (ADs)
-6:19 Accident and service records
-6:34 Cost to own
-6:55 What it cost new
-7:21 Who is selling
-7:37 Step 3: The offer
-8:17 Step 4: Keep watching
-8:34 Verdict: who it is right for
+0:15 Step 1: Choose which TBM
+0:38 The price ladder: TBM 700 to TBM 960
+1:19 Shortlist: the 2016 TBM 930s
+1:40 The one we ran: N24MY
+2:05 Step 2: The report summary
+2:24 Is the price fair? Valuation
+2:58 Hours vs the market
+3:18 The engine: hot section inspection
+3:52 Has the seller moved? Listing history
+4:24 Who owns it? Ownership and loans
+4:53 Is it flying? Flight activity
+5:25 Mandatory safety fixes (ADs)
+6:02 Accident and service records
+6:15 Cost to own
+6:36 What it cost new
+7:02 Who is selling
+7:19 Step 3: The offer
+7:59 Step 4: Keep watching
+8:13 Verdict: who it is right for
 
-Photos of other TBM aircraft are representative and are not the aircraft for sale. Market data: NextPlane listing panel and FAA records as of October 19, 2026. Not financial advice.
+Photos of other TBM aircraft are representative and are not the aircraft for sale. Market data: NextPlane, as of October 19, 2026. Not financial advice.
 
 #nextplane #buythedata #aviation #aircraftforsale #generalaviation
 

@@ -1,4 +1,9 @@
-# Ep6 status — 2026-10-19
+# Ep6 status — 2026-10-19 (v2 after Alex's review)
+
+- **v2 (current): YouTube `87m5EfbGQPg`**, https://studio.youtube.com/video/87m5EfbGQPg/edit — private, scheduled Wed 2026-10-21 16:00 UTC, in the playlist, custom thumbnail, chapters. 8:50, -14.4 LUFS. Changes: "TBM"/"FAA" now spoken fluidly (written as one word); data sources removed from narration and screen (no ADS-B, FAA registry/document index, NTSB, SDR); 12 beats re-recorded.
+- v1 `wjC20gucYz0` is superseded: unscheduled, kept private, retitled "[SUPERSEDED v1 — do not publish]", removed from the playlist. Alex can delete it in Studio.
+
+## v1 notes
 
 - **Uploaded private, scheduled for Wed 2026-10-21 16:00 UTC.** YouTube `wjC20gucYz0`, https://studio.youtube.com/video/wjC20gucYz0/edit. In the "How to Buy a…" playlist, custom thumbnail, chapters in the description.
 - Hero: N24MY, 2016 Daher TBM 930, dealer listing in Bakersfield CA (registered to a Texas company), ask $3,295,000 (from $3,395,000; one $100,000 cut on Sep 9). Report estimate $3,444,000 (3 of its 6 comps are stale); typical ask of the 5 similar 910/930s for sale today $3,349,000 (hero −1.6%). Verdict: fairly priced at the low end; most airframe hours (2,218) and an engine 568 h younger than the airframe with ~150 h to its 1,800-h hot section inspection. On-air opening offer ≈ $3,200,000.
