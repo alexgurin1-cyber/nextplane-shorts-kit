@@ -36,5 +36,5 @@ Photos of other TBM aircraft are representative and are not the aircraft for sal
 
 #nextplane #buythedata #aviation #aircraftforsale #generalaviation
 
-**Thumbnail:** report valuation frame with "LOWEST ASK. WHY?" overlay (src/thumb.py).
+**Thumbnail:** "HOW TO BUY A TBM 930 · LOWEST ASK. HERE'S WHY." over a representative TBM 930 photo (registration blurred) with the report's airframe-vs-engine hours card (src/thumb.py).
 **Publish:** private, scheduled Wednesday 2026-10-21 16:00:00Z, playlist "How to Buy a…".
