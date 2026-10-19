@@ -3,3 +3,4 @@
 *.mp4
 *.mp3
 __pycache__/
+campaign/photo_cache/

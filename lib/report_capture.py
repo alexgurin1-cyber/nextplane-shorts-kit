@@ -19,7 +19,7 @@ import sys
 from playwright.sync_api import sync_playwright
 
 BASE = "https://nextplane.us"
-W, H = 1600, 900
+W, H = int(os.environ.get("CAP_W", 1600)), int(os.environ.get("CAP_H", 900))
 
 
 def slug(s):
