@@ -70,6 +70,11 @@ def openverse(query, n=20, tries=4):
                 print("openverse", query, "HTTP", e.code, "- giving up", file=sys.stderr)
                 return []
             time.sleep(20 * (i + 1))
+        except (TimeoutError, urllib.error.URLError, OSError) as e:   # read timeouts seen 2026-10-20
+            if i == tries - 1:
+                print("openverse", query, "timeout/network", e, "- giving up", file=sys.stderr)
+                return []
+            time.sleep(5 * (i + 1))
     if d is None:
         return []
     out = []

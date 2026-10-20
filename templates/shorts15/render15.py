@@ -84,6 +84,9 @@ CAPS = {
  "liq172m": [(1, "Is a Cessna 172M liquid?", 0, 6),
              (2, "A month on the market,", 0, 4), (2, "and most sellers", 5, 7), (2, "never touch the price.", 8, 11),
              (2, "Every flight school wants one.", 12, 16), (3, "Check yours.", 0, 1)],
+ "liq182p": [(1, "Is a Cessna 182P Skylane", 0, 6), (1, "liquid?", 7, 7),
+             (2, "About six and a half weeks", 0, 5), (2, "to sell.", 6, 7),
+             (2, "Nine in ten sell", 8, 11), (2, "without a price cut.", 12, 15), (3, "Check yours.", 0, 1)],
 }[V] + [(3, "Before you call the broker,", CTA0, CTA0 + 4)]
 
 def draw_caption(im, tt):
@@ -732,6 +735,11 @@ LIQ = {
                  nums=[("29 DAYS", "TYPICAL TIME TO SELL", 1, "ABOUT A MONTH"),
                        ("14%", "SELLERS WHO CUT THE PRICE", 7, "86 IN 100 SELL WITHOUT A CUT")],
                  verdict="LIQUID", verdict_at=12),
+ # 2026-10-20: 73 sold, 6 model years (< 8) -> value-lost-per-year omitted
+ "liq182p": dict(model="CESSNA 182P SKYLANE", q1="IS A CESSNA 182P", hook="hook.jpg", find="find.jpg", sold=73,
+                 nums=[("46 DAYS", "TYPICAL TIME TO SELL", 1, "ABOUT SIX AND A HALF WEEKS"),
+                       ("11%", "SELLERS WHO CUT THE PRICE", 9, "89 IN 100 SELL WITHOUT A CUT")],
+                 verdict="LIQUID", verdict_at=13),
 }
 VERDICT_COL = {"LIQUID": CYAN, "AVERAGE": OFF, "PATIENT MONEY": (245, 190, 79)}
 

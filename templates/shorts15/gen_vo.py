@@ -28,6 +28,10 @@ S={
  "liq172m":["Is a Cessna one seventy-two M liquid?",
             "A month on the market, and most sellers never touch the price. Every flight school wants one.",
             "Check yours. "+CTA],
+ # 2026-10-20 liquidity campaign Format A (A3): Cessna 182P Skylane, 46 d typical, 11% cut, n=73 sold (6 model years -> no value-lost number)
+ "liq182p":["Is a Cessna one eighty-two P Skylane liquid?",
+            "About six and a half weeks to sell. Nine in ten sell without a price cut.",
+            "Check yours. "+CTA],
  "a36cut":["Two hundred twenty-nine thousand dollars for this Beechcraft Bonanza A36.",
            "In August, the same ad asked three hundred ten thousand. It's been cut three times.", CTA],
 }
