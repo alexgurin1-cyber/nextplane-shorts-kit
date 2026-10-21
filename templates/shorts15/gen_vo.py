@@ -32,6 +32,11 @@ S={
  "liq182p":["Is a Cessna one eighty-two P Skylane liquid?",
             "About six and a half weeks to sell. Nine in ten sell without a price cut.",
             "Check yours. "+CTA],
+ # 2026-10-21 liquidity campaign Format A (A5): Cessna 400 / TTx (incl. Columbia 400, Corvalis TT/TTx), 53 d typical, 10% cut (lowest of piston
+ # singles with >=20 sold), 5.6%/yr value lost (11 model years), n=39 sold
+ "liqttx":["Is a Cessna T T X liquid?",
+           "Fewer price cuts than any other piston single. But it loses about six percent a year.",
+           "Check yours. "+CTA],
  "a36cut":["Two hundred twenty-nine thousand dollars for this Beechcraft Bonanza A36.",
            "In August, the same ad asked three hundred ten thousand. It's been cut three times.", CTA],
 }

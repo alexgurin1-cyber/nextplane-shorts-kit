@@ -84,6 +84,10 @@ CAPS = {
  "liq172m": [(1, "Is a Cessna 172M liquid?", 0, 6),
              (2, "A month on the market,", 0, 4), (2, "and most sellers", 5, 7), (2, "never touch the price.", 8, 11),
              (2, "Every flight school wants one.", 12, 16), (3, "Check yours.", 0, 1)],
+ "liqttx": [(1, "Is a Cessna TTx", 0, 5), (1, "liquid?", 6, 6),
+            (2, "Fewer price cuts than", 0, 3), (2, "any other piston single.", 4, 7),
+            (2, "But it loses about", 8, 11), (2, "6% a year.", 12, 15),
+            (3, "Check yours.", 0, 1)],
  "liq182p": [(1, "Is a Cessna 182P Skylane", 0, 6), (1, "liquid?", 7, 7),
              (2, "About six and a half weeks", 0, 5), (2, "to sell.", 6, 7),
              (2, "Nine in ten sell", 8, 11), (2, "without a price cut.", 12, 15), (3, "Check yours.", 0, 1)],
@@ -740,6 +744,12 @@ LIQ = {
                  nums=[("46 DAYS", "TYPICAL TIME TO SELL", 1, "ABOUT SIX AND A HALF WEEKS"),
                        ("11%", "SELLERS WHO CUT THE PRICE", 9, "89 IN 100 SELL WITHOUT A CUT")],
                  verdict="LIQUID", verdict_at=13),
+ # 2026-10-21 (A5): 39 sold, 11 model years -> third number (value lost per year) shown
+ "liqttx": dict(model="CESSNA 400 / TTx", q1="IS A CESSNA 400 / TTx", hook="hook.jpg", find="find.jpg", sold=39,
+                nums=[("53 DAYS", "TYPICAL TIME TO SELL", 0, "ABOUT SEVEN AND A HALF WEEKS"),
+                      ("10%", "SELLERS WHO CUT THE PRICE", 1, "FEWEST CUTS OF ANY PISTON SINGLE"),
+                      ("5.6%", "VALUE LOST PER YEAR", 10, "ABOUT SIX PERCENT")],
+                verdict="LIQUID", verdict_at=15),
 }
 VERDICT_COL = {"LIQUID": CYAN, "AVERAGE": OFF, "PATIENT MONEY": (245, 190, 79)}
 
@@ -775,7 +785,7 @@ def scene_liq(im, tt):
     yo = lerp(40, 0, eout((tt - T_B2 - 0.1) / 0.35))
     panel(d, (64, 330 + yo, 948, 1300 + yo), a, title="NEXTPLANE SOLD DATA", sub=f"{c['model'].split()[0]} · {c['sold']} SOLD")
     d.text((110, 452 + yo), c["model"], font=BCB(54), fill=(*OFF, int(255 * a)), anchor="lm")
-    n = len(c["nums"]); step = 230 if n == 3 else 260
+    n = len(c["nums"]); step = 200 if n == 3 else 260   # 3 numbers: tighter rows so the verdict stays inside the panel
     for k, (val, lab, wi, *note) in enumerate(c["nums"]):
         y0 = 560 + yo + k * step; t0 = wt(2, wi) - 0.1
         la = ease((tt - t0) / 0.25) * a
@@ -788,7 +798,7 @@ def scene_liq(im, tt):
             d.text((110, y0 + 192), note[0], font=SMB(28), fill=(*OFF, int(255 * na)), anchor="lm")
     va = ease((tt - wt(2, c["verdict_at"]) + 0.1) / 0.25) * a
     if va > 0:
-        vy = 560 + yo + n * step + 90          # clear of the last number's note line
+        vy = 560 + yo + n * step + (15 if n == 3 else 90)   # 2 numbers: clear of the last note line; 3 numbers: inside the panel (ends y 1300)
         d.text((W / 2, vy - 70), "VERDICT", font=SMB(28), fill=(*GREY, int(255 * va)), anchor="mm")
         stamp(im, W / 2, vy + 30, c["verdict"], va, ang=-4, col=VERDICT_COL[c["verdict"]], size=104)
 
