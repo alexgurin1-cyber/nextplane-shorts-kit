@@ -88,6 +88,9 @@ CAPS = {
             (2, "Fewer price cuts than", 0, 3), (2, "any other piston single.", 4, 7),
             (2, "But it loses about", 8, 11), (2, "6% a year.", 12, 15),
             (3, "Check yours.", 0, 1)],
+ "liq152": [(1, "Is a Cessna 152 liquid?", 0, 5),
+            (2, "Twenty days,", 0, 1), (2, "the fastest in our sold data.", 2, 7),
+            (2, "Over four in five", 8, 11), (2, "sell without a price cut.", 12, 16), (3, "Check yours.", 0, 1)],
  "liq182p": [(1, "Is a Cessna 182P Skylane", 0, 6), (1, "liquid?", 7, 7),
              (2, "About six and a half weeks", 0, 5), (2, "to sell.", 6, 7),
              (2, "Nine in ten sell", 8, 11), (2, "without a price cut.", 12, 15), (3, "Check yours.", 0, 1)],
@@ -750,6 +753,11 @@ LIQ = {
                       ("10%", "SELLERS WHO CUT THE PRICE", 1, "FEWEST CUTS OF ANY PISTON SINGLE"),
                       ("5.6%", "VALUE LOST PER YEAR", 10, "ABOUT SIX PERCENT")],
                 verdict="LIQUID", verdict_at=15),
+ # 2026-10-22 (A2): 24 sold, 6 model years -> value-lost-per-year omitted; 20 d = fastest family with >=12 sold
+ "liq152": dict(model="CESSNA 152", q1="IS A CESSNA 152", hook="hook.jpg", find="find.jpg", sold=24,
+                nums=[("20 DAYS", "TYPICAL TIME TO SELL", 0, "FASTEST IN OUR SOLD DATA"),
+                      ("17%", "SELLERS WHO CUT THE PRICE", 8, "83 IN 100 SELL WITHOUT A CUT")],
+                verdict="LIQUID", verdict_at=13),
 }
 VERDICT_COL = {"LIQUID": CYAN, "AVERAGE": OFF, "PATIENT MONEY": (245, 190, 79)}
 

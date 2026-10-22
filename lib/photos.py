@@ -88,8 +88,40 @@ def openverse(query, n=20, tries=4):
     return out
 
 
+FLICKR_LIC = {4: "CC BY 2.0", 9: "CC0 1.0", 10: "Public Domain Mark"}
+BROWSER = {"User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Chrome/120 Safari/537.36",
+           "Referer": "https://www.flickr.com/"}
+
+
+def flickr_page(query):
+    """Fallback when Openverse times out (504s on 2026-10-22) and Wikimedia 429s: parse Flickr's own search page,
+    filtered to CC BY 2.0 / CC0 / PDM (license ids 4, 9, 10). Largest public size there is usually 1024 px (_b)."""
+    import re
+    u = "https://www.flickr.com/search/?" + urllib.parse.urlencode({"text": query, "license": "4,9,10", "media": "photos"})
+    try:
+        s = urllib.request.urlopen(urllib.request.Request(u, headers=BROWSER), timeout=40).read().decode("utf-8", "ignore")
+    except Exception as e:
+        print("flickr page", query, e, file=sys.stderr)
+        return []
+    out, seen = [], set()
+    for p in s.split('"_flickrModelRegistry":"photo-lite-models"')[1:]:
+        lic = int((re.search(r'"license":(\d+)', p) or [0, "-1"])[1])
+        sizes = re.findall(r'"[a-z0-9]+":\{"data":\{"displayUrl":"(.*?)","width":(\d+),"height":(\d+)', p[:6000])
+        pid = (re.search(r'staticflickr\.com\\/\d+\\/(\d+)_', p) or [0, ""])[1]
+        if lic not in FLICKR_LIC or not sizes or pid in seen:
+            continue
+        seen.add(pid)
+        g = lambda k: (re.search(r'"%s":"(.*?)"' % k, p) or [None, ""])[1]
+        best = max(sizes, key=lambda x: int(x[1]))
+        out.append({"source": "flickr", "title": g("title"), "license": FLICKR_LIC[lic],
+                    "creator": g("realname") or g("username"), "url": "https:" + best[0].replace("\\/", "/"),
+                    "page": f"https://www.flickr.com/photos/{g('ownerNsid')}/{pid}", "width": int(best[1])})
+    return out
+
+
 def candidates(query, n=20):
-    return commons_try(query, n) + openverse(query, n)
+    c = commons_try(query, n) + openverse(query, n)
+    return c or flickr_page(query)
 
 
 def fetch(slug, query, outdir, k=1):
@@ -103,7 +135,8 @@ def fetch(slug, query, outdir, k=1):
         if (c["width"] or 0) < 800:
             continue
         try:
-            data = _get(c["url"], 90).read()
+            data = (urllib.request.urlopen(urllib.request.Request(c["url"], headers=BROWSER), timeout=90).read()
+                    if c["source"] == "flickr" else _get(c["url"], 90).read())   # staticflickr 429s non-browser UAs
         except Exception as e:
             print(slug, "download failed", c["source"], e)
             continue

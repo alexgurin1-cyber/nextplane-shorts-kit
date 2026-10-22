@@ -37,6 +37,11 @@ S={
  "liqttx":["Is a Cessna T T X liquid?",
            "Fewer price cuts than any other piston single. But it loses about six percent a year.",
            "Check yours. "+CTA],
+ # 2026-10-22 liquidity campaign Format A (A2): Cessna 152, 20 d typical (fastest of every family with >=12 sold in the 2026-10-18 snapshot),
+ # 17% cut, n=24 sold (6 model years -> no value-lost number). Table line said "in the country"; spoken as "in our sold data" (no extrapolation).
+ "liq152":["Is a Cessna one fifty-two liquid?",
+           "Twenty days, the fastest in our sold data. Over four in five sell without a price cut.",
+           "Check yours. "+CTA],
  "a36cut":["Two hundred twenty-nine thousand dollars for this Beechcraft Bonanza A36.",
            "In August, the same ad asked three hundred ten thousand. It's been cut three times.", CTA],
 }
