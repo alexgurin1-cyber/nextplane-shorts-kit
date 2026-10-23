@@ -91,6 +91,9 @@ CAPS = {
  "liq152": [(1, "Is a Cessna 152 liquid?", 0, 5),
             (2, "Twenty days,", 0, 1), (2, "the fastest in our sold data.", 2, 7),
             (2, "Over four in five", 8, 11), (2, "sell without a price cut.", 12, 16), (3, "Check yours.", 0, 1)],
+ "liqwarrior": [(1, "Is a Piper Warrior liquid?", 0, 4),
+                (2, "About six weeks to sell.", 0, 4), (2, "Most sellers", 5, 6), (2, "never cut the price.", 7, 10),
+                (2, "And it holds its value.", 11, 15), (3, "Check yours.", 0, 1)],
  "liq182p": [(1, "Is a Cessna 182P Skylane", 0, 6), (1, "liquid?", 7, 7),
              (2, "About six and a half weeks", 0, 5), (2, "to sell.", 6, 7),
              (2, "Nine in ten sell", 8, 11), (2, "without a price cut.", 12, 15), (3, "Check yours.", 0, 1)],
@@ -758,6 +761,12 @@ LIQ = {
                 nums=[("20 DAYS", "TYPICAL TIME TO SELL", 0, "FASTEST IN OUR SOLD DATA"),
                       ("17%", "SELLERS WHO CUT THE PRICE", 8, "83 IN 100 SELL WITHOUT A CUT")],
                 verdict="LIQUID", verdict_at=13),
+ # 2026-10-23 (A6): 49 sold, 13 model years (1973-2007) -> third number shown; 39 d, 14% cut, 0.9%/yr
+ "liqwarrior": dict(model="PIPER PA-28 WARRIOR", q1="IS A PIPER WARRIOR", hook="hook.jpg", find="find.jpg", sold=49,
+                nums=[("39 DAYS", "TYPICAL TIME TO SELL", 0, "ABOUT SIX WEEKS"),
+                      ("14%", "SELLERS WHO CUT THE PRICE", 5, "86 IN 100 SELL WITHOUT A CUT"),
+                      ("0.9%", "VALUE LOST PER YEAR", 13, "UNDER 1% A YEAR")],
+                verdict="LIQUID", verdict_at=15),
 }
 VERDICT_COL = {"LIQUID": CYAN, "AVERAGE": OFF, "PATIENT MONEY": (245, 190, 79)}
 

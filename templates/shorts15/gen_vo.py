@@ -42,6 +42,11 @@ S={
  "liq152":["Is a Cessna one fifty-two liquid?",
            "Twenty days, the fastest in our sold data. Over four in five sell without a price cut.",
            "Check yours. "+CTA],
+ # 2026-10-23 liquidity campaign Format A (A6): Piper Warrior (PA-28-161 family), 39 d typical, 14% cut (avg cut 1.0%), 0.9%/yr value lost
+ # (13 model years, 1973-2007), n=49 sold. Table line "the trainer that never gets cheaper" dropped (overclaims 0.9%/yr); spoken as "holds its value".
+ "liqwarrior":["Is a Piper Warrior liquid?",
+           "About six weeks to sell. Most sellers never cut the price. And it holds its value.",
+           "Check yours. "+CTA],
  "a36cut":["Two hundred twenty-nine thousand dollars for this Beechcraft Bonanza A36.",
            "In August, the same ad asked three hundred ten thousand. It's been cut three times.", CTA],
 }
