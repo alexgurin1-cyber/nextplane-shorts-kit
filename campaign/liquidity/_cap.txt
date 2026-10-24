@@ -1,6 +1,6 @@
-The 5 twins that sell the fastest — one in 41 days. Ranked by typical days on the market, sold listings only, in NextPlane sold-listing data: Beechcraft Duke 41; Piper Navajo / Chieftain 45; Cessna 414 / 414A 50; Cessna 421B / C 53; Beechcraft Baron G58 55.
+The turboprops that sell at the asking price. Ranked by how often the price gets cut before it sells, in NextPlane sold-listing data: Pilatus PC-12 NG / NGX 0%; Daher TBM 700 7%; Pilatus PC-12 /45 /47 8%; King Air 200 / B200 / 250 9%; Piper Cheyenne 11%.
 
-The Diamond DA62 takes 116 days — nearly three times as long. The list tells you the model. The report tells you the airplane: price-cut history on that tail, days listed, owners, the federal accident record.
+At the other end, the TBM 850 and the Caravan 208B are cut 36% of the time. The list tells you the model. The report tells you the airplane: price-cut history on that tail, days listed, owners, the federal accident record.
 
 Is your airplane liquid? Look up any aircraft by N-number: https://nextplane.us
 

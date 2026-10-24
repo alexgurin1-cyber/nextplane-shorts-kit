@@ -47,6 +47,11 @@ S={
  "liqwarrior":["Is a Piper Warrior liquid?",
            "About six weeks to sell. Most sellers never cut the price. And it holds its value.",
            "Check yours. "+CTA],
+ # 2026-10-24 liquidity campaign Format A (A11): Piper Dakota family (NextPlane model_family PA28-DAKOTA = Dakota 18, Turbo Dakota 6,
+ # Cherokee 235 8), n=32 sold, 57 d typical, 41% cut (Dakota-only 46%, so "four in ten" holds either way), 3.6%/yr value lost (9 model years).
+ "liqdakota":["Is a Piper Dakota liquid?",
+           "About eight weeks to sell. Four in ten sellers cut the price. Know that before you list.",
+           "Check yours. "+CTA],
  "a36cut":["Two hundred twenty-nine thousand dollars for this Beechcraft Bonanza A36.",
            "In August, the same ad asked three hundred ten thousand. It's been cut three times.", CTA],
 }

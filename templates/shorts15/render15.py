@@ -94,6 +94,9 @@ CAPS = {
  "liqwarrior": [(1, "Is a Piper Warrior liquid?", 0, 4),
                 (2, "About six weeks to sell.", 0, 4), (2, "Most sellers", 5, 6), (2, "never cut the price.", 7, 10),
                 (2, "And it holds its value.", 11, 15), (3, "Check yours.", 0, 1)],
+ "liqdakota": [(1, "Is a Piper Dakota liquid?", 0, 4),
+               (2, "About eight weeks to sell.", 0, 4), (2, "Four in ten sellers", 5, 8), (2, "cut the price.", 9, 11),
+               (2, "Know that before you list.", 12, 16), (3, "Check yours.", 0, 1)],
  "liq182p": [(1, "Is a Cessna 182P Skylane", 0, 6), (1, "liquid?", 7, 7),
              (2, "About six and a half weeks", 0, 5), (2, "to sell.", 6, 7),
              (2, "Nine in ten sell", 8, 11), (2, "without a price cut.", 12, 15), (3, "Check yours.", 0, 1)],
@@ -767,6 +770,12 @@ LIQ = {
                       ("14%", "SELLERS WHO CUT THE PRICE", 5, "86 IN 100 SELL WITHOUT A CUT"),
                       ("0.9%", "VALUE LOST PER YEAR", 13, "UNDER 1% A YEAR")],
                 verdict="LIQUID", verdict_at=15),
+ # 2026-10-24 (A11): family PA28-DAKOTA = Dakota + Turbo Dakota + Cherokee 235, 32 sold, 9 model years (1971-82); 57 d, 41% cut, 3.6%/yr
+ "liqdakota": dict(model="PIPER DAKOTA / CHEROKEE 235", q1="IS A PIPER DAKOTA", hook="hook.jpg", find="find.jpg", sold=32,
+                nums=[("57 DAYS", "TYPICAL TIME TO SELL", 0, "ABOUT EIGHT WEEKS"),
+                      ("41%", "SELLERS WHO CUT THE PRICE", 5, "FOUR IN TEN"),
+                      ("3.6%", "VALUE LOST PER YEAR", 12, "")],
+                verdict="PATIENT MONEY", verdict_at=15),
 }
 VERDICT_COL = {"LIQUID": CYAN, "AVERAGE": OFF, "PATIENT MONEY": (245, 190, 79)}
 
