@@ -52,6 +52,11 @@ S={
  "liqdakota":["Is a Piper Dakota liquid?",
            "About eight weeks to sell. Four in ten sellers cut the price. Know that before you list.",
            "Check yours. "+CTA],
+ # 2026-10-25 liquidity campaign Format A (A14): Beechcraft Duke (60/A60/B60 piston, family "Beech Duke"), n=12 sold, 8 model years,
+ # 41 d typical (fastest piston-twin family with >=12 sold; Navajo 45, 414 50), 17% cut (2 of 12) -> third number omitted ("—")
+ "liqduke":["Is a Beechcraft Duke liquid?",
+           "Forty-one days, the fastest twin in our sold data. Over four in five sell without a price cut.",
+           "Check yours. "+CTA],
  "a36cut":["Two hundred twenty-nine thousand dollars for this Beechcraft Bonanza A36.",
            "In August, the same ad asked three hundred ten thousand. It's been cut three times.", CTA],
 }
