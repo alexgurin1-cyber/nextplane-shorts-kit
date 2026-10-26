@@ -101,8 +101,9 @@ CAPS = {
              (2, "Forty-one days,", 0, 1), (2, "the fastest twin", 2, 4), (2, "in our sold data.", 5, 8),
              (2, "Over four in five", 9, 12), (2, "sell without a price cut.", 13, 17), (3, "Check yours.", 0, 1)],
  "liqda62": [(1, "Is a Diamond DA62 liquid?", 0, 4),
-             (2, "About four months to sell.", 0, 4), (2, "Almost half the sellers", 5, 8), (2, "cut the price.", 9, 11),
-             (2, "Price it right the first time.", 12, 17), (3, "Check yours.", 0, 1)],
+             (2, "No.", 0, 0), (2, "116 days to sell,", 1, 6), (2, "slowest in our data.", 7, 10),
+             (2, "Almost half", 11, 12), (2, "get a price cut.", 13, 16),
+             (3, "Check yours.", 0, 1)],
  "liq182p": [(1, "Is a Cessna 182P Skylane", 0, 6), (1, "liquid?", 7, 7),
              (2, "About six and a half weeks", 0, 5), (2, "to sell.", 6, 7),
              (2, "Nine in ten sell", 8, 11), (2, "without a price cut.", 12, 15), (3, "Check yours.", 0, 1)],
@@ -788,13 +789,14 @@ LIQ = {
                       ("17%", "SELLERS WHO CUT THE PRICE", 9, "83 IN 100 SELL WITHOUT A CUT")],
                 verdict="LIQUID", verdict_at=14),
  # 2026-10-26 (A15): Diamond DA62, 25 sold, 8 model years (2016-24); 116 d typical, 44% cut (11/25), 3.9%/yr lost
+ # v2 (Alex 2026-10-26): voiced as the slowest-selling airplane in the data; verdict card "SLOWEST IN OUR DATA"
  "liqda62": dict(model="DIAMOND DA62", q1="IS A DIAMOND DA62", hook="hook.jpg", find="find.jpg", sold=25,
-                nums=[("116 DAYS", "TYPICAL TIME TO SELL", 0, "ABOUT FOUR MONTHS"),
-                      ("44%", "SELLERS WHO CUT THE PRICE", 5, "ALMOST HALF"),
-                      ("3.9%", "VALUE LOST PER YEAR", 11, "")],
-                verdict="PATIENT MONEY", verdict_at=14),
+                nums=[("116 DAYS", "TYPICAL TIME TO SELL", 1, "ABOUT FOUR MONTHS"),
+                      ("44%", "SELLERS WHO CUT THE PRICE", 11, "ALMOST HALF"),
+                      ("3.9%", "VALUE LOST PER YEAR", 14, "")],
+                verdict="SLOWEST IN OUR DATA", verdict_at=16),
 }
-VERDICT_COL = {"LIQUID": CYAN, "AVERAGE": OFF, "PATIENT MONEY": (245, 190, 79)}
+VERDICT_COL = {"LIQUID": CYAN, "AVERAGE": OFF, "PATIENT MONEY": (245, 190, 79), "SLOWEST IN OUR DATA": (245, 190, 79)}
 
 def drop_in(im, xy, txt, f, col, tt, t0, dur=0.38):
     """Number drops from above with a small overshoot and fades in."""
@@ -843,7 +845,8 @@ def scene_liq(im, tt):
     if va > 0:
         vy = 560 + yo + n * step + (15 if n == 3 else 90)   # 2 numbers: clear of the last note line; 3 numbers: inside the panel (ends y 1300)
         d.text((W / 2, vy - 70), "VERDICT", font=SMB(28), fill=(*GREY, int(255 * va)), anchor="mm")
-        stamp(im, W / 2, vy + 30, c["verdict"], va, ang=-4, col=VERDICT_COL[c["verdict"]], size=104)
+        stamp(im, W / 2, vy + 30, c["verdict"], va, ang=-4, col=VERDICT_COL[c["verdict"]],
+              size=104 if len(c["verdict"]) <= 13 else 78)   # long verdicts must fit the 900-px stamp canvas
 
 _EB = []
 def endbg():

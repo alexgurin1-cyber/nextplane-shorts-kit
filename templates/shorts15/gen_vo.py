@@ -60,7 +60,9 @@ S={
  # 2026-10-26 liquidity campaign Format A (A15): Diamond DA62 (family "Diamond DA62"), n=25 sold, 8 model years (2016-2024),
  # 116 d typical, 44% cut (11 of 25), 3.9%/yr value lost (re-verified on scratch_sold_listings_20261018)
  "liqda62":["Is a Diamond DA62 liquid?",
-           "About four months to sell. Almost half the sellers cut the price. Price it right the first time.",
+           # v2 2026-10-26 (Alex: "the most non-liquid airplane we have so far" -> voice it as such). 116 d = slowest family of all
+           # four categories in the 2026-10-18 snapshot (next: Learjet 60 101 d, TBM 850 97 d); 44% cut ties Cessna 310 for highest.
+           "No. One hundred sixteen days to sell, slowest in our data. Almost half get a price cut.",   # 22-word draft ran 16.6 s, 18-word 16.2 s, 18-word v3 15.13 s (limit 15.0)
            "Check yours. "+CTA],
  "a36cut":["Two hundred twenty-nine thousand dollars for this Beechcraft Bonanza A36.",
            "In August, the same ad asked three hundred ten thousand. It's been cut three times.", CTA],
