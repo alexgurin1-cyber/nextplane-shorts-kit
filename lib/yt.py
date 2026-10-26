@@ -68,8 +68,12 @@ def upload(mp4, meta_path):
     tok = token()
     meta = json.load(open(meta_path))
     publish = meta.get("publishAt") or next_slot(tok)
+    # Link rule (2026-10-26): the tracked report link sits on line 2 (above the fold) and after the body.
+    sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+    from np_link import with_link
+    description = with_link(meta["description"], "youtube", "top")
     body = json.dumps({
-        "snippet": {"title": meta["title"], "description": meta["description"], "categoryId": "2"},
+        "snippet": {"title": meta["title"], "description": description, "categoryId": "2"},
         "status": {"privacyStatus": "private", "publishAt": publish, "selfDeclaredMadeForKids": False},
     }).encode()
     req = urllib.request.Request(

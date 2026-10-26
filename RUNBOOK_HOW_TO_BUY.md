@@ -79,7 +79,7 @@ Tone is transparency, not judgment. Never mock the seller or the aircraft. Every
 ## 8. Deliver
 1. Write `POST_COPY.md`:
    - title "How to Buy a <Model>";
-   - a description that explains why it matters and what the viewer learns, without restating the narration, with https://nextplane.us and #nextplane first, then #buythedata #aviation #aircraftforsale #generalaviation;
+   - a description that explains why it matters and what the viewer learns, without restating the narration. LINK RULE (Alex, 2026-10-26, every post on every channel): line 1 is the plain-language takeaway, line 2 is the tracked link `https://nextplane.us/aircraft-report?utm_source=youtube&utm_medium=social`, then the body, then the link again, then #nextplane #buythedata #aviation #aircraftforsale #generalaviation. `lib/yt.py upload` inserts the link through `lib/np_link.py` if it is missing; never publish without it, and state the URL in the summary email;
    - YouTube chapters taken from the beat timestamps.
 2. Write `$WORK/meta.json` with `{"title","description","publishAt":"<Wed>T16:00:00Z"}`. Then run:
    - `python3 $KIT/lib/yt.py upload <mp4> $WORK/meta.json $WORK/yt_result.json` (private, with publishAt);

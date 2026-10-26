@@ -22,6 +22,7 @@ Read memory `feedback-plain-language-videos`, `feedback-no-source-sites`, `feedb
 - b1 hook: asking price + model; b2 the one finding; b3 the verbatim CTA "Before you call the broker, check the data at NextPlane dot U S."
 - Plain-language standard: speak prices in plain dollars ("about three hundred fifty-five thousand dollars", never "three fifty-four nine"); exact figures go on screen; ≤20-word sentences; no jargon (say "federal accident record", not "NTSB" alone).
 - Instagram caption: plain takeaway first, then "Plug the N-number into nextplane.us before you call.", then credits line, then **at most 5 hashtags** (Instagram rejects more): `#aviation #generalaviation #aircraftforsale #<make> #nextplane`. TikTok uses the same text.
+- **LINK RULE (Alex, 2026-10-26, every post on every channel):** each caption carries the tracked report link `https://nextplane.us/aircraft-report?utm_source=<platform>&utm_medium=social` (platform = tiktok | instagram | linkedin | youtube). On Instagram and TikTok, where caption URLs are not tappable, the caption also carries the line "Run any N-number — link in bio." directly above the URL (the bio link on both profiles points at the same page). `lib/np_buffer.py post` and `lib/yt.py upload` add the block automatically through `lib/np_link.py` when it is missing, placing it after the body and before the hashtags; do not write your own link line, and confirm the URL is present in the Buffer post text returned by `np_buffer.py queue`. Report the URL used per channel in the summary email.
 
 ## 3. Produce
 - Copy `templates/shorts15/*` into `$WORK`, `cd $WORK`. Edit `gen_vo.py` (add today's slug to dict `S`; keep earlier entries, the slug argument selects one), `gen_music.py` (add one prompt to `P`, not monotone), and `render15.py`: add `CAPS[<slug>]`, a `scene_<slug>()` modeled on the closest pilot scene, and the `SCENE` / `TAILS` maps. Keep the platform safe zones (text in x 64–940, y 210–1440), `lookup()` beat and `draw_endcard` untouched.
@@ -39,8 +40,8 @@ Read memory `feedback-plain-language-videos`, `feedback-no-source-sites`, `feedb
 ## 5. Library backfill top-up (every run)
 - `select ord,slug,body,ig_tags from social_backfill where ig_post_id is null order by ord limit 1`.
 - Video: `https://uiprgookspqnvyumkyse.supabase.co/storage/v1/object/public/rendered_videos/social/<slug>.mp4`.
-- IG caption = body + "\n\nLook up any aircraft by N-number — link in bio.\n\n" + ig_tags. Schedule at the day after the latest scheduled backfill `ig_due` at 01:00Z (6 PM PT).
-- LinkedIn caption = body + "\n\nLook up any aircraft by N-number: https://nextplane.us\n\n#GeneralAviation #AircraftSales #AviationData". Schedule the next weekday after the latest `li_due` at 15:00Z.
+- IG caption = body + "\n\n" + ig_tags; `np_buffer.py post` inserts the link block ("Run any N-number — link in bio." + the instagram-tagged report URL) between body and tags. Schedule at the day after the latest scheduled backfill `ig_due` at 01:00Z (6 PM PT).
+- LinkedIn caption = body + "\n\n#GeneralAviation #AircraftSales #AviationData"; `np_buffer.py post` inserts the linkedin-tagged report URL between body and tags. Schedule the next weekday after the latest `li_due` at 15:00Z.
 - Update `ig_post_id, ig_due, li_post_id, li_due`. Keep at most 8 scheduled posts per channel (Buffer free plan queue limit 10); skip the top-up if the queue is full.
 
 ## 6. Report

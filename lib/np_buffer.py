@@ -18,6 +18,10 @@ MUT = """mutation($input: CreatePostInput!){ createPost(input:$input){
   ... on PostActionSuccess { post { id dueAt } } ... on MutationError { message } } }"""
 def post(ch, url, due, text):
     cid, svc = CH[ch]
+    # Link rule (2026-10-26): every post carries the tracked report link; added here if the caption lacks it.
+    sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+    from np_link import with_link
+    text = with_link(text, svc)
     if svc == "instagram":
         import re
         if len(re.findall(r"#\w+", text)) > 5: raise SystemExit("Instagram allows max 5 hashtags")
