@@ -35,5 +35,5 @@ Photos of other Piper Archers are representative and are not the aircraft for sa
 
 #nextplane #buythedata #aviation #aircraftforsale #generalaviation
 
-**Thumbnail:** "HOW TO BUY A PIPER PA-28 · 12,364 HRS. $180K. WHY?" over a representative Archer II photo (registration blurred) with the report's airframe/engine market-comparison card (src/thumb.py).
+**Thumbnail:** "HOW TO BUY A PIPER PA-28 · 12,364 HRS. $180K. WHY?" over a representative Archer II photo (no registration visible) with the report's airframe/engine market-comparison card (src/thumb.py).
 **Publish:** private, scheduled Wednesday 2026-10-28 16:00:00Z, playlist "How to Buy a…".
