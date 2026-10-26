@@ -100,6 +100,9 @@ CAPS = {
  "liqduke": [(1, "Is a Beechcraft Duke liquid?", 0, 4),
              (2, "Forty-one days,", 0, 1), (2, "the fastest twin", 2, 4), (2, "in our sold data.", 5, 8),
              (2, "Over four in five", 9, 12), (2, "sell without a price cut.", 13, 17), (3, "Check yours.", 0, 1)],
+ "liqda62": [(1, "Is a Diamond DA62 liquid?", 0, 4),
+             (2, "About four months to sell.", 0, 4), (2, "Almost half the sellers", 5, 8), (2, "cut the price.", 9, 11),
+             (2, "Price it right the first time.", 12, 17), (3, "Check yours.", 0, 1)],
  "liq182p": [(1, "Is a Cessna 182P Skylane", 0, 6), (1, "liquid?", 7, 7),
              (2, "About six and a half weeks", 0, 5), (2, "to sell.", 6, 7),
              (2, "Nine in ten sell", 8, 11), (2, "without a price cut.", 12, 15), (3, "Check yours.", 0, 1)],
@@ -784,6 +787,12 @@ LIQ = {
                 nums=[("41 DAYS", "TYPICAL TIME TO SELL", 0, "FASTEST TWIN IN OUR SOLD DATA"),
                       ("17%", "SELLERS WHO CUT THE PRICE", 9, "83 IN 100 SELL WITHOUT A CUT")],
                 verdict="LIQUID", verdict_at=14),
+ # 2026-10-26 (A15): Diamond DA62, 25 sold, 8 model years (2016-24); 116 d typical, 44% cut (11/25), 3.9%/yr lost
+ "liqda62": dict(model="DIAMOND DA62", q1="IS A DIAMOND DA62", hook="hook.jpg", find="find.jpg", sold=25,
+                nums=[("116 DAYS", "TYPICAL TIME TO SELL", 0, "ABOUT FOUR MONTHS"),
+                      ("44%", "SELLERS WHO CUT THE PRICE", 5, "ALMOST HALF"),
+                      ("3.9%", "VALUE LOST PER YEAR", 11, "")],
+                verdict="PATIENT MONEY", verdict_at=14),
 }
 VERDICT_COL = {"LIQUID": CYAN, "AVERAGE": OFF, "PATIENT MONEY": (245, 190, 79)}
 

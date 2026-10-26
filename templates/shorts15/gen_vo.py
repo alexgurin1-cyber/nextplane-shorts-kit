@@ -57,6 +57,11 @@ S={
  "liqduke":["Is a Beechcraft Duke liquid?",
            "Forty-one days, the fastest twin in our sold data. Over four in five sell without a price cut.",
            "Check yours. "+CTA],
+ # 2026-10-26 liquidity campaign Format A (A15): Diamond DA62 (family "Diamond DA62"), n=25 sold, 8 model years (2016-2024),
+ # 116 d typical, 44% cut (11 of 25), 3.9%/yr value lost (re-verified on scratch_sold_listings_20261018)
+ "liqda62":["Is a Diamond DA62 liquid?",
+           "About four months to sell. Almost half the sellers cut the price. Price it right the first time.",
+           "Check yours. "+CTA],
  "a36cut":["Two hundred twenty-nine thousand dollars for this Beechcraft Bonanza A36.",
            "In August, the same ad asked three hundred ten thousand. It's been cut three times.", CTA],
 }
