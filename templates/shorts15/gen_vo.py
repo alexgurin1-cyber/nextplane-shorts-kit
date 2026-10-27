@@ -67,7 +67,10 @@ S={
  # 2026-10-27 liquidity campaign Format A (A17): Pilatus PC-12 NG/NGX (family "PC-12 NG/NGX"), n=26 sold, 11 model years (2008-2024),
  # 69 d typical, 0 of 26 cut (0%) -> third number omitted ("—" in the campaign table; re-verified on scratch_sold_listings_20261018)
  "liqpc12":["Is a Pilatus PC twelve N G liquid?",
-           "Zero. Not one seller in our data cut the price. About ten weeks to sell.",
+           # v2 (Alex 2026-10-27: say where it ranks): 0% cut is 1 of 4 zero-cut families among all 104 with >=12 sold (top 5%);
+           # #1 of 13 turboprop families. Days to sell (69) is mid-pack, so the rank is voiced for price cuts only.
+           # v1: "Zero. Not one seller in our data cut the price. About ten weeks to sell."
+           "Zero price cuts. Top five percent of all models in our data. About ten weeks to sell.",
            "Check yours. "+CTA],
  "a36cut":["Two hundred twenty-nine thousand dollars for this Beechcraft Bonanza A36.",
            "In August, the same ad asked three hundred ten thousand. It's been cut three times.", CTA],

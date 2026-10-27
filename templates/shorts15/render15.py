@@ -105,8 +105,8 @@ CAPS = {
              (2, "Almost half", 11, 12), (2, "get a price cut.", 13, 16),
              (3, "Check yours.", 0, 1)],
  "liqpc12": [(1, "Is a Pilatus PC-12 NG liquid?", 0, 7),
-             (2, "Zero.", 0, 0), (2, "Not one seller in our data", 1, 6), (2, "cut the price.", 7, 9),
-             (2, "About ten weeks to sell.", 10, 14), (3, "Check yours.", 0, 1)],
+             (2, "Zero price cuts.", 0, 2), (2, "Top 5% of all models", 3, 8), (2, "in our data.", 9, 11),
+             (2, "About ten weeks to sell.", 12, 16), (3, "Check yours.", 0, 1)],
  "liq182p": [(1, "Is a Cessna 182P Skylane", 0, 6), (1, "liquid?", 7, 7),
              (2, "About six and a half weeks", 0, 5), (2, "to sell.", 6, 7),
              (2, "Nine in ten sell", 8, 11), (2, "without a price cut.", 12, 15), (3, "Check yours.", 0, 1)],
@@ -800,9 +800,10 @@ LIQ = {
                 verdict="SLOWEST IN OUR DATA", verdict_at=16),
  # 2026-10-27 (A17): Pilatus PC-12 NG/NGX, 26 sold, 11 model years (2008-24); 69 d typical, 0 of 26 cut; lost/yr omitted ("—")
  "liqpc12": dict(model="PILATUS PC-12 NG / NGX", q1="IS A PILATUS PC-12 NG", hook="hook.jpg", find="find.jpg", sold=26,
-                nums=[("0%", "SELLERS WHO CUT THE PRICE", 0, "NOT ONE IN 26"),
-                      ("69 DAYS", "TYPICAL TIME TO SELL", 10, "ABOUT TEN WEEKS")],
-                verdict="LIQUID", verdict_at=14),
+                # v2: rank note = 1 of 4 zero-cut families among 104 with >=12 sold (all categories)
+                nums=[("0%", "SELLERS WHO CUT THE PRICE", 0, "TOP 5% OF 104 MODELS"),
+                      ("69 DAYS", "TYPICAL TIME TO SELL", 12, "ABOUT TEN WEEKS")],
+                verdict="LIQUID", verdict_at=16),
 }
 VERDICT_COL = {"LIQUID": CYAN, "AVERAGE": OFF, "PATIENT MONEY": (245, 190, 79), "SLOWEST IN OUR DATA": (245, 190, 79)}
 
