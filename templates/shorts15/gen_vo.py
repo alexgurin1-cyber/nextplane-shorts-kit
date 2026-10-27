@@ -64,6 +64,11 @@ S={
            # four categories in the 2026-10-18 snapshot (next: Learjet 60 101 d, TBM 850 97 d); 44% cut ties Cessna 310 for highest.
            "No. One hundred sixteen days to sell, slowest in our data. Almost half get a price cut.",   # 22-word draft ran 16.6 s, 18-word 16.2 s, 18-word v3 15.13 s (limit 15.0)
            "Check yours. "+CTA],
+ # 2026-10-27 liquidity campaign Format A (A17): Pilatus PC-12 NG/NGX (family "PC-12 NG/NGX"), n=26 sold, 11 model years (2008-2024),
+ # 69 d typical, 0 of 26 cut (0%) -> third number omitted ("—" in the campaign table; re-verified on scratch_sold_listings_20261018)
+ "liqpc12":["Is a Pilatus PC twelve N G liquid?",
+           "Zero. Not one seller in our data cut the price. About ten weeks to sell.",
+           "Check yours. "+CTA],
  "a36cut":["Two hundred twenty-nine thousand dollars for this Beechcraft Bonanza A36.",
            "In August, the same ad asked three hundred ten thousand. It's been cut three times.", CTA],
 }
