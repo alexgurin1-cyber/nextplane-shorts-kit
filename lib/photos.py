@@ -63,7 +63,7 @@ def openverse(query, n=20, tries=4):
     d = None
     for i in range(tries):
         try:
-            d = json.load(_get(f"{OV}?{q}"))
+            d = json.load(_get(f"{OV}?{q}", 25))   # 60 s x 4 tries hung runs ~5 min when Openverse stalls (2026-10-28)
             break
         except urllib.error.HTTPError as e:
             if e.code not in (429, 503) or i == tries - 1:
@@ -71,7 +71,7 @@ def openverse(query, n=20, tries=4):
                 return []
             time.sleep(20 * (i + 1))
         except (TimeoutError, urllib.error.URLError, OSError) as e:   # read timeouts seen 2026-10-20
-            if i == tries - 1:
+            if i >= 1:   # two stalls in a row: Openverse is down, fall through to the Flickr page fast
                 print("openverse", query, "timeout/network", e, "- giving up", file=sys.stderr)
                 return []
             time.sleep(5 * (i + 1))

@@ -107,6 +107,9 @@ CAPS = {
  "liqpc12": [(1, "Is a Pilatus PC-12 NG liquid?", 0, 7),
              (2, "Zero price cuts.", 0, 2), (2, "Top 5% of all models", 3, 8), (2, "in our data.", 9, 11),
              (2, "About ten weeks to sell.", 12, 16), (3, "Check yours.", 0, 1)],
+ "liqtbm850": [(1, "Is a Daher TBM 850 liquid?", 0, 8),
+               (2, "About three months to sell,", 0, 4), (2, "the slowest turboprop", 5, 7), (2, "in our data.", 8, 10),
+               (2, "One in three", 11, 13), (2, "get a price cut.", 14, 17), (3, "Check yours.", 0, 1)],
  "liq182p": [(1, "Is a Cessna 182P Skylane", 0, 6), (1, "liquid?", 7, 7),
              (2, "About six and a half weeks", 0, 5), (2, "to sell.", 6, 7),
              (2, "Nine in ten sell", 8, 11), (2, "without a price cut.", 12, 15), (3, "Check yours.", 0, 1)],
@@ -804,6 +807,11 @@ LIQ = {
                 nums=[("0%", "SELLERS WHO CUT THE PRICE", 0, "TOP 5% OF 104 MODELS"),
                       ("69 DAYS", "TYPICAL TIME TO SELL", 12, "ABOUT TEN WEEKS")],
                 verdict="LIQUID", verdict_at=16),
+ # 2026-10-28 (A18): Daher TBM 850, 14 sold, 7 model years (2006-13) -> lost/yr omitted; 97 d = slowest of 13 turboprop families; 5/14 cut
+ "liqtbm850": dict(model="DAHER TBM 850", q1="IS A DAHER TBM 850", hook="hook.jpg", find="find.jpg", sold=14,
+                nums=[("97 DAYS", "TYPICAL TIME TO SELL", 1, "SLOWEST TURBOPROP IN OUR SOLD DATA"),
+                      ("36%", "SELLERS WHO CUT THE PRICE", 11, "ABOUT ONE IN THREE")],
+                verdict="PATIENT MONEY", verdict_at=17),
 }
 VERDICT_COL = {"LIQUID": CYAN, "AVERAGE": OFF, "PATIENT MONEY": (245, 190, 79), "SLOWEST IN OUR DATA": (245, 190, 79)}
 

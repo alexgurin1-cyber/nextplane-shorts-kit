@@ -72,6 +72,12 @@ S={
            # v1: "Zero. Not one seller in our data cut the price. About ten weeks to sell."
            "Zero price cuts. Top five percent of all models in our data. About ten weeks to sell.",
            "Check yours. "+CTA],
+ # 2026-10-28 liquidity campaign Format A (A18): Daher TBM 850 (family "TBM 850", turboprop), n=14 sold, 7 model years (2006-2013)
+ # -> value-lost-per-year omitted ("—"); 97 d typical = slowest of 13 turboprop families (#3 of all 104); 5 of 14 cut (36%, highest
+ # turboprop, tied Caravan 208B). Campaign line "Three months, and a one-in-three chance of a cut." extended with the rank (Alex 2026-10-27).
+ "liqtbm850":["Is a Daher T B M eight fifty liquid?",
+           "About three months to sell, the slowest turboprop in our data. One in three get a price cut.",
+           "Check yours. "+CTA],
  "a36cut":["Two hundred twenty-nine thousand dollars for this Beechcraft Bonanza A36.",
            "In August, the same ad asked three hundred ten thousand. It's been cut three times.", CTA],
 }
