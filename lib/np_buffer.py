@@ -2,6 +2,8 @@
 """NextPlane -> Buffer helper (cloud runs). Needs env BUFFER_API_KEY.
   np_buffer.py post CHANNEL(ig|tt|li) VIDEO_URL DUE_ISO TEXT_FILE   -> prints post id
   np_buffer.py queue                                                -> lists scheduled posts per channel
+  np_buffer.py fix POST_ID CHANNEL VIDEO_URL OLD NEW                -> replace OLD with NEW in a scheduled post's text
+                                                                     (Buffer's editPost needs the video asset and IG reel type re-sent)
 """
 import json, os, sys, urllib.request
 API = "https://api.buffer.com"; KEY = os.environ["BUFFER_API_KEY"]
@@ -31,9 +33,22 @@ def post(ch, url, due, text):
     r = gql(MUT, {"input": inp})["createPost"]
     if "message" in r: raise RuntimeError(r["message"])
     return r["post"]["id"]
+EDIT = """mutation($input: EditPostInput!){ editPost(input:$input){
+  ... on PostActionSuccess { post { id dueAt text } } ... on MutationError { message } } }"""
+def fix(pid, ch, url, old, new):
+    """Correct a caption already in the queue (e.g. a missed photo credit) without deleting and re-posting."""
+    q = """query($o:OrganizationId!,$c:[ChannelId!]){posts(input:{organizationId:$o,filter:{channelIds:$c,status:[scheduled]}},first:50){edges{node{id text}}}}"""
+    cur = [e["node"]["text"] for e in gql(q, {"o": ORG, "c": [CH[ch][0]]})["posts"]["edges"] if e["node"]["id"] == pid]
+    if not cur or old not in cur[0]: raise SystemExit(f"{pid}: post not scheduled or text not found")
+    inp = {"id": pid, "text": cur[0].replace(old, new, 1), "assets": [{"video": {"url": url, "metadata": {"thumbnailOffset": 1500}}}]}
+    if CH[ch][1] == "instagram": inp["metadata"] = {"instagram": {"type": "reel", "shouldShareToFeed": True}}
+    r = gql(EDIT, {"input": inp})["editPost"]
+    if "message" in r: raise RuntimeError(r["message"])
+    return r["post"]["id"]
 if __name__ == "__main__":
     c = sys.argv[1]
-    if c == "post": print(post(sys.argv[2], sys.argv[3], sys.argv[4], open(sys.argv[5]).read()))
+    if c == "fix": print(fix(*sys.argv[2:7]))
+    elif c == "post": print(post(sys.argv[2], sys.argv[3], sys.argv[4], open(sys.argv[5]).read()))
     elif c == "queue":
         q = """query($o:OrganizationId!,$c:[ChannelId!]){posts(input:{organizationId:$o,filter:{channelIds:$c,status:[scheduled,error]}},first:50){edges{node{id status dueAt text}}}}"""
         for k,(cid,_) in CH.items():

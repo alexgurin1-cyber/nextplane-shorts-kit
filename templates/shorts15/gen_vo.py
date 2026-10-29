@@ -78,6 +78,12 @@ S={
  "liqtbm850":["Is a Daher T B M eight fifty liquid?",
            "About three months to sell, the slowest turboprop in our data. One in three get a price cut.",
            "Check yours. "+CTA],
+ # 2026-10-29 liquidity campaign Format A (A12): Cessna 414/414A (family "Cessna 414/414A"), n=59 sold, 11 model years (1971-85),
+ # 50 d typical (#3 of 13 twin families), 7 of 59 cut (12%, 2nd-fewest of 13 twins after Navajo/Chieftain 9%), 4.7%/yr value lost
+ # (re-verified on scratch.scratch_sold_listings_20261018). Campaign line "The twin that sells at the asking price." voiced as the plain fraction.
+ "liq414":["Is a Cessna four fourteen liquid?",
+           "About seven weeks to sell. Nearly nine in ten never get cut. It loses about five percent a year.",   # 21-word v1 ran 15.73 s (limit 15.0)
+           "Check yours. "+CTA],
  "a36cut":["Two hundred twenty-nine thousand dollars for this Beechcraft Bonanza A36.",
            "In August, the same ad asked three hundred ten thousand. It's been cut three times.", CTA],
 }
