@@ -25,6 +25,10 @@ S={
            "The newer one has less than half the hours and was cut twice. The other hasn't moved since April.", CTA],
  # 2026-10-19 liquidity campaign Format A "Liquidity check" (model-level, no tail): Cessna 172M Skyhawk, 29 d typical, 14% cut, n=66 sold
  # b3 = "Check yours." + verbatim CTA (campaign spec); slug prefix "liq" selects scene_liq() in render15.py
+ # 2026-10-30 daily run (replaces withdrawn liqlj45): WHAT THE AD LEFT OUT, 2020 Cessna 172S Skyhawk SP N20818, dealer ad 257843429 $599,000
+ # ("Zero SMOH, Zero Since New Prop, New Paint"); NTSB CEN23LA394, Sep 2 2023, Englewood CO, substantial damage, 2 minor injuries, serial 172S12579 matched
+ "c172s":["About six hundred thousand dollars for this twenty twenty Skyhawk. New engine, new paint.",
+          "What it leaves out: a twenty twenty-three federal accident record. Substantial damage.", CTA],
  "liq172m":["Is a Cessna one seventy-two M liquid?",
             "A month on the market, and most sellers never touch the price. Every flight school wants one.",
             "Check yours. "+CTA],

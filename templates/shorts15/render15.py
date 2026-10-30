@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """NextPlane 15-second vertical (TikTok / Instagram Reels) renderer.
-Usage: render15.py <video> [worker nworkers]   video in {sr20, a36, mirage, pa32, m20k, sr22t, a36cut, sr20g6, liq*}
+Usage: render15.py <video> [worker nworkers]   video in {sr20, a36, mirage, pa32, m20k, sr22t, a36cut, sr20g6, c172s, liq*}
        render15.py <video> info                 -> timeline JSON (used by gen_music.py / mux15.py)
 Layout respects platform UI safe zones: text inside x 64..940, y 210..1440."""
 import json, os, sys, math
@@ -81,6 +81,9 @@ CAPS = {
  "a36cut": [(1, "$229,000", 0, 4), (1, "for this Beechcraft Bonanza A36", 5, 9),
             (2, "In August, the same ad asked", 0, 5), (2, "$310,000.", 6, 9),
             (2, "It's been cut three times.", 10, 14)],
+ "c172s": [(1, "$599,000", 0, 4), (1, "for this 2020 Cessna Skyhawk.", 5, 9),
+           (1, "New engine, new paint.", 10, 13), (2, "What it leaves out:", 0, 3),
+           (2, "a 2023 federal accident record.", 4, 9), (2, "Substantial damage.", 10, 11)],
  "liq172m": [(1, "Is a Cessna 172M liquid?", 0, 6),
              (2, "A month on the market,", 0, 4), (2, "and most sellers", 5, 7), (2, "never touch the price.", 8, 11),
              (2, "Every flight school wants one.", 12, 16), (3, "Check yours.", 0, 1)],
@@ -651,6 +654,51 @@ def scene_sr22t(im, tt):
         d.text((110, 1000 + yo), "3 ABOARD \u00b7 NO INJURIES", font=SMB(28), fill=(*OFF, int(255 * r2)), anchor="lm")
     stamp(im, 700, 1112 + yo, "NOT IN THE AD", ease((tt - wt(2, 10) - 0.3) / 0.25) * a, ang=-6, col=WHITE, size=64)
 
+def scene_c172s(im, tt):
+    """WHAT THE AD LEFT OUT (2026-10-30): N20818, 2020 Cessna 172S Skyhawk SP, dealer ad 257843429 at $599,000,
+    "Zero (0) SMOH, Zero (0) Since New Prop, New Paint"; NTSB CEN23LA394, Sep 2 2023, Englewood CO, substantial damage,
+    2 minor injuries, instructional flight, serial 172S12579 matched. Photos are the model (registrations blurred)."""
+    hook = tt < T_B2 + 0.3
+    im.alpha_composite(blur_backdrop(f"{PH}/hook.jpg" if hook else f"{PH}/find.jpg", 0.5 if hook else 0.36))
+    im.alpha_composite(GRAD)
+    d = ImageDraw.Draw(im, "RGBA")
+    brand_bug(im)
+    if tt < T_B2 + 0.25:
+        fade = 1 - ease((tt - T_B2) / 0.25)
+        chip(d, W / 2, 360, "FOR SALE NOW", fade, anchor="c")
+        shadow_text(d, (W / 2, 460), "2020 CESSNA 172S SKYHAWK", BCB(84), OFF, fade)
+        punch(im, (W / 2, 640), "$599,000", BCB(236), tt, 0.0, fade)
+        if fade > 0.02:
+            card = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+            photo_card(card, f"{PH}/hook.jpg", (70, 790, 1010, 1180), tt, 0, T_B2)
+            if fade < 1: card.putalpha(card.getchannel("A").point(lambda v: int(v * fade)))
+            im.alpha_composite(card)
+        d = ImageDraw.Draw(im, "RGBA")
+        qa = ease((tt - wt(1, 10)) / 0.25) * fade
+        if qa > 0:
+            yo = lerp(30, 0, eout((tt - wt(1, 10)) / 0.3))
+            d.rounded_rectangle([90, 1010 + yo, 940, 1270 + yo], radius=22, fill=(226, 232, 236, int(240 * qa)))
+            d.text((130, 1056 + yo), "FROM THE AD", font=SMB(26), fill=(90, 100, 110, int(255 * qa)), anchor="lm")
+            d.text((130, 1130 + yo), "\u201cZero SMOH, zero since new prop,", font=BCS(58), fill=(*NAVY, int(255 * qa)), anchor="lm")
+            d.text((130, 1200 + yo), "new paint\u2026\u201d", font=BCS(58), fill=(*NAVY, int(255 * qa)), anchor="lm")
+        return
+    a = ease((tt - T_B2 - 0.1) / 0.3) * (1 - ease((tt - T_LOOK) / 0.2))
+    if a <= 0: return
+    yo = lerp(40, 0, eout((tt - T_B2 - 0.1) / 0.35))
+    panel(d, (64, 360 + yo, 948, 1180 + yo), a, sub="SAFETY RECORD")
+    r1 = ease((tt - wt(2, 4)) / 0.3) * a
+    if r1 > 0:
+        d.text((110, 520 + yo), "FEDERAL ACCIDENT RECORD", font=SMB(32), fill=(*GREY, int(255 * r1)), anchor="lm")
+        d.text((110, 610 + yo), "SEP 2, 2023", font=BCB(104), fill=(*WHITE, int(255 * r1)), anchor="lm")
+        d.text((110, 700 + yo), "ENGLEWOOD, COLORADO \u00b7 NTSB CEN23LA394", font=SMB(28), fill=(*OFF, int(255 * r1)), anchor="lm")
+        d.text((110, 748 + yo), "SERIAL 172S12579 MATCHES THE AD", font=SMR(26), fill=(*OFF, int(255 * r1)), anchor="lm")
+    r2 = ease((tt - wt(2, 10)) / 0.25) * a
+    if r2 > 0:
+        d.text((110, 840 + yo), "DAMAGE", font=SMB(30), fill=(*GREY, int(255 * r2)), anchor="lm")
+        d.text((110, 925 + yo), "SUBSTANTIAL", font=BCB(110), fill=(*CYAN, int(255 * r2)), anchor="lm")
+        d.text((110, 1000 + yo), "TRAINING FLIGHT \u00b7 2 MINOR INJURIES", font=SMB(28), fill=(*OFF, int(255 * r2)), anchor="lm")
+    stamp(im, 700, 1112 + yo, "NOT IN THE AD", ease((tt - wt(2, 10) - 0.3) / 0.25) * a, ang=-6, col=WHITE, size=64)
+
 def scene_a36cut(im, tt):
     """PRICE JUMP (down, same ad): N614MM 1980 A36, dealer ad 259025415. $310,000 Aug 5 -> $285,000 Aug 15
     -> $269,000 Sep 11 -> $229,000 Oct 15 (three cuts, -$81,000). Photos are the model (registrations blurred)."""
@@ -892,8 +940,8 @@ def endbg():
         _EB.append(g.resize((W, H)).convert("RGBA"))
     return _EB[0]
 
-SCENE = scene_liq if V.startswith("liq") else {"sr20": scene_sr20, "a36": scene_a36, "mirage": scene_mirage, "pa32": scene_pa32, "m20k": scene_m20k, "sr22t": scene_sr22t, "a36cut": scene_a36cut, "sr20g6": scene_sr20g6}[V]
-TAILS = ["YOUR N-NUMBER"] if V.startswith("liq") else {"sr20": ["N881PF"], "a36": ["N29DL", "N72MD"], "mirage": ["N27RZ"], "pa32": ["N123BE"], "m20k": ["N231HB", "N3594H"], "sr22t": ["N236CB"], "a36cut": ["N614MM"], "sr20g6": ["N665M", "N34AS"]}[V]
+SCENE = scene_liq if V.startswith("liq") else {"sr20": scene_sr20, "a36": scene_a36, "mirage": scene_mirage, "pa32": scene_pa32, "m20k": scene_m20k, "sr22t": scene_sr22t, "a36cut": scene_a36cut, "sr20g6": scene_sr20g6, "c172s": scene_c172s}[V]
+TAILS = ["YOUR N-NUMBER"] if V.startswith("liq") else {"sr20": ["N881PF"], "a36": ["N29DL", "N72MD"], "mirage": ["N27RZ"], "pa32": ["N123BE"], "m20k": ["N231HB", "N3594H"], "sr22t": ["N236CB"], "a36cut": ["N614MM"], "sr20g6": ["N665M", "N34AS"], "c172s": ["N20818"]}[V]
 
 def frame(i):
     global GRAD
