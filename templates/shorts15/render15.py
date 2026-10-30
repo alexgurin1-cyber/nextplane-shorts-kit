@@ -122,6 +122,16 @@ CAPS = {
  "liq182p": [(1, "Is a Cessna 182P Skylane", 0, 6), (1, "liquid?", 7, 7),
              (2, "About six and a half weeks", 0, 5), (2, "to sell.", 6, 7),
              (2, "Nine in ten sell", 8, 11), (2, "without a price cut.", 12, 15), (3, "Check yours.", 0, 1)],
+
+ "cuts_single": [(1, "So you want to buy", 0, 4), (1, "a single-engine airplane?", 5, 7),
+                 (2, "575 got a price cut in September.", 0, 8), (2, "615 in October.", 9, 13),
+                 (2, "Is yours one of them?", 14, 18)],
+ "cuts_twin": [(1, "So you want to buy a twin?", 0, 6),
+               (2, "76 got a price cut in September.", 0, 6), (2, "89 in October.", 7, 9),
+               (2, "Is yours one of them?", 10, 14)],
+ "cuts_turboprop": [(1, "So you want to buy a turboprop?", 0, 6),
+                    (2, "31 got a price cut in September.", 0, 6), (2, "48 in October.", 7, 9),
+                    (2, "The cuts are rising.", 10, 13), (2, "Is yours next?", 14, 16)],
 }[V] + [(3, "Before you call the broker,", CTA0, CTA0 + 4)]
 
 def draw_caption(im, tt):
@@ -930,6 +940,66 @@ def scene_liq(im, tt):
         stamp(im, W / 2, vy + 30, c["verdict"], va, ang=-4, col=VERDICT_COL[c["verdict"]],
               size=104 if len(c["verdict"]) <= 13 else 78)   # long verdicts must fit the 900-px stamp canvas
 
+# ---------------- monthly price-cut count (first-of-the-month set: single / twin / turboprop) ----------------
+# Alex 2026-10-30: one clip per category, "So you want to buy a <category>? <N> got a price cut in <month>..."
+# Counts = distinct airplanes (not cut events) with a cut of >=1% recorded that month, US listings
+# (analytics_listings x aircraft_price_history; see DATA.md). months: [(label, value, beat-2 word index or None), ...]
+# The current month is drawn in cyan; earlier months land first in grey so the viewer sees the comparison.
+CUTS = {
+ "cuts_single": dict(title="SINGLE-ENGINE PISTON", q2="A SINGLE?", hook="hook_single.jpg", find="single3-0.jpg",
+                     months=[("AUG", 581, None), ("SEP", 575, 8), ("OCT", 615, 13)], share="1 IN 5 FOR SALE GOT A CUT", share_at=14, tag_at=17),
+ "cuts_twin": dict(title="PISTON TWIN", q2="A TWIN?", hook="hook_twin.jpg", find="twin3-1.jpg",
+                   months=[("AUG", 85, None), ("SEP", 76, 6), ("OCT", 89, 9)], share="1 IN 6 FOR SALE GOT A CUT", share_at=10, tag_at=13),
+ "cuts_turboprop": dict(title="TURBOPROP", q2="A TURBOPROP?", hook="hook_turboprop.jpg", find="turboprop-0.jpg",
+                        months=[("AUG", 27, None), ("SEP", 31, 6), ("OCT", 48, 9)], share="UP 55% ON SEPTEMBER", share_at=10, tag_at=12),
+}
+
+def scene_cuts(im, tt):
+    c = CUTS[V]
+    hook = tt < T_B2 + 0.3
+    im.alpha_composite(blur_backdrop(f"{PH}/{c['hook']}" if hook else f"{PH}/{c['find']}", 0.5 if hook else 0.34))
+    im.alpha_composite(GRAD)
+    d = ImageDraw.Draw(im, "RGBA")
+    brand_bug(im)
+    if tt < T_B2 + 0.25:
+        fade = 1 - ease((tt - T_B2) / 0.25)
+        chip(d, W / 2, 360, "OCTOBER PRICE CUTS", fade, anchor="c")
+        shadow_text(d, (W / 2, 470), "SO YOU WANT TO BUY", BCB(92), OFF, fade)
+        punch(im, (W / 2, 640), c["q2"], BCB(210 if len(c["q2"]) <= 9 else 150), tt, 0.0, fade)
+        if fade > 0.02:
+            card = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+            photo_card(card, f"{PH}/{c['hook']}", (70, 800, 1010, 1197), tt, 0, T_B2)
+            if fade < 1: card.putalpha(card.getchannel("A").point(lambda v: int(v * fade)))
+            im.alpha_composite(card)
+        return
+    a = ease((tt - T_B2 - 0.1) / 0.3) * (1 - ease((tt - T_LOOK) / 0.2))
+    if a <= 0: return
+    yo = lerp(40, 0, eout((tt - T_B2 - 0.1) / 0.35))
+    panel(d, (64, 330 + yo, 948, 1300 + yo), a, title="NEXTPLANE PRICE-CUT DATA", sub="US LISTINGS · 2026")
+    d.text((110, 452 + yo), c["title"], font=BCB(54), fill=(*OFF, int(255 * a)), anchor="lm")
+    d.text((110, 512 + yo), "AIRPLANES THAT GOT A PRICE CUT", font=SMB(28), fill=(*GREY, int(255 * a)), anchor="lm")
+    # bars
+    vmax = max(v for _, v, _ in c["months"]); bx0, bx1 = 130, 882; by0, by1 = 600 + yo, 1010 + yo
+    n = len(c["months"]); slot = (bx1 - bx0) / n; bw = slot * 0.62
+    for k, (lab, val, wi) in enumerate(c["months"]):
+        t0 = (T_B2 + 0.15 + 0.12 * k) if wi is None else wt(2, wi) - 0.1
+        la = ease((tt - t0) / 0.3) * a
+        if la <= 0: continue
+        cur = k == n - 1
+        col = CYAN if cur else (120, 140, 156)
+        h = (by1 - by0) * (val / vmax) * eout((tt - t0) / 0.45)
+        x0 = bx0 + k * slot + (slot - bw) / 2
+        d.rounded_rectangle([x0, by1 - h, x0 + bw, by1], radius=14, fill=(*col, int(255 * la)))
+        d.text((x0 + bw / 2, by1 + 40), lab, font=SMB(30), fill=(*(OFF if cur else GREY), int(255 * la)), anchor="mm")
+        v = int(round(counter(val, tt, t0, 0.45)))
+        shadow_text(d, (x0 + bw / 2, by1 - h - 52), f"{v:,}", BCB(96 if cur else 72), WHITE if cur else GREY, la)
+    d.line([bx0, by1, bx1, by1], fill=(*OFF, int(90 * a)), width=2)
+    sa = ease((tt - wt(2, c["share_at"]) + 0.1) / 0.25) * a
+    if sa > 0: chip(d, W / 2, 1130 + yo, c["share"], sa, anchor="c", f=SMB(34))
+    ta = ease((tt - wt(2, c["tag_at"]) + 0.1) / 0.25) * a
+    if ta > 0:
+        d.text((W / 2, 1232 + yo), "DON'T BUY THE STORY. BUY THE DATA.", font=BCB(48), fill=(*CYAN, int(255 * ta)), anchor="mm")
+
 _EB = []
 def endbg():
     if not _EB:
@@ -940,8 +1010,8 @@ def endbg():
         _EB.append(g.resize((W, H)).convert("RGBA"))
     return _EB[0]
 
-SCENE = scene_liq if V.startswith("liq") else {"sr20": scene_sr20, "a36": scene_a36, "mirage": scene_mirage, "pa32": scene_pa32, "m20k": scene_m20k, "sr22t": scene_sr22t, "a36cut": scene_a36cut, "sr20g6": scene_sr20g6, "c172s": scene_c172s}[V]
-TAILS = ["YOUR N-NUMBER"] if V.startswith("liq") else {"sr20": ["N881PF"], "a36": ["N29DL", "N72MD"], "mirage": ["N27RZ"], "pa32": ["N123BE"], "m20k": ["N231HB", "N3594H"], "sr22t": ["N236CB"], "a36cut": ["N614MM"], "sr20g6": ["N665M", "N34AS"], "c172s": ["N20818"]}[V]
+SCENE = scene_liq if V.startswith("liq") else scene_cuts if V.startswith("cuts") else {"sr20": scene_sr20, "a36": scene_a36, "mirage": scene_mirage, "pa32": scene_pa32, "m20k": scene_m20k, "sr22t": scene_sr22t, "a36cut": scene_a36cut, "sr20g6": scene_sr20g6, "c172s": scene_c172s}[V]
+TAILS = ["YOUR N-NUMBER"] if V.startswith("liq") or V.startswith("cuts") else {"sr20": ["N881PF"], "a36": ["N29DL", "N72MD"], "mirage": ["N27RZ"], "pa32": ["N123BE"], "m20k": ["N231HB", "N3594H"], "sr22t": ["N236CB"], "a36cut": ["N614MM"], "sr20g6": ["N665M", "N34AS"], "c172s": ["N20818"]}[V]
 
 def frame(i):
     global GRAD

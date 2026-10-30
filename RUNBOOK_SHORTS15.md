@@ -37,6 +37,20 @@ Read memory `feedback-plain-language-videos`, `feedback-no-source-sites`, `feedb
 - `python3 $KIT/lib/np_buffer.py post tt "$url" <dueISO> caption.txt` and the same with `ig`.
 - Insert a row into `social_shorts15` (run_date, slug, format, tails, hook, video_url, tt_post_id, ig_post_id, due_at). `due_at` holds the TikTok time; the Instagram time can differ (IG queue is shared with backfill), so report both in the email.
 
+## 4b. First-of-the-month PRICE CUTS set (Alex, 2026-10-30 — standing)
+On the **1st of every month** the run produces three clips instead of the rotation clip: `cuts_single`, `cuts_twin`,
+`cuts_turboprop` ("So you want to buy a <category>? <N> got a price cut in <last month>. <M> in <month before>...").
+- Numbers: run `campaign/price_cuts/price_cuts.sql` with m0 = first day of the month three months back, m1 = first day of
+  this month. Count airplanes, not cuts. Claim a rise only when the month-over-month change is large (≥25%); otherwise state
+  the two counts. Record the table in `campaign/price_cuts/DATA_<yyyymm>.md` (template: DATA.md).
+- Production: same template; edit the three `CUTS[...]` entries in `render15.py` (months, share chip, word indices), the
+  three `S[...]` scripts in `gen_vo.py` (month names and spoken counts) and the captions in `campaign/price_cuts/cap_*.txt`
+  (month names, counts, share, photo credits). Keep the hook photos (registration blurred) or fetch new ones for variety.
+- Schedule: TikTok and Instagram at 16:00Z on the next three free consecutive days, single → twin → turboprop
+  (`np_buffer.py queue` first). Log the six post ids in `public.social_campaign_posts` with campaign = `price_cuts_monthly`
+  (key `cuts_<cat>_<yyyymm>_<tt|ig>`); do **not** insert into `social_shorts15` (run_date is its primary key).
+- The daily rotation resumes on the 2nd. The backfill top-up (section 5) still runs.
+
 ## 5. Library backfill top-up (every run)
 - `select ord,slug,body,ig_tags from social_backfill where ig_post_id is null order by ord limit 1`.
 - Video: `https://uiprgookspqnvyumkyse.supabase.co/storage/v1/object/public/rendered_videos/social/<slug>.mp4`.

@@ -96,6 +96,13 @@ S={
             "Check yours. "+CTA],
  "a36cut":["Two hundred twenty-nine thousand dollars for this Beechcraft Bonanza A36.",
            "In August, the same ad asked three hundred ten thousand. It's been cut three times.", CTA],
+ # 2026-10-30 first-of-the-month PRICE CUTS set (Alex): one clip per category; counts = distinct US airplanes with a >=1% cut that month
+ "cuts_single":["So you want to buy a single-engine airplane?",
+                "Five hundred seventy-five got a price cut in September. Six hundred fifteen in October. Is yours one of them?", CTA],
+ "cuts_twin":["So you want to buy a twin?",
+              "Seventy-six got a price cut in September. Eighty-nine in October. Is yours one of them?", CTA],
+ "cuts_turboprop":["So you want to buy a turboprop?",
+                   "Thirty-one got a price cut in September. Forty-eight in October. The cuts are rising. Is yours next?", CTA],
 }
 # usage: gen_vo.py [slug]  -> only that slug (no need to delete the pilot entries)
 if len(sys.argv) > 1: S = {sys.argv[1]: S[sys.argv[1]]}
