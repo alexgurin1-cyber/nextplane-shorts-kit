@@ -84,6 +84,12 @@ S={
  "liq414":["Is a Cessna four fourteen liquid?",
            "About seven weeks to sell. Nearly nine in ten never get cut. It loses about five percent a year.",   # 21-word v1 ran 15.73 s (limit 15.0)
            "Check yours. "+CTA],
+ # 2026-10-30 liquidity campaign Format A (A19): Learjet 45/45XR (family "Learjet 45/45XR"), n=16 sold, 9 model years (1999-2012),
+ # 27 d typical = fastest of all jet families with >=12 sold (next: CJ1 44 d), 1 of 16 cut (6%); lost/yr omitted per campaign table ("—").
+ # Re-verified on scratch.scratch_sold_listings_20261018. No prices voiced (jet).
+ "liqlj45":["Is a Learjet forty-five liquid?",
+            "Twenty-seven days, the fastest jet in our sold data. Fifteen of sixteen sell without a price cut.",
+            "Check yours. "+CTA],
  "a36cut":["Two hundred twenty-nine thousand dollars for this Beechcraft Bonanza A36.",
            "In August, the same ad asked three hundred ten thousand. It's been cut three times.", CTA],
 }
