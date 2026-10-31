@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """NextPlane 15-second vertical (TikTok / Instagram Reels) renderer.
-Usage: render15.py <video> [worker nworkers]   video in {sr20, a36, mirage, pa32, m20k, sr22t, a36cut, sr20g6, c172s, liq*}
+Usage: render15.py <video> [worker nworkers]   video in {sr20, a36, mirage, pa32, m20k, sr22t, a36cut, sr20g6, c172s, f33a, liq*, cuts_*}
        render15.py <video> info                 -> timeline JSON (used by gen_music.py / mux15.py)
 Layout respects platform UI safe zones: text inside x 64..940, y 210..1440."""
 import json, os, sys, math
@@ -81,6 +81,9 @@ CAPS = {
  "a36cut": [(1, "$229,000", 0, 4), (1, "for this Beechcraft Bonanza A36", 5, 9),
             (2, "In August, the same ad asked", 0, 5), (2, "$310,000.", 6, 9),
             (2, "It's been cut three times.", 10, 14)],
+ "f33a": [(1, "$250,000", 0, 4), (1, "for this Bonanza F33A", 5, 10),
+          (2, "In September, the same ad asked", 0, 5), (2, "$345,000.", 6, 9),
+          (2, "Three cuts in under four weeks.", 10, 15)],
  "c172s": [(1, "$599,000", 0, 4), (1, "for this 2020 Cessna Skyhawk.", 5, 9),
            (1, "New engine, new paint.", 10, 13), (2, "What it leaves out:", 0, 3),
            (2, "a 2023 federal accident record.", 4, 9), (2, "Substantial damage.", 10, 11)],
@@ -764,6 +767,59 @@ def scene_a36cut(im, tt):
     if c2 > 0: chip(d, 300, 1150 + yo, "SAME DEALER", c2, f=SMB(28))
     stamp(im, 700, 1150 + yo, "3 PRICE CUTS", ease((tt - wt(2, 12) - 0.15) / 0.25) * a, ang=-4, col=WHITE, size=54)
 
+def scene_f33a(im, tt):
+    """PRICE JUMP (down, same ad): N22099 1978 F33A, dealer ad 260580053 (Raleigh NC). $345,000 first recorded Sep 25
+    -> $299,500 Oct 1 -> $279,900 Oct 15 -> $250,000 Oct 21 (three cuts in 26 days, -$95,000). Model photos, registrations blurred."""
+    hook = tt < T_B2 + 0.3
+    im.alpha_composite(blur_backdrop(f"{PH}/f33a-hook.jpg" if hook else f"{PH}/f33a-bg.jpg", 0.5 if hook else 0.34))
+    im.alpha_composite(GRAD)
+    d = ImageDraw.Draw(im, "RGBA")
+    brand_bug(im)
+    if tt < T_B2 + 0.25:
+        fade = 1 - ease((tt - T_B2) / 0.25)
+        chip(d, W / 2, 360, "FOR SALE NOW", fade, anchor="c")
+        shadow_text(d, (W / 2, 460), "1978 BEECHCRAFT F33A BONANZA", BCB(76), OFF, fade)
+        punch(im, (W / 2, 640), "$250,000", BCB(236), tt, 0.0, fade)
+        if fade > 0.02:
+            card = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+            photo_card(card, f"{PH}/f33a-hook.jpg", (70, 800, 1010, 1197), tt, 0, T_B2)
+            if fade < 1: card.putalpha(card.getchannel("A").point(lambda v: int(v * fade)))
+            im.alpha_composite(card)
+        d = ImageDraw.Draw(im, "RGBA")
+        la = ease((tt - wt(1, 5)) / 0.2) * fade
+        if la > 0:
+            chip(d, W / 2, 1250, "DEALER AD \u00b7 LISTED SEP 25", la, anchor="c", f=SMB(30), col=OFF, outline=GREY)
+        return
+    a = ease((tt - T_B2 - 0.1) / 0.3) * (1 - ease((tt - T_LOOK) / 0.2))
+    if a <= 0: return
+    yo = lerp(40, 0, eout((tt - T_B2 - 0.1) / 0.35))
+    panel(d, (64, 330 + yo, 948, 1230 + yo), a, sub="PRICE HISTORY \u00b7 ONE AD")
+    pts = [(0.0, 345000, "SEP 25"), (0.25, 299500, "OCT 1"), (0.55, 279900, "OCT 15"), (0.78, 250000, "OCT 21")]
+    box = (120, 560 + yo, 880, 1000 + yo)
+    ymin, ymax = 225000, 365000
+    ga = ease((tt - wt(2, 10)) / 0.3) * a
+    X0 = lambda f: box[0] + f * (box[2] - box[0])
+    Y0 = lambda v: box[3] - (v - ymin) / (ymax - ymin) * (box[3] - box[1])
+    if ga > 0:
+        xx = 0.25
+        while xx < 1.0:
+            d.line([(X0(xx), Y0(345000)), (X0(min(xx + 0.02, 1.0)), Y0(345000))], fill=(*GREY, int(170 * ga)), width=3); xx += 0.04
+    X, Y = step_chart(d, box, pts, wt(2, 1), wt(2, 11), tt, ymin, ymax, a)   # start on "September" so the panel is never empty
+    ba = ease((tt - wt(2, 11)) / 0.3) * a
+    if ba > 0:
+        xb = 915; ya, yb = Y(345000), Y(250000)
+        d.line([xb, ya, xb, yb], fill=(*CYAN, int(255 * ba)), width=5)
+        d.line([xb - 16, ya, xb, ya], fill=(*CYAN, int(255 * ba)), width=5)
+        d.line([xb - 16, yb, xb, yb], fill=(*CYAN, int(255 * ba)), width=5)
+        v = counter(95000, tt, wt(2, 11), 0.5)
+        yc = Y(250000)
+        d.rounded_rectangle([130, yc - 42, 420, yc + 42], radius=12, fill=(8, 20, 31, int(230 * ba)), outline=(*CYAN, int(200 * ba)), width=3)
+        d.text((275, yc), "-" + money(round(v / 100) * 100), font=BCB(64), fill=(*CYAN, int(255 * ba)), anchor="mm")
+    c1 = ease((tt - wt(2, 4)) / 0.2) * a; c2 = ease((tt - wt(2, 5)) / 0.2) * a
+    if c1 > 0: chip(d, 110, 1150 + yo, "SAME AD", c1, f=SMB(28))
+    if c2 > 0: chip(d, 300, 1150 + yo, "SAME DEALER", c2, f=SMB(28))
+    stamp(im, 742, 1150 + yo, "3 CUTS IN 26 DAYS", ease((tt - wt(2, 14)) / 0.25) * a, ang=-4, col=WHITE, size=40)
+
 def scene_sr20g6(im, tt):
     """SAME PRICE TWINS: Cirrus SR20 G6s at $489,900. A = N665M (2022, 740 h, cut twice: $534,900 Apr 16 ->
     $514,900 Jun 2 -> $489,900 Sep 29); B = N34AS (2021, 1,785 h, unchanged since Apr 13). No accident record on either.
@@ -1010,8 +1066,8 @@ def endbg():
         _EB.append(g.resize((W, H)).convert("RGBA"))
     return _EB[0]
 
-SCENE = scene_liq if V.startswith("liq") else scene_cuts if V.startswith("cuts") else {"sr20": scene_sr20, "a36": scene_a36, "mirage": scene_mirage, "pa32": scene_pa32, "m20k": scene_m20k, "sr22t": scene_sr22t, "a36cut": scene_a36cut, "sr20g6": scene_sr20g6, "c172s": scene_c172s}[V]
-TAILS = ["YOUR N-NUMBER"] if V.startswith("liq") or V.startswith("cuts") else {"sr20": ["N881PF"], "a36": ["N29DL", "N72MD"], "mirage": ["N27RZ"], "pa32": ["N123BE"], "m20k": ["N231HB", "N3594H"], "sr22t": ["N236CB"], "a36cut": ["N614MM"], "sr20g6": ["N665M", "N34AS"], "c172s": ["N20818"]}[V]
+SCENE = scene_liq if V.startswith("liq") else scene_cuts if V.startswith("cuts") else {"sr20": scene_sr20, "a36": scene_a36, "mirage": scene_mirage, "pa32": scene_pa32, "m20k": scene_m20k, "sr22t": scene_sr22t, "a36cut": scene_a36cut, "sr20g6": scene_sr20g6, "c172s": scene_c172s, "f33a": scene_f33a}[V]
+TAILS = ["YOUR N-NUMBER"] if V.startswith("liq") or V.startswith("cuts") else {"sr20": ["N881PF"], "a36": ["N29DL", "N72MD"], "mirage": ["N27RZ"], "pa32": ["N123BE"], "m20k": ["N231HB", "N3594H"], "sr22t": ["N236CB"], "a36cut": ["N614MM"], "sr20g6": ["N665M", "N34AS"], "c172s": ["N20818"], "f33a": ["N22099"]}[V]
 
 def frame(i):
     global GRAD

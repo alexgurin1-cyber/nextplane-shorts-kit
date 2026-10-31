@@ -96,6 +96,11 @@ S={
             "Check yours. "+CTA],
  "a36cut":["Two hundred twenty-nine thousand dollars for this Beechcraft Bonanza A36.",
            "In August, the same ad asked three hundred ten thousand. It's been cut three times.", CTA],
+ # 2026-10-31 daily run: PRICE JUMP (down, same ad), 1978 Beechcraft F33A Bonanza N22099, dealer ad 260580053 (Raleigh NC),
+ # $345,000 first recorded Sep 25 -> $299,500 Oct 1 -> $279,900 Oct 15 -> $250,000 Oct 21 (three cuts in 26 days, -$95,000)
+ # b1 v1 "...for this Beechcraft Bonanza F thirty-three A." ran 15.24 s total; "Beechcraft" dropped (on screen instead)
+ "f33a":["Two hundred fifty thousand dollars for this Bonanza F thirty-three A.",
+         "In September, the same ad asked three hundred forty-five thousand. Three cuts in under four weeks.", CTA],
  # 2026-10-30 first-of-the-month PRICE CUTS set (Alex): one clip per category; counts = distinct US airplanes with a >=1% cut that month
  "cuts_single":["So you want to buy a single-engine airplane?",
                 "Five hundred seventy-five got a price cut in September. Six hundred fifteen in October. Is yours one of them?", CTA],
