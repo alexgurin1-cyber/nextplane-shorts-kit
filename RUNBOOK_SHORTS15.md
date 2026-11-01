@@ -50,6 +50,9 @@ On the **1st of every month** the run produces three clips instead of the rotati
   (`np_buffer.py queue` first). Log the six post ids in `public.social_campaign_posts` with campaign = `price_cuts_monthly`
   (key `cuts_<cat>_<yyyymm>_<tt|ig>`); do **not** insert into `social_shorts15` (run_date is its primary key).
 - The daily rotation resumes on the 2nd. The backfill top-up (section 5) still runs.
+- Idempotency: before producing, check `select key from social_campaign_posts where campaign='price_cuts_monthly' and key like 'cuts_%_<yyyymm>_%'`
+  (yyyymm = the month just ended). If the six rows already exist (e.g. the Oct 2026 edition, produced manually on 2026-10-30 and
+  queued Nov 2–4), skip production entirely: no rotation clip and no cuts clips that day — only the backfill top-up and the email.
 
 ## 5. Library backfill top-up (every run)
 - `select ord,slug,body,ig_tags from social_backfill where ig_post_id is null order by ord limit 1`.
