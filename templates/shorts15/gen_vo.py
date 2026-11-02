@@ -29,6 +29,10 @@ S={
  # ("Zero SMOH, Zero Since New Prop, New Paint"); NTSB CEN23LA394, Sep 2 2023, Englewood CO, substantial damage, 2 minor injuries, serial 172S12579 matched
  "c172s":["About six hundred thousand dollars for this twenty twenty Skyhawk. New engine, new paint.",
           "What it leaves out: a twenty twenty-three federal accident record. Substantial damage.", CTA],
+ # 2026-11-02 daily run: SAME PRICE TWINS, Piper Turbo Arrow III at $134,000: N41GF (1977, cut four times $159,000 -> $134,000,
+ # engine 1,155 h) vs N6089H (1978, unchanged since Apr 18, engine 511 h). No federal accident record on either airframe.
+ "arrow3":["Two Piper Turbo Arrows. Both one hundred thirty-four thousand dollars.",
+           "One was cut four times. The other has under half the engine hours and hasn't moved since April.", CTA],
  "liq172m":["Is a Cessna one seventy-two M liquid?",
             "A month on the market, and most sellers never touch the price. Every flight school wants one.",
             "Check yours. "+CTA],

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """NextPlane -> Buffer helper (cloud runs). Needs env BUFFER_API_KEY.
   np_buffer.py post CHANNEL(ig|tt|li) VIDEO_URL DUE_ISO TEXT_FILE   -> prints post id
-  np_buffer.py queue                                                -> lists scheduled posts per channel
+  np_buffer.py queue [POST_ID...]                                  -> lists scheduled posts per channel (+ full text of POST_IDs)
   np_buffer.py fix POST_ID CHANNEL VIDEO_URL OLD NEW                -> replace OLD with NEW in a scheduled post's text
                                                                      (Buffer's editPost needs the video asset and IG reel type re-sent)
 """
@@ -55,4 +55,6 @@ if __name__ == "__main__":
             try:
                 e = gql(q, {"o": ORG, "c": [cid]})["posts"]["edges"]
                 print(k, [(n["node"]["status"], n["node"]["dueAt"], n["node"]["text"][:40]) for n in e])
+                for n in e:   # `queue ID...` also prints the full text of those posts (link-rule check)
+                    if n["node"]["id"] in sys.argv[2:]: print("--", n["node"]["id"], "\n" + n["node"]["text"])
             except Exception as ex: print(k, "queue query failed:", ex)

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """NextPlane 15-second vertical (TikTok / Instagram Reels) renderer.
-Usage: render15.py <video> [worker nworkers]   video in {sr20, a36, mirage, pa32, m20k, sr22t, a36cut, sr20g6, c172s, f33a, liq*, cuts_*}
+Usage: render15.py <video> [worker nworkers]   video in {sr20, a36, mirage, pa32, m20k, sr22t, a36cut, sr20g6, c172s, f33a, arrow3, liq*, cuts_*}
        render15.py <video> info                 -> timeline JSON (used by gen_music.py / mux15.py)
 Layout respects platform UI safe zones: text inside x 64..940, y 210..1440."""
 import json, os, sys, math
@@ -78,6 +78,9 @@ CAPS = {
  "sr20g6": [(1, "Two Cirrus SR20s.", 0, 4), (1, "Both $489,900.", 5, 11),
             (2, "The newer one has", 0, 3), (2, "less than half the hours", 4, 8), (2, "and was cut twice.", 9, 12),
             (2, "The other hasn't moved", 13, 16), (2, "since April.", 17, 18)],
+ "arrow3": [(1, "Two Piper Turbo Arrows.", 0, 3), (1, "Both $134,000.", 4, 9),
+            (2, "One was cut four times.", 0, 4), (2, "The other has", 5, 7), (2, "under half", 8, 9),
+            (2, "the engine hours", 10, 12), (2, "and hasn't moved", 13, 15), (2, "since April.", 16, 17)],
  "a36cut": [(1, "$229,000", 0, 4), (1, "for this Beechcraft Bonanza A36", 5, 9),
             (2, "In August, the same ad asked", 0, 5), (2, "$310,000.", 6, 9),
             (2, "It's been cut three times.", 10, 14)],
@@ -871,6 +874,61 @@ def scene_sr20g6(im, tt):
         if ua > 0:
             d.text((900, 1112), "UNCHANGED SINCE APRIL", font=BCB(46), fill=(*CYAN, int(255 * ua)), anchor="rm")
 
+def scene_arrow3(im, tt):
+    """SAME PRICE TWINS: Piper Turbo Arrow III (PA-28R-201T) at $134,000. A = N41GF (1977, engine 1,155 h, cut four
+    times: $159,000 Apr -> $149,000 Jun 9 -> $145,000 Jul 13 -> $139,000 Aug 29 -> $134,000 Oct 17);
+    B = N6089H (1978, engine 511 h, unchanged since Apr 18). No federal accident record on either airframe.
+    Photos are the model (registrations blurred), not the subject tails."""
+    HH = 960
+    dark = 0.62 if tt < T_B2 else 0.36
+    LA = bg_layer(f"{PH}/a.jpg", 0.56, dark=dark, size=(W, HH))
+    LB = bg_layer(f"{PH}/b.jpg", 0.49, dark=dark, size=(W, HH))
+    paste_bg(im, LA, tt, 0, T_LOOK, size=(W, HH), box=(0, 0))
+    paste_bg(im, LB, tt, 0, T_LOOK, size=(W, HH), box=(0, HH), zoom_in=False)
+    im.alpha_composite(GRAD)
+    d = ImageDraw.Draw(im, "RGBA")
+    d.rectangle([0, HH - 3, W, HH + 3], fill=(*CYAN, 255))
+    brand_bug(im)
+    fade = 1 - ease((tt - T_LOOK) / 0.2)
+    if fade <= 0: return
+    if tt < T_B2 + 0.25:
+        pf = (1 - ease((tt - T_B2) / 0.25)) * fade
+        for yy, lab in ((360, "A · 1977 PIPER TURBO ARROW III"), (1040, "B · 1978 PIPER TURBO ARROW III")):
+            d.rounded_rectangle([70, yy - 34, 70 + d.textlength(lab, font=SMB(30)) + 40, yy + 34], radius=12,
+                                fill=(8, 20, 31, int(200 * pf)))
+            d.text((90, yy), lab, font=SMB(30), fill=(*OFF, int(255 * pf)), anchor="lm")
+        for yy, t0 in ((580, 0.0), (1225, 0.12)):   # price on screen from the first frame (spec)
+            punch(im, (W / 2, yy), "$134,000", BCB(190), tt, t0, pf)
+        stamp(im, W / 2, HH, "SAME PRICE", ease((tt - wt(1, 4)) / 0.25) * pf)
+        return
+    a = ease((tt - T_B2) / 0.3) * fade
+    # A: cut four times. Middle steps unlabeled (lab=False) so five points fit; first and last carry price + date.
+    aa = ease((tt - wt(2, 0)) / 0.3) * a
+    if aa > 0:
+        panel(d, (64, 400, 948, 880), aa, title="A · N41GF", sub="PRICE HISTORY")
+        step_chart(d, (120, 610, 880, 770),
+                   [(0.0, 159000, "APR"), (0.20, 149000, False), (0.40, 145000, False), (0.60, 139000, False),
+                    (0.78, 134000, "OCT 17")],
+                   wt(2, 0), wt(2, 4, True) + 0.3, tt, 128000, 163000, aa)
+        ca = ease((tt - wt(2, 3)) / 0.3) * aa
+        if ca > 0:
+            d.text((900, 548), "4 CUTS · -$25,000", font=BCB(46), fill=(*CYAN, int(255 * ca)), anchor="rm")
+        ha = ease((tt - wt(2, 11)) / 0.25) * aa
+        if ha > 0:
+            chip(d, 110, 548, "ENGINE 1,155 HRS", ha, f=SMB(28))
+    # B: unchanged since April, less than half the engine hours
+    ab = ease((tt - wt(2, 5)) / 0.3) * a
+    if ab > 0:
+        panel(d, (64, 990, 948, 1335), ab, title="B · N6089H", sub="PRICE HISTORY")
+        step_chart(d, (120, 1185, 880, 1235), [(0.0, 134000, "APR 18")],
+                   wt(2, 5), wt(2, 17, True), tt, 128000, 163000, ab)
+        hb = ease((tt - wt(2, 11)) / 0.25) * ab
+        if hb > 0:
+            chip(d, 110, 1112, "ENGINE 511 HRS", hb, f=SMB(28))
+        ua = ease((tt - wt(2, 15)) / 0.3) * ab
+        if ua > 0:
+            d.text((900, 1112), "UNCHANGED SINCE APRIL", font=BCB(46), fill=(*CYAN, int(255 * ua)), anchor="rm")
+
 # ---------------- liquidity check (campaign Format A, model-level, no tail) ----------------
 # One entry per clip; the slug must start with "liq". nums: (value, label, beat-2 word index where it drops in,
 # optional plain-words note shown under the number, e.g. "ABOUT A MONTH").
@@ -1066,8 +1124,8 @@ def endbg():
         _EB.append(g.resize((W, H)).convert("RGBA"))
     return _EB[0]
 
-SCENE = scene_liq if V.startswith("liq") else scene_cuts if V.startswith("cuts") else {"sr20": scene_sr20, "a36": scene_a36, "mirage": scene_mirage, "pa32": scene_pa32, "m20k": scene_m20k, "sr22t": scene_sr22t, "a36cut": scene_a36cut, "sr20g6": scene_sr20g6, "c172s": scene_c172s, "f33a": scene_f33a}[V]
-TAILS = ["YOUR N-NUMBER"] if V.startswith("liq") or V.startswith("cuts") else {"sr20": ["N881PF"], "a36": ["N29DL", "N72MD"], "mirage": ["N27RZ"], "pa32": ["N123BE"], "m20k": ["N231HB", "N3594H"], "sr22t": ["N236CB"], "a36cut": ["N614MM"], "sr20g6": ["N665M", "N34AS"], "c172s": ["N20818"], "f33a": ["N22099"]}[V]
+SCENE = scene_liq if V.startswith("liq") else scene_cuts if V.startswith("cuts") else {"sr20": scene_sr20, "a36": scene_a36, "mirage": scene_mirage, "pa32": scene_pa32, "m20k": scene_m20k, "sr22t": scene_sr22t, "a36cut": scene_a36cut, "sr20g6": scene_sr20g6, "arrow3": scene_arrow3, "c172s": scene_c172s, "f33a": scene_f33a}[V]
+TAILS = ["YOUR N-NUMBER"] if V.startswith("liq") or V.startswith("cuts") else {"sr20": ["N881PF"], "a36": ["N29DL", "N72MD"], "mirage": ["N27RZ"], "pa32": ["N123BE"], "m20k": ["N231HB", "N3594H"], "sr22t": ["N236CB"], "a36cut": ["N614MM"], "sr20g6": ["N665M", "N34AS"], "arrow3": ["N41GF", "N6089H"], "c172s": ["N20818"], "f33a": ["N22099"]}[V]
 
 def frame(i):
     global GRAD
