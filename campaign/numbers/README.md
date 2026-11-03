@@ -15,7 +15,9 @@ slug prefix `num_` (e.g. `num_dmg_sr22`, `num_trn_sr20`, `num_own_single`, `num_
 | up  | PRICED HIGHER | PRICE HISTORY CHECK | current ask above its own first ask or above an earlier ad for the same tail (strict) |
 
 ## Subject rotation (keeps every clip's number new)
-Each kind cycles through subjects; never repeat the same kind + subject within 8 weeks (check `social_shorts15.slug`).
+Each kind cycles through subjects; never repeat the same kind + subject within 8 weeks (check `social_shorts15.slug` AND
+`social_campaign_posts` where campaign = 'numbers_pilot'). Already used: dmg / all singles — pilot `num_dmg_single`,
+posted TikTok 2026-11-07 and Instagram 2026-11-08 16:00Z (Alex approved 2026-11-03), so the next dmg subject is Cirrus SR22.
 Use a model only when at least 30 are for sale; otherwise use the whole category.
 - dmg: all singles → Cirrus SR22 → Cessna 172 → Piper PA-28 → Beechcraft Bonanza → Cessna 182 → Mooney M20 → Cirrus SR20 → twins → turboprops
 - trn: Cirrus SR20 → Cessna 172 → Diamond DA40 → Piper PA-28 → Cessna 150/152 → all singles → Piper Seminole / twins

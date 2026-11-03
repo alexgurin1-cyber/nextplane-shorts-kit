@@ -73,7 +73,8 @@ On the **1st of every month** the run produces three clips instead of the rotati
 Spec, kinds, subject rotation and wording rules: `campaign/numbers/README.md`. SQL: `campaign/numbers/numbers.sql`
 (replace `{category}` / `{model_re}`, one kind per call). Pilot: slug `num_dmg_single` (`NUM`, `CAPS`, `S`, `P` entries).
 - Pick the next subject for the day's kind from the README rotation that has not run in the last 8 weeks
-  (`select slug, run_date from social_shorts15 where slug like 'num_<kind>%' order by run_date desc`).
+  (`select slug, run_date from social_shorts15 where slug like 'num_<kind>%' order by run_date desc`, plus
+  `select key from social_campaign_posts where campaign='numbers_pilot'` — the pilot num_dmg_single used dmg / all singles).
 - Run the kind's query, write `campaign/numbers/DATA_<yyyymmdd>.md` (query, output row, the plain fraction and how it
   was rounded) and commit it. Row-check: open 5 counted tails and confirm each one meets the definition (for `dmg`, the
   NTSB number and serial; for `trn`, the reason it counted; for `up`, both prices and dates). Drop the clip and use the
