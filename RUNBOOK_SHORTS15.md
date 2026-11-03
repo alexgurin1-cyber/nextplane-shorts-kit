@@ -2,7 +2,7 @@
 
 Procedure for the "Daily NextPlane 15-second Short" scheduled task. Runs entirely in a Claude cloud session; never request access to Alex's Mac. Each run also tops up the long-Short library backfill to Instagram and LinkedIn.
 
-Approved format (Alex, 2026-10-09): `templates/shorts15/PILOTS.md` (spec + the three pilots: SR20 price jump, A36 same-price twins, Malibu Mirage "what the ad left out"). Code: `templates/shorts15/` (`gen_vo.py`, `gen_music.py`, `render15.py`, `mux15.py`).
+Approved format (Alex, 2026-10-09): `templates/shorts15/PILOTS.md` (spec + the three pilots: SR20 price jump, A36 same-price twins, Malibu Mirage "what the ad left out"). Code: `templates/shorts15/` (`gen_vo.py`, `gen_music.py`, `render15.py`, `mux15.py`). Market-number clips (added 2026-11-03): `campaign/numbers/` + `scene_num()`, pilot `num_dmg_single`.
 
 ## 0. Bootstrap
 1. Clone the kit to `~/kit` (attach with `add_repo` owner `alexgurin1-cyber`, repo `nextplane-shorts-kit`, access `push` if needed).
@@ -14,7 +14,22 @@ Approved format (Alex, 2026-10-09): `templates/shorts15/PILOTS.md` (spec + the t
 ## 1. Pick today's finding (one finding, one or two tails)
 Read memory `feedback-plain-language-videos`, `feedback-no-source-sites`, `feedback-real-visuals-only`, `feedback-shorts-report-first`. Then query Supabase project `uiprgookspqnvyumkyse`:
 - `select * from social_shorts15 order by run_date desc limit 30` — never reuse a tail number or the same format two days running.
-- Rotate the three proven formats: **PRICE JUMP** (same airplane, price moved between ads / relisted higher or lower), **SAME PRICE TWINS** (two of the same model at the same ask, histories differ), **WHAT THE AD LEFT OUT** (ad claim vs NTSB record / title trail / prior ad). A new format is allowed only if it keeps the hook→one report finding→lookup→end card spine.
+- **Format by weekday (Alex, 2026-11-03 — run date in Pacific time; the 1st of the month is always §4b):**
+
+  | Day | Format | Type |
+  |---|---|---|
+  | Mon | WHAT THE AD LEFT OUT (ad claim vs NTSB record / title trail / prior ad) | single airplane |
+  | Tue | NUMBER — DAMAGE HISTORY (§4c, kind `dmg`) | market number |
+  | Wed | SAME PRICE TWINS (two of the same model at the same ask, histories differ) | single airplane pair |
+  | Thu | NUMBER — TRAINING HISTORY (§4c, kind `trn`) | market number |
+  | Fri | PRICE HISTORY (renamed from PRICE JUMP: same airplane, price moved between ads or within the ad) | single airplane |
+  | Sat | NUMBER — SELLER OWNERSHIP (§4c, kind `own`) | market number |
+  | Sun | NUMBER — PRICED HIGHER (§4c, kind `up`) | market number |
+
+  PRICE HISTORY: prefer an airplane now priced **higher** than before (relisted higher, or raised in the same ad —
+  Alex 2026-11-03 liked the SR20 N881PF case, $279,900 → $354,900) when one verifies row by row (both ads, dates and
+  prices, not a reverted cut); otherwise a cut sequence. If the day's format has no candidate that verifies, use the next
+  format in the table and say so in the email. Older log rows use format "PRICE JUMP"; treat them as PRICE HISTORY.
 - The aircraft must be **currently listed** (verify in the latest scan), piston (never quote jet prices), US, not a share/partnership ad, and the finding must be verifiable row by row (ad ids, dates, prices, NTSB number + serial match). Write `$WORK/DATA.md` with the exact queries and rows.
 - Never name Controller or any source marketplace.
 
@@ -53,6 +68,23 @@ On the **1st of every month** the run produces three clips instead of the rotati
 - Idempotency: before producing, check `select key from social_campaign_posts where campaign='price_cuts_monthly' and key like 'cuts_%_<yyyymm>_%'`
   (yyyymm = the month just ended). If the six rows already exist (e.g. the Oct 2026 edition, produced manually on 2026-10-30 and
   queued Nov 2–4), skip production entirely: no rotation clip and no cuts clips that day — only the backfill top-up and the email.
+
+## 4c. NUMBER clips (Tue / Thu / Sat / Sun — Alex, 2026-11-03)
+Spec, kinds, subject rotation and wording rules: `campaign/numbers/README.md`. SQL: `campaign/numbers/numbers.sql`
+(replace `{category}` / `{model_re}`, one kind per call). Pilot: slug `num_dmg_single` (`NUM`, `CAPS`, `S`, `P` entries).
+- Pick the next subject for the day's kind from the README rotation that has not run in the last 8 weeks
+  (`select slug, run_date from social_shorts15 where slug like 'num_<kind>%' order by run_date desc`).
+- Run the kind's query, write `campaign/numbers/DATA_<yyyymmdd>.md` (query, output row, the plain fraction and how it
+  was rounded) and commit it. Row-check: open 5 counted tails and confirm each one meets the definition (for `dmg`, the
+  NTSB number and serial; for `trn`, the reason it counted; for `up`, both prices and dates). Drop the clip and use the
+  next kind if the rows do not hold up.
+- Script per the README (b2 always ends "Is yours one of them?"; exact counts on screen, plain fraction spoken).
+- Production as §3 with `scene_num()`; `TAILS` is automatically `YOUR N-NUMBER`. Blur every visible registration in the
+  photos so no real airplane is tied to the number.
+- Caption: plain takeaway first ("One in six single-engine airplanes for sale has a damage history. 113 ads don't
+  mention a federal accident record."), then "Is yours one of them? Plug the N-number into nextplane.us before you
+  call.", credits, ≤ 5 hashtags. Link rule as §2.
+- Publish as §4; log to `social_shorts15` with format `NUMBER — <KIND>`, tails `{MODEL:<subject>}`, hook = the count line.
 
 ## 5. Library backfill top-up (every run)
 - `select ord,slug,body,ig_tags from social_backfill where ig_post_id is null order by ord limit 1`.

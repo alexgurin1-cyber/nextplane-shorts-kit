@@ -1,0 +1,39 @@
+# NUMBER clips — market count → "Is yours one of them?" (Alex, 2026-11-03)
+
+Why: Alex asked for variety in the daily 15-second feed ("something not monotonous every day"). Single-airplane clips
+alternate with market-number clips. Each number clip states one verified count about airplanes for sale now, asks
+"Is yours one of them?", and sends the viewer to plug the N-number into the report. Spine unchanged:
+hook → one number → lookup → end card. Template: `scene_num()` / `NUM[...]` in `templates/shorts15/render15.py`,
+slug prefix `num_` (e.g. `num_dmg_sr22`, `num_trn_sr20`, `num_own_single`, `num_up_twin`). Pilot: `num_dmg_single`.
+
+## Kinds (definitions and SQL: `numbers.sql`)
+| code | kind | hook chip | what is counted |
+|---|---|---|---|
+| dmg | DAMAGE HISTORY | DAMAGE HISTORY CHECK | ad discloses damage OR serial-matched federal substantial-damage record; second number = record the ad doesn't mention |
+| trn | TRAINING HISTORY | TRAINER CHECK | signs of a trainer or rental life (>250 h/yr, ad history words, school-registered, instructional accident) |
+| own | SELLER OWNERSHIP | OWNERSHIP CHECK | current owner registered it under 2 years ago (FAA certificate date, guardrails) |
+| up  | PRICED HIGHER | PRICE HISTORY CHECK | current ask above its own first ask or above an earlier ad for the same tail (strict) |
+
+## Subject rotation (keeps every clip's number new)
+Each kind cycles through subjects; never repeat the same kind + subject within 8 weeks (check `social_shorts15.slug`).
+Use a model only when at least 30 are for sale; otherwise use the whole category.
+- dmg: all singles → Cirrus SR22 → Cessna 172 → Piper PA-28 → Beechcraft Bonanza → Cessna 182 → Mooney M20 → Cirrus SR20 → twins → turboprops
+- trn: Cirrus SR20 → Cessna 172 → Diamond DA40 → Piper PA-28 → Cessna 150/152 → all singles → Piper Seminole / twins
+- own: all singles → Cirrus SR22 → Cessna 172 → Bonanza → Cessna 182 → twins
+- up:  all singles → twins → Cirrus → Cessna → Piper → Beechcraft (use the category when a model has fewer than 5)
+
+## Script (three beats, ≤ 15.0 s total)
+- b1: "Shopping for a <single-engine airplane | Cirrus S R twenty | twin>?"
+- b2: plain fraction + what it means, optional second number, then always "Is yours one of them?"
+  e.g. "One in six for sale has a damage history. A hundred thirteen ads don't mention it. Is yours one of them?"
+- b3: the verbatim CTA "Before you call the broker, check the data at NextPlane dot U S."
+- Exact counts on screen ("479 OF 3,001"), plain fraction in the voice ("one in six"); round the fraction honestly
+  (22% is "more than one in five", not "one in four"). Count airplanes (tails), never ads or events.
+- No unmeasured reasons ("sellers are nervous", "they are hiding it", "flipped it"). State what the data shows.
+- Seller ownership is context, not a verdict. Training history is a question to ask, not a defect.
+
+## Production
+Same as the daily clip (RUNBOOK_SHORTS15.md §3): add `NUM[slug]`, `CAPS[slug]`, `S[slug]` (gen_vo.py), `P[slug]`
+(gen_music.py). Photos: real photos of the subject model (or a representative of the category); blur every visible
+registration so no real tail is tied to the number. Record the query output in `campaign/numbers/DATA_<yyyymmdd>.md`.
+Log to `social_shorts15` with format = `NUMBER — <KIND>` and tails = `{MODEL:<subject>}`.

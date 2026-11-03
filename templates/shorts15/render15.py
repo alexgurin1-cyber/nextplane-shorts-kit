@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """NextPlane 15-second vertical (TikTok / Instagram Reels) renderer.
-Usage: render15.py <video> [worker nworkers]   video in {sr20, a36, mirage, pa32, m20k, sr22t, a36cut, sr20g6, c172s, f33a, arrow3, sr20bm, liq*, cuts_*}
+Usage: render15.py <video> [worker nworkers]   video in {sr20, a36, mirage, pa32, m20k, sr22t, a36cut, sr20g6, c172s, f33a, arrow3, sr20bm, liq*, cuts_*, num_*}
        render15.py <video> info                 -> timeline JSON (used by gen_music.py / mux15.py)
 Layout respects platform UI safe zones: text inside x 64..940, y 210..1440."""
 import json, os, sys, math
@@ -141,6 +141,10 @@ CAPS = {
  "cuts_turboprop": [(1, "So you want to buy a turboprop?", 0, 6),
                     (2, "31 got a price cut in September.", 0, 6), (2, "48 in October.", 7, 9),
                     (2, "The cuts are rising.", 10, 13), (2, "Is yours next?", 14, 16)],
+ # NUMBER clips (scene_num): beat 2 always ends "Is yours one of them?"
+ "num_dmg_single": [(1, "Shopping for a single-engine airplane?", 0, 4),
+                    (2, "One in six for sale", 0, 4), (2, "has a damage history.", 5, 8),
+                    (2, "113 ads don't mention it.", 9, 15), (2, "Is yours one of them?", 16, 20)],
 }[V] + [(3, "Before you call the broker,", CTA0, CTA0 + 4)]
 
 def draw_caption(im, tt):
@@ -1162,6 +1166,89 @@ def scene_cuts(im, tt):
     if ta > 0:
         d.text((W / 2, 1232 + yo), "DON'T BUY THE STORY. BUY THE DATA.", font=BCB(48), fill=(*CYAN, int(255 * ta)), anchor="mm")
 
+# ---------------- NUMBER clips (market count -> "Is yours one of them?") ----------------
+# Alex 2026-11-03: alternate the single-airplane clips with market-number clips so the daily feed is not monotonous.
+# Slug prefix "num_". Kinds (definitions + SQL: campaign/numbers/): DAMAGE HISTORY, TRAINING HISTORY,
+# SELLER OWNERSHIP, PRICED HIGHER. One entry per clip:
+#   kind   chip on the hook ("DAMAGE HISTORY CHECK")      q1/q2  hook lines ("SHOPPING FOR A" / "SINGLE?")
+#   hook/find photo files in $WORK/photos                 subject panel line ("SINGLE-ENGINE PISTONS FOR SALE")
+#   n/of   the count and its base (dot grid lights round(100*n/of) of 100 dots)
+#   label  what the count means; plain = spoken fraction on screen ("ABOUT 1 IN 6"); n_at = beat-2 word where it lands
+#   second optional (value, line1, line2, beat-2 word) row under the grid; ask_at = beat-2 word for the stamp
+NUM = {
+ # 2026-11-03 pilot (DATA: campaign/numbers/DATA_20261103.md): US piston singles for sale with an N-number, deduped by tail
+ "num_dmg_single": dict(kind="DAMAGE HISTORY CHECK", q1="SHOPPING FOR A", q2="SINGLE?", hook="hook.jpg", find="find.jpg",
+                        subject="SINGLE-ENGINE PISTONS FOR SALE", sub="US · NOV 3, 2026",
+                        n=479, of=3001, label="HAVE A DAMAGE HISTORY", plain="ABOUT 1 IN 6", n_at=0,
+                        second=("113", "AD DOESN'T MENTION", "A FEDERAL ACCIDENT RECORD", 9), ask_at=16),
+}
+
+def dot_grid(d, x0, y0, lit, tt, t0, a, cols=20, rows=5, gap=40, r=13):
+    """100-dot share grid: dots light up left-to-right, row by row, starting at t0."""
+    k = 0
+    for row in range(rows):
+        for col in range(cols):
+            on = k < lit and tt >= t0 + 0.012 * k
+            cx, cy = x0 + col * gap, y0 + row * gap
+            fill = (*CYAN, int(255 * a)) if on else (90, 110, 126, int(150 * a))
+            rr = r if on else r - 3
+            d.ellipse([cx - rr, cy - rr, cx + rr, cy + rr], fill=fill)
+            k += 1
+
+def scene_num(im, tt):
+    c = NUM[V]
+    hook = tt < T_B2 + 0.3
+    im.alpha_composite(blur_backdrop(f"{PH}/{c['hook']}" if hook else f"{PH}/{c['find']}", 0.5 if hook else 0.34))
+    im.alpha_composite(GRAD)
+    d = ImageDraw.Draw(im, "RGBA")
+    brand_bug(im)
+    if tt < T_B2 + 0.25:
+        fade = 1 - ease((tt - T_B2) / 0.25)
+        chip(d, W / 2, 360, c["kind"], fade, anchor="c")
+        shadow_text(d, (W / 2, 470), c["q1"], BCB(92), OFF, fade)
+        punch(im, (W / 2, 640), c["q2"], BCB(210 if len(c["q2"]) <= 9 else 150 if len(c["q2"]) <= 13 else 118), tt, 0.0, fade)
+        if fade > 0.02:
+            card = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+            photo_card(card, f"{PH}/{c['hook']}", (70, 800, 1010, 1197), tt, 0, T_B2)
+            if fade < 1: card.putalpha(card.getchannel("A").point(lambda v: int(v * fade)))
+            im.alpha_composite(card)
+        return
+    a = ease((tt - T_B2 - 0.1) / 0.3) * (1 - ease((tt - T_LOOK) / 0.2))
+    if a <= 0: return
+    yo = lerp(40, 0, eout((tt - T_B2 - 0.1) / 0.35))
+    panel(d, (64, 330 + yo, 948, 1300 + yo), a, title="NEXTPLANE DATA", sub=c["sub"])
+    d.text((110, 452 + yo), c["subject"], font=BCB(50), fill=(*OFF, int(255 * a)), anchor="lm")
+    # main count: "479" + "OF 3,001"
+    t0 = wt(2, c["n_at"]) - 0.1
+    la = ease((tt - t0) / 0.25) * a
+    if la > 0:
+        v = int(round(counter(c["n"], tt, t0, 0.5)))
+        txt = f"{v:,}"
+        drop_in(im, (104, 590 + yo), txt, BCB(170), CYAN, tt, t0)
+        d = ImageDraw.Draw(im, "RGBA")
+        nx = 104 + d.textlength(f"{c['n']:,}", font=BCB(170)) + 26
+        d.text((nx, 612 + yo), f"OF {c['of']:,}", font=BCB(64), fill=(*OFF, int(255 * la)), anchor="lm")
+        d.text((110, 700 + yo), c["label"], font=SMB(32), fill=(*OFF, int(255 * la)), anchor="lm")
+        pa = ease((tt - t0 - 0.35) / 0.25) * a
+        if pa > 0:
+            tw =d.textlength(c["plain"], font=SMB(28)) + 44
+            chip(d, 908 - tw, 548 + yo, c["plain"], pa, f=SMB(28))
+        lit = round(100 * c["n"] / c["of"])
+        dot_grid(d, 132, 790 + yo, lit, tt, t0 + 0.15, la)
+        d.text((W / 2, 1002 + yo), "EACH DOT = 1% OF THE AIRPLANES FOR SALE", font=SMR(24), fill=(*GREY, int(255 * la)), anchor="mm")
+    if c.get("second"):
+        val, l1, l2, wi = c["second"]
+        t1 = wt(2, wi) - 0.1
+        sa = ease((tt - t1) / 0.25) * a
+        if sa > 0:
+            drop_in(im, (104, 1090 + yo), val, BCB(120), WHITE, tt, t1)
+            d = ImageDraw.Draw(im, "RGBA")
+            lx = 104 + d.textlength(val, font=BCB(120)) + 26
+            d.text((lx, 1068 + yo), l1, font=SMB(28), fill=(*OFF, int(255 * sa)), anchor="lm")
+            d.text((lx, 1108 + yo), l2, font=SMB(28), fill=(*OFF, int(255 * sa)), anchor="lm")
+    stamp(im, W / 2, 1218 + yo, "IS YOURS ONE OF THEM?", ease((tt - wt(2, c["ask_at"]) + 0.1) / 0.25) * a,
+          ang=-3, col=WHITE, size=60)
+
 _EB = []
 def endbg():
     if not _EB:
@@ -1172,8 +1259,8 @@ def endbg():
         _EB.append(g.resize((W, H)).convert("RGBA"))
     return _EB[0]
 
-SCENE = scene_liq if V.startswith("liq") else scene_cuts if V.startswith("cuts") else {"sr20": scene_sr20, "a36": scene_a36, "mirage": scene_mirage, "pa32": scene_pa32, "m20k": scene_m20k, "sr22t": scene_sr22t, "a36cut": scene_a36cut, "sr20g6": scene_sr20g6, "arrow3": scene_arrow3, "c172s": scene_c172s, "sr20bm": scene_sr20bm, "f33a": scene_f33a}[V]
-TAILS = ["YOUR N-NUMBER"] if V.startswith("liq") or V.startswith("cuts") else {"sr20": ["N881PF"], "a36": ["N29DL", "N72MD"], "mirage": ["N27RZ"], "pa32": ["N123BE"], "m20k": ["N231HB", "N3594H"], "sr22t": ["N236CB"], "a36cut": ["N614MM"], "sr20g6": ["N665M", "N34AS"], "arrow3": ["N41GF", "N6089H"], "c172s": ["N20818"], "sr20bm": ["N190BM"], "f33a": ["N22099"]}[V]
+SCENE = scene_liq if V.startswith("liq") else scene_cuts if V.startswith("cuts") else scene_num if V.startswith("num_") else {"sr20": scene_sr20, "a36": scene_a36, "mirage": scene_mirage, "pa32": scene_pa32, "m20k": scene_m20k, "sr22t": scene_sr22t, "a36cut": scene_a36cut, "sr20g6": scene_sr20g6, "arrow3": scene_arrow3, "c172s": scene_c172s, "sr20bm": scene_sr20bm, "f33a": scene_f33a}[V]
+TAILS = ["YOUR N-NUMBER"] if V.startswith(("liq", "cuts", "num_")) else {"sr20": ["N881PF"], "a36": ["N29DL", "N72MD"], "mirage": ["N27RZ"], "pa32": ["N123BE"], "m20k": ["N231HB", "N3594H"], "sr22t": ["N236CB"], "a36cut": ["N614MM"], "sr20g6": ["N665M", "N34AS"], "arrow3": ["N41GF", "N6089H"], "c172s": ["N20818"], "sr20bm": ["N190BM"], "f33a": ["N22099"]}[V]
 
 def frame(i):
     global GRAD

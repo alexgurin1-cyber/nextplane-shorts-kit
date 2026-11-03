@@ -116,6 +116,11 @@ S={
               "Seventy-six got a price cut in September. Eighty-nine in October. Is yours one of them?", CTA],
  "cuts_turboprop":["So you want to buy a turboprop?",
                    "Thirty-one got a price cut in September. Forty-eight in October. The cuts are rising. Is yours next?", CTA],
+ # 2026-11-03 NUMBER clip pilot (Alex: alternate single-airplane clips with market numbers). DAMAGE HISTORY, US piston singles
+ # for sale with an N-number: 479 of 3,001 (16.0% -> "one in six") = 366 ads that disclose damage + 113 with a serial-matched
+ # federal substantial-damage record whose ad damage field is false. campaign/numbers/DATA_20261103.md
+ "num_dmg_single":["Shopping for a single-engine airplane?",
+                   "One in six for sale has a damage history. A hundred thirteen ads don't mention it. Is yours one of them?", CTA],
 }
 # usage: gen_vo.py [slug]  -> only that slug (no need to delete the pilot entries)
 if len(sys.argv) > 1: S = {sys.argv[1]: S[sys.argv[1]]}
