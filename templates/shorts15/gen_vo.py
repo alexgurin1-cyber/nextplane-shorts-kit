@@ -33,6 +33,10 @@ S={
  # engine 1,155 h) vs N6089H (1978, unchanged since Apr 18, engine 511 h). No federal accident record on either airframe.
  "arrow3":["Two Piper Turbo Arrows. Both one hundred thirty-four thousand dollars.",
            "One was cut four times. The other has under half the engine hours and hasn't moved since April.", CTA],
+ # 2026-11-03 daily run: WHAT THE AD LEFT OUT, 2023 Cirrus SR20 G6 N190BM, dealer ad 261520569 (Provo UT) $499,900 since Oct 21,
+ # b1 v1 with "Cirrus" ran 15.23 s (make stays on screen). "beautifully equipped", 395 h since new; NTSB WPR23LA358, Sep 27 2023, Salt Lake City UT, substantial damage, instructional, no injuries, serial 9381 matched
+ "sr20bm":["About five hundred thousand dollars, for a beautifully equipped S R twenty, says the ad.",
+           "What it leaves out: a twenty twenty-three federal accident record. Substantial damage.", CTA],
  "liq172m":["Is a Cessna one seventy-two M liquid?",
             "A month on the market, and most sellers never touch the price. Every flight school wants one.",
             "Check yours. "+CTA],
