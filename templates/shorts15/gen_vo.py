@@ -37,6 +37,12 @@ S={
  # b1 v1 with "Cirrus" ran 15.23 s (make stays on screen). "beautifully equipped", 395 h since new; NTSB WPR23LA358, Sep 27 2023, Salt Lake City UT, substantial damage, instructional, no injuries, serial 9381 matched
  "sr20bm":["About five hundred thousand dollars, for a beautifully equipped S R twenty, says the ad.",
            "What it leaves out: a twenty twenty-three federal accident record. Substantial damage.", CTA],
+ # 2026-11-04 daily run: SAME PRICE TWINS, Cessna 182N Skylane at $175,000: N9051G (1970, dealer MO, engine 134 h since overhaul;
+ # NTSB MIA88LA275 Sep 29 1988 Belleview FL, substantial damage, 1 minor injury, serial 18260591 matched; ad damage field false, text silent)
+ # vs N9164G (1971, dealer CA, engine 950 h since overhaul, no federal accident record by N-number or serial). Neither price has moved.
+ # v1 ("Two Cessna one eighty-two Skylanes" / "The other has no record.") ran ~16.3 s, and "...The other doesn't." still 16.2 s; 182 and B's clean record stay on screen.
+ "c182n":["Two Cessna Skylanes. Both one hundred seventy-five thousand dollars.",
+          "One has a fresh engine overhaul, and a federal accident record from nineteen eighty-eight.", CTA],
  "liq172m":["Is a Cessna one seventy-two M liquid?",
             "A month on the market, and most sellers never touch the price. Every flight school wants one.",
             "Check yours. "+CTA],

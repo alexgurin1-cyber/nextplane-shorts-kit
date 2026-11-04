@@ -81,6 +81,9 @@ CAPS = {
  "arrow3": [(1, "Two Piper Turbo Arrows.", 0, 3), (1, "Both $134,000.", 4, 9),
             (2, "One was cut four times.", 0, 4), (2, "The other has", 5, 7), (2, "under half", 8, 9),
             (2, "the engine hours", 10, 12), (2, "and hasn't moved", 13, 15), (2, "since April.", 16, 17)],
+ "c182n": [(1, "Two Cessna Skylanes.", 0, 2), (1, "Both $175,000.", 3, 8),
+           (2, "One has a fresh", 0, 3), (2, "engine overhaul,", 4, 5), (2, "and a federal", 6, 8),
+           (2, "accident record", 9, 10), (2, "from 1988.", 11, 13)],
  "a36cut": [(1, "$229,000", 0, 4), (1, "for this Beechcraft Bonanza A36", 5, 9),
             (2, "In August, the same ad asked", 0, 5), (2, "$310,000.", 6, 9),
             (2, "It's been cut three times.", 10, 14)],
@@ -981,6 +984,63 @@ def scene_arrow3(im, tt):
         if ua > 0:
             d.text((900, 1112), "UNCHANGED SINCE APRIL", font=BCB(46), fill=(*CYAN, int(255 * ua)), anchor="rm")
 
+def scene_c182n(im, tt):
+    """SAME PRICE TWINS: Cessna 182N Skylane at $175,000 (2026-11-04). A = N9051G (1970, engine 134 h since overhaul;
+    NTSB MIA88LA275 Sep 29 1988 Belleview FL, substantial damage, 1 minor injury, serial 18260591 matched, not in the ad);
+    B = N9164G (1971, engine 950 h since overhaul, no federal accident record). Beat 2 only voices A, so B's panel is on
+    screen from the start of beat 2 and its clean record lands on "accident" as the contrast.
+    Photos are the model (registrations blurred), not the subject tails."""
+    HH = 960
+    dark = 0.6 if tt < T_B2 else 0.36
+    LA = bg_layer(f"{PH}/a.jpg", 0.48, dark=dark, size=(W, HH))
+    LB = bg_layer(f"{PH}/b.jpg", 0.45, dark=dark, size=(W, HH))
+    paste_bg(im, LA, tt, 0, T_LOOK, size=(W, HH), box=(0, 0))
+    paste_bg(im, LB, tt, 0, T_LOOK, size=(W, HH), box=(0, HH), zoom_in=False)
+    im.alpha_composite(GRAD)
+    d = ImageDraw.Draw(im, "RGBA")
+    d.rectangle([0, HH - 3, W, HH + 3], fill=(*CYAN, 255))
+    brand_bug(im)
+    fade = 1 - ease((tt - T_LOOK) / 0.2)
+    if fade <= 0: return
+    if tt < T_B2 + 0.25:
+        pf = (1 - ease((tt - T_B2) / 0.25)) * fade
+        for yy, lab in ((360, "A · 1970 CESSNA 182N SKYLANE"), (1040, "B · 1971 CESSNA 182N SKYLANE")):
+            d.rounded_rectangle([70, yy - 34, 70 + d.textlength(lab, font=SMB(30)) + 40, yy + 34], radius=12,
+                                fill=(8, 20, 31, int(200 * pf)))
+            d.text((90, yy), lab, font=SMB(30), fill=(*OFF, int(255 * pf)), anchor="lm")
+        for yy, t0 in ((580, 0.0), (1225, 0.12)):   # price on screen from the first frame (spec)
+            punch(im, (W / 2, yy), "$175,000", BCB(190), tt, t0, pf)
+        stamp(im, W / 2, HH, "SAME PRICE", ease((tt - wt(1, 3)) / 0.25) * pf)
+        return
+    a = ease((tt - T_B2) / 0.3) * fade
+    # A: fresh engine overhaul + 1988 federal accident record the ad does not mention
+    aa = ease((tt - wt(2, 0)) / 0.3) * a
+    if aa > 0:
+        panel(d, (64, 400, 948, 880), aa, title="A · N9051G", sub="ENGINE + SAFETY RECORD")
+        ha = ease((tt - wt(2, 3)) / 0.25) * aa
+        if ha > 0:
+            chip(d, 110, 548, "ENGINE 134 HRS SINCE OVERHAUL", ha, f=SMB(28))
+        r1 = ease((tt - wt(2, 8)) / 0.3) * aa
+        if r1 > 0:
+            d.text((110, 640), "NTSB MIA88LA275", font=SMB(30), fill=(*GREY, int(255 * r1)), anchor="lm")
+        r2 = ease((tt - wt(2, 12)) / 0.25) * aa
+        if r2 > 0:
+            d.text((110, 715), "SEP 29, 1988", font=BCB(84), fill=(*WHITE, int(255 * r2)), anchor="lm")
+            d.text((110, 790), "SUBSTANTIAL DAMAGE · 1 MINOR INJURY", font=BCB(50), fill=(*CYAN, int(255 * r2)), anchor="lm")
+            d.text((110, 845), "SERIAL 18260591 MATCHES THE AD", font=SMR(24), fill=(*OFF, int(255 * r2)), anchor="lm")
+        stamp(im, 740, 700, "NOT IN THE AD", ease((tt - wt(2, 12) - 0.1) / 0.25) * aa, ang=-6, col=WHITE, size=54)
+    # B: same price, older engine time, no federal accident record
+    ab = ease((tt - wt(2, 0) - 0.15) / 0.3) * a
+    if ab > 0:
+        panel(d, (64, 990, 948, 1335), ab, title="B · N9164G", sub="ENGINE + SAFETY RECORD")
+        hb = ease((tt - wt(2, 4)) / 0.25) * ab
+        if hb > 0:
+            chip(d, 110, 1112, "ENGINE 950 HRS SINCE OVERHAUL", hb, f=SMB(28))
+        nb = ease((tt - wt(2, 9)) / 0.3) * ab
+        if nb > 0:
+            d.text((110, 1205), "NO FEDERAL ACCIDENT RECORD", font=BCB(60), fill=(*CYAN, int(255 * nb)), anchor="lm")
+            d.text((110, 1270), "CHECKED BY N-NUMBER AND SERIAL", font=SMR(24), fill=(*OFF, int(255 * nb)), anchor="lm")
+
 # ---------------- liquidity check (campaign Format A, model-level, no tail) ----------------
 # One entry per clip; the slug must start with "liq". nums: (value, label, beat-2 word index where it drops in,
 # optional plain-words note shown under the number, e.g. "ABOUT A MONTH").
@@ -1259,8 +1319,8 @@ def endbg():
         _EB.append(g.resize((W, H)).convert("RGBA"))
     return _EB[0]
 
-SCENE = scene_liq if V.startswith("liq") else scene_cuts if V.startswith("cuts") else scene_num if V.startswith("num_") else {"sr20": scene_sr20, "a36": scene_a36, "mirage": scene_mirage, "pa32": scene_pa32, "m20k": scene_m20k, "sr22t": scene_sr22t, "a36cut": scene_a36cut, "sr20g6": scene_sr20g6, "arrow3": scene_arrow3, "c172s": scene_c172s, "sr20bm": scene_sr20bm, "f33a": scene_f33a}[V]
-TAILS = ["YOUR N-NUMBER"] if V.startswith(("liq", "cuts", "num_")) else {"sr20": ["N881PF"], "a36": ["N29DL", "N72MD"], "mirage": ["N27RZ"], "pa32": ["N123BE"], "m20k": ["N231HB", "N3594H"], "sr22t": ["N236CB"], "a36cut": ["N614MM"], "sr20g6": ["N665M", "N34AS"], "arrow3": ["N41GF", "N6089H"], "c172s": ["N20818"], "sr20bm": ["N190BM"], "f33a": ["N22099"]}[V]
+SCENE = scene_liq if V.startswith("liq") else scene_cuts if V.startswith("cuts") else scene_num if V.startswith("num_") else {"sr20": scene_sr20, "a36": scene_a36, "mirage": scene_mirage, "pa32": scene_pa32, "m20k": scene_m20k, "sr22t": scene_sr22t, "a36cut": scene_a36cut, "sr20g6": scene_sr20g6, "arrow3": scene_arrow3, "c182n": scene_c182n, "c172s": scene_c172s, "sr20bm": scene_sr20bm, "f33a": scene_f33a}[V]
+TAILS = ["YOUR N-NUMBER"] if V.startswith(("liq", "cuts", "num_")) else {"sr20": ["N881PF"], "a36": ["N29DL", "N72MD"], "mirage": ["N27RZ"], "pa32": ["N123BE"], "m20k": ["N231HB", "N3594H"], "sr22t": ["N236CB"], "a36cut": ["N614MM"], "sr20g6": ["N665M", "N34AS"], "arrow3": ["N41GF", "N6089H"], "c182n": ["N9051G", "N9164G"], "c172s": ["N20818"], "sr20bm": ["N190BM"], "f33a": ["N22099"]}[V]
 
 def frame(i):
     global GRAD
