@@ -148,6 +148,9 @@ CAPS = {
  "num_dmg_single": [(1, "Shopping for a single-engine airplane?", 0, 4),
                     (2, "One in six for sale", 0, 4), (2, "has a damage history.", 5, 8),
                     (2, "113 ads don't mention it.", 9, 15), (2, "Is yours one of them?", 16, 20)],
+ "num_trn_sr20": [(1, "Shopping for a Cirrus SR20?", 0, 6),
+                  (2, "Nearly one in three", 0, 3), (2, "shows signs of a training past.", 4, 9),
+                  (2, "Most averaged over 250 hours a year.", 10, 18), (2, "Is yours one of them?", 19, 23)],
 }[V] + [(3, "Before you call the broker,", CTA0, CTA0 + 4)]
 
 def draw_caption(im, tt):
@@ -1241,6 +1244,12 @@ NUM = {
                         subject="SINGLE-ENGINE PISTONS FOR SALE", sub="US · NOV 3, 2026",
                         n=479, of=3001, label="HAVE A DAMAGE HISTORY", plain="ABOUT 1 IN 6", n_at=0,
                         second=("113", "AD DOESN'T MENTION", "A FEDERAL ACCIDENT RECORD", 9), ask_at=16),
+ # 2026-11-05 TRAINING HISTORY, Cirrus SR20 (DATA: campaign/numbers/DATA_20261105.md). Strict count after row check:
+ # >250 h/yr (builds <= 2024) OR school-registered OR serial-matched instructional accident; ad-words signal dropped (5/5 false hits)
+ "num_trn_sr20": dict(kind="TRAINER CHECK", q1="SHOPPING FOR A", q2="CIRRUS SR20?", hook="hook.jpg", find="find.jpg",
+                      subject="CIRRUS SR20s FOR SALE", sub="US · NOV 5, 2026",
+                      n=37, of=116, label="SHOW SIGNS OF A TRAINING PAST", plain="NEARLY 1 IN 3", n_at=0,
+                      second=("35", "AVERAGED OVER 250 HOURS", "A YEAR SINCE BUILT", 10), ask_at=19),
 }
 
 def dot_grid(d, x0, y0, lit, tt, t0, a, cols=20, rows=5, gap=40, r=13):

@@ -127,6 +127,10 @@ S={
  # federal substantial-damage record whose ad damage field is false. campaign/numbers/DATA_20261103.md
  "num_dmg_single":["Shopping for a single-engine airplane?",
                    "One in six for sale has a damage history. A hundred thirteen ads don't mention it. Is yours one of them?", CTA],
+ # 2026-11-05 TRAINING HISTORY, Cirrus SR20: 37 of 116 (31.9% -> "nearly one in three"); 35 of the 37 ("most") averaged >250 airframe hours/yr.
+ # campaign/numbers/DATA_20261105.md
+ "num_trn_sr20":["Shopping for a Cirrus S R twenty?",
+                 "Nearly one in three shows signs of a training past. Most averaged over two hundred fifty hours a year. Is yours one of them?", CTA],
 }
 # usage: gen_vo.py [slug]  -> only that slug (no need to delete the pilot entries)
 if len(sys.argv) > 1: S = {sys.argv[1]: S[sys.argv[1]]}

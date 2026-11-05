@@ -20,7 +20,7 @@ Each kind cycles through subjects; never repeat the same kind + subject within 8
 posted TikTok 2026-11-07 and Instagram 2026-11-08 16:00Z (Alex approved 2026-11-03), so the next dmg subject is Cirrus SR22.
 Use a model only when at least 30 are for sale; otherwise use the whole category.
 - dmg: all singles → Cirrus SR22 → Cessna 172 → Piper PA-28 → Beechcraft Bonanza → Cessna 182 → Mooney M20 → Cirrus SR20 → twins → turboprops
-- trn: Cirrus SR20 → Cessna 172 → Diamond DA40 → Piper PA-28 → Cessna 150/152 → all singles → Piper Seminole / twins
+- trn: Cirrus SR20 (used 2026-11-05, `num_trn_sr20`, 37 of 116) → Cessna 172 → Diamond DA40 → Piper PA-28 → Cessna 150/152 → all singles → Piper Seminole / twins
 - own: all singles → Cirrus SR22 → Cessna 172 → Bonanza → Cessna 182 → twins
 - up:  all singles → twins → Cirrus → Cessna → Piper → Beechcraft (use the category when a model has fewer than 5)
 

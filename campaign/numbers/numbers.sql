@@ -39,6 +39,11 @@ from x;
 --   school_owner  the current FAA registrant is a school, academy, university, college or flying club
 --   inst_record   a federal accident record (any damage) flown as instruction, serial-matched
 -- Read 5 matched ad_hist snippets before voicing (substring(listing_description from '(?i).{0,60}(flight school|leaseback).{0,40}')).
+-- 2026-11-05 row check (SR20): ad_hist was 5 of 5 false hits - negations the regex misses ("never used for flight training",
+--   "no worries about ... flight school abuse") and offers/suitability ("Lease back Opportunity", "ideal for leaseback to
+--   flight school", "great option for ... flight school"). Count ad_hist tails only after reading each snippet; drop the
+--   ones that do not describe the airplane's past. hi_hours now needs builds <= current year - 2: with a 1-year floor a
+--   2025 airplane with 330 h counted as a trainer (5 SR20s dropped). See DATA_20261105.md.
 with base as materialized (
   select distinct on (upper(registration)) upper(registration) reg, substr(upper(registration),2) nn, serial_number,
          year, total_time_airframe ttaf, coalesce(listing_description,'') d
@@ -54,7 +59,7 @@ with base as materialized (
   from ntsb_accidents where type_fly='INST' and regis_no ~* '^N[0-9]'
 ), f as (
   select b.*,
-    (ttaf > 0 and year between 1940 and 2025 and ttaf::numeric / greatest(extract(year from current_date)::int - year, 1) > 250) hi_hours,
+    (ttaf > 0 and year between 1940 and extract(year from current_date)::int - 2 and ttaf::numeric / greatest(extract(year from current_date)::int - year, 1) > 250) hi_hours,
     (d ~* '(flight school|leaseback|lease back|part 141|flying club|club (aircraft|airplane|plane)|rental (history|fleet|aircraft|airplane|use)|used (for|in|as a) (flight )?(training|trainer|rental)|training fleet|school (aircraft|airplane|plane))'
        and d !~* '(never|no|not|non)[ -](been )?(a |used (as|for|in) (a )?)?(flight school|rental|leaseback|lease back|trainer|training)') ad_hist,
     (b.nn in (select nn from s)) school_owner,
