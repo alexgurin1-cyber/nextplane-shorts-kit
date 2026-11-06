@@ -131,6 +131,11 @@ S={
  # campaign/numbers/DATA_20261105.md
  "num_trn_sr20":["Shopping for a Cirrus S R twenty?",
                  "Nearly one in three shows signs of a training past. Most averaged over two hundred fifty hours a year. Is yours one of them?", CTA],
+ # 2026-11-06 PRICE HISTORY (up): 2007 Beechcraft G36 Bonanza N6980B, serial E-3780, same dealer (Lexington KY) relisted it five times:
+ # $624,900 May 23 -> $599,900 Jul 7 -> $579,900 Jul 29 -> $549,900 Aug 29 (last seen Sep 19) -> $699,900 Oct 15 with a zero-time engine
+ # (earlier ads: 1,727 h engine, "discuss options of including a Zero time engine"). Up $150,000 from the September ask.
+ "g36up":["About seven hundred thousand dollars for this Bonanza G thirty-six.",
+          "In September, same dealer: five hundred fifty thousand. Now with a zero-hour engine.", CTA],
 }
 # usage: gen_vo.py [slug]  -> only that slug (no need to delete the pilot entries)
 if len(sys.argv) > 1: S = {sys.argv[1]: S[sys.argv[1]]}
