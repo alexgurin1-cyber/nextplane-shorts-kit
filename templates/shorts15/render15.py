@@ -153,6 +153,9 @@ CAPS = {
  "num_trn_sr20": [(1, "Shopping for a Cirrus SR20?", 0, 6),
                   (2, "Nearly one in three", 0, 3), (2, "shows signs of a training past.", 4, 9),
                   (2, "Most averaged over 250 hours a year.", 10, 18), (2, "Is yours one of them?", 19, 23)],
+ "num_own_single": [(1, "Shopping for a single-engine airplane?", 0, 4),
+                    (2, "More than one in five sellers", 0, 5), (2, "has owned it under two years.", 6, 11),
+                    (2, "238, under one year.", 12, 17), (2, "Is yours one of them?", 18, 22)],
 }[V] + [(3, "Before you call the broker,", CTA0, CTA0 + 4)]
 
 def draw_caption(im, tt):
@@ -1324,6 +1327,12 @@ NUM = {
                       subject="CIRRUS SR20s FOR SALE", sub="US · NOV 5, 2026",
                       n=37, of=116, label="SHOW SIGNS OF A TRAINING PAST", plain="NEARLY 1 IN 3", n_at=0,
                       second=("35", "AVERAGED OVER 250 HOURS", "A YEAR SINCE BUILT", 10), ask_at=19),
+ # 2026-11-07 SELLER OWNERSHIP, all US single-engine pistons (DATA: campaign/numbers/DATA_20261107.md): FAA certificate
+ # issue date of the current registrant < 2 years ago, guardrails per numbers.sql §3, tails seen in the last 7 days
+ "num_own_single": dict(kind="OWNERSHIP CHECK", q1="SHOPPING FOR A", q2="SINGLE?", hook="hook.jpg", find="find.jpg",
+                        subject="SINGLE-ENGINE PISTONS FOR SALE", sub="US · NOV 7, 2026",
+                        n=603, of=2687, label="SELLER REGISTERED IT UNDER 2 YEARS AGO", plain="MORE THAN 1 IN 5", n_at=0,
+                        second=("238", "SELLER REGISTERED IT", "UNDER 1 YEAR AGO", 12), ask_at=18),
 }
 
 def dot_grid(d, x0, y0, lit, tt, t0, a, cols=20, rows=5, gap=40, r=13):

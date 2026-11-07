@@ -134,6 +134,11 @@ S={
  # 2026-11-06 PRICE HISTORY (up): 2007 Beechcraft G36 Bonanza N6980B, serial E-3780, same dealer (Lexington KY) relisted it five times:
  # $624,900 May 23 -> $599,900 Jul 7 -> $579,900 Jul 29 -> $549,900 Aug 29 (last seen Sep 19) -> $699,900 Oct 15 with a zero-time engine
  # (earlier ads: 1,727 h engine, "discuss options of including a Zero time engine"). Up $150,000 from the September ask.
+ # 2026-11-07 SELLER OWNERSHIP, US single-engine pistons (builds <= 2024, seen in the last 7 days): 603 of 2,687 with a valid FAA
+ # certificate date were registered to the seller under 2 years ago (22.4% -> "more than one in five"); 238 under 1 year.
+ # campaign/numbers/DATA_20261107.md
+ "num_own_single":["Shopping for a single-engine airplane?",
+                   "More than one in five sellers has owned it under two years. Two hundred thirty-eight, under one year. Is yours one of them?", CTA],
  "g36up":["About seven hundred thousand dollars for this Bonanza G thirty-six.",
           "In September, same dealer: five hundred fifty thousand. Now with a zero-hour engine.", CTA],
 }
