@@ -153,6 +153,9 @@ CAPS = {
  "num_trn_sr20": [(1, "Shopping for a Cirrus SR20?", 0, 6),
                   (2, "Nearly one in three", 0, 3), (2, "shows signs of a training past.", 4, 9),
                   (2, "Most averaged over 250 hours a year.", 10, 18), (2, "Is yours one of them?", 19, 23)],
+ "num_up_single": [(1, "Shopping for a single-engine airplane?", 0, 4),
+                   (2, "Almost 3 in 100 ask more than before.", 0, 8),
+                   (2, "About half were relisted higher.", 9, 13), (2, "Is yours one of them?", 14, 18)],
  "num_own_single": [(1, "Shopping for a single-engine airplane?", 0, 4),
                     (2, "More than one in five sellers", 0, 5), (2, "has owned it under two years.", 6, 11),
                     (2, "238, under one year.", 12, 17), (2, "Is yours one of them?", 18, 22)],
@@ -1333,6 +1336,13 @@ NUM = {
                         subject="SINGLE-ENGINE PISTONS FOR SALE", sub="US · NOV 7, 2026",
                         n=603, of=2687, label="SELLER REGISTERED IT UNDER 2 YEARS AGO", plain="MORE THAN 1 IN 5", n_at=0,
                         second=("238", "SELLER REGISTERED IT", "UNDER 1 YEAR AGO", 12), ask_at=18),
+ # 2026-11-08 PRICED HIGHER, all US single-engine pistons seen in the last 7 days (DATA: campaign/numbers/DATA_20261108.md):
+ # current ask above the ad's first recorded ask (price-history based, first price held >= 3 days) or above an earlier closed ad
+ # for the same tail (+1%..+60%); asks under half the model median screened out; 4 more tails dropped on row check
+ "num_up_single": dict(kind="PRICE HISTORY CHECK", q1="SHOPPING FOR A", q2="SINGLE?", hook="hook.jpg", find="find.jpg",
+                       subject="SINGLE-ENGINE PISTONS FOR SALE", sub="US · NOV 8, 2026",
+                       n=64, of=2374, label="PRICED HIGHER THAN BEFORE", plain="ALMOST 3 IN 100", n_at=0,
+                       second=("34", "RELISTED ABOVE", "THEIR LAST AD", 9), ask_at=14),
 }
 
 def dot_grid(d, x0, y0, lit, tt, t0, a, cols=20, rows=5, gap=40, r=13):

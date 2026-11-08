@@ -118,3 +118,37 @@ select count(*) for_sale,
   count(*) filter (where reg in (select reg from up_prev)) above_earlier_ad,
   count(*) filter (where reg in (select reg from up_same) or reg in (select reg from up_prev)) priced_higher
 from base;
+
+-- ===================== 4b. PRICED HIGHER — strict (2026-11-08, use this one) =====================
+-- Fixes found on the 2026-11-08 row check (DATA_20261108.md): original_asking_price_usd is overwritten on raises and can hold
+-- a cut price, so the first ask comes from the earliest aircraft_price_history row; first prices that held < 3 days are
+-- scrape glitches; asks under half the model median (>= 3 for sale) are shares / parse errors and leave the base too;
+-- only tails seen in the last 7 days. Still read every counted tail with an implausible first ask (>40% jump) before voicing.
+with base0 as materialized (
+  select distinct on (upper(registration)) upper(registration) reg, listing_id, asking_price_usd p,
+         original_asking_price_usd p0, created_at, last_seen_at, make, model
+  from aircraft_listings
+  where status='active' and registration ~* '^N[0-9]' and location_country in ('US','USA') and asking_price_usd > 1000
+    and category = '{category}' and upper(make||' '||model) ~ '{model_re}'
+  order by upper(registration), (source='controller') desc
+), med as (select make, model, percentile_cont(0.5) within group (order by p) m, count(*) n from base0 group by 1,2),
+base as materialized (
+  select b.*, coalesce(h.old_price, b.p0) first_ask, h.recorded_at first_change
+  from base0 b left join med on med.make=b.make and med.model=b.model
+  left join lateral (select old_price, recorded_at from aircraft_price_history h where h.listing_id=b.listing_id order by recorded_at limit 1) h on true
+  where b.last_seen_at > now() - interval '7 days' and not (med.n >= 3 and b.p < 0.5*med.m)
+), up_same as (
+  select reg from base where first_ask > 1000 and p > first_ask * 1.01 and p < first_ask * 1.6
+    and (first_change is null or first_change >= created_at + interval '3 days')
+), up_prev as (
+  select distinct b.reg from base b join aircraft_listings o on upper(o.registration)=b.reg and o.listing_id<>b.listing_id
+    and o.status<>'active' and coalesce(o.delisted_at, o.last_seen_at) < b.created_at
+    and coalesce(o.last_known_price, o.asking_price_usd) between 1000 and b.p / 1.01
+    and b.p < coalesce(o.last_known_price, o.asking_price_usd) * 1.6
+)
+select count(*) for_sale,
+  count(*) filter (where reg in (select reg from up_same)) above_own_first_ask,
+  count(*) filter (where reg in (select reg from up_prev)) above_earlier_ad,
+  count(*) filter (where reg in (select reg from up_same) or reg in (select reg from up_prev)) priced_higher,
+  string_agg(reg, ',' order by reg) filter (where reg in (select reg from up_same) or reg in (select reg from up_prev)) tails
+from base;

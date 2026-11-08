@@ -139,6 +139,11 @@ S={
  # campaign/numbers/DATA_20261107.md
  "num_own_single":["Shopping for a single-engine airplane?",
                    "More than one in five sellers has owned it under two years. Two hundred thirty-eight, under one year. Is yours one of them?", CTA],
+ # 2026-11-08 PRICED HIGHER, US single-engine pistons seen in the last 7 days: 64 of 2,374 (2.7% -> "almost three in a hundred")
+ # are priced above their own first ask or above an earlier closed ad for the same tail; 34 above an earlier ad (53% -> "about half").
+ # Strict count after row check (history-based first ask, 3-day glitch rule, price sanity screen). campaign/numbers/DATA_20261108.md
+ "num_up_single":["Shopping for a single-engine airplane?",
+                  "Almost three in a hundred ask more than before. About half were relisted higher. Is yours one of them?", CTA],
  "g36up":["About seven hundred thousand dollars for this Bonanza G thirty-six.",
           "In September, same dealer: five hundred fifty thousand. Now with a zero-hour engine.", CTA],
 }
