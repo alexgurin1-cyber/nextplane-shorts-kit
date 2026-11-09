@@ -5,13 +5,12 @@ The scheduled task "Weekly how to buy episode" reads and updates this file on ev
 ## Format (set by Alex 2026-09-26)
 - Each episode uses one REAL aircraft currently for sale, picked from the NextPlane listing panel. The source marketplace is never named on air.
 - The episode walks the aircraft through the live NextPlane single-aircraft report on nextplane.us and presents every finding, including the asking price and NextPlane's valuation against it.
-- Weeks alternate: a piston single one week, a high-performance aircraft the next.
+- **Target segment (Alex, 2026-11-03, standing):** every episode covers a single-engine piston airplane that NextPlane customers actually buy reports for. Never twins, turboprops (including Piper M500/M600/M700, TBM, PC-12, Caravan), jets or helicopters. Market statistics in an episode are for the featured model or single-engine pistons only, and the episode says so. The old piston/high-performance alternation is retired.
 
-## Rotation
-| Class | Order (take the next one not yet used below) |
-|---|---|
-| Piston single | Cessna 172 → Cessna 182 → Piper PA-28 → Beech Bonanza → Mooney M20 → Diamond DA40 |
-| High-performance | Piper M350 → Daher TBM 900-series → Piper M500/M600 → Pilatus PC-12 → Cirrus SR22T → Beech Baron |
+## Rotation (single-engine piston only, from 2026-11-03)
+Take the first model in this order that has no episode below:
+Cirrus SR22 / SR22T → Beechcraft Bonanza A36 → Cirrus SR20 → Mooney M20J / M20K → Piper PA-46 Malibu / Mirage / Matrix (piston) → Diamond DA40 (only if the DA40 NG episode does not already cover it) → Piper PA-32 Saratoga / Lance → Cessna 210 → Cessna 206.
+Already covered: Cirrus SR22 (Ep1), Cessna 172 (Ep3), Cessna 182 (Ep5), Piper PA-28 (Ep7), Diamond DA40 NG (per Alex 2026-11-03); Piper M350 (Ep4) and TBM 930 (Ep6) are legacy high-performance episodes.
 
 ## Episodes
 | Ep | Publish (UTC) | Class | Aircraft | Hero tail | Ask | YouTube | Status |
@@ -23,4 +22,5 @@ The scheduled task "Weekly how to buy episode" reads and updates this file on ev
 | 5 | 2026-10-14 16:00 | Piston single | Cessna 182 Skylane (1998 182S) | N23383 | $279,000 | MuMm1lpqwkA (public as of 2026-10-19) | shipped |
 | 6 | 2026-10-21 16:00 | High-performance | Daher TBM 930 (2016) | N24MY | $3,295,000 | 87m5EfbGQPg (v2, public as of 2026-10-26) | shipped |
 | 7 | 2026-10-28 16:00 | Piston single | Piper PA-28 Archer II (1981 PA-28-181) | N8395H | $180,000 | XcqQNsKCoO4 (private, scheduled 2026-10-28 16:00Z) | uploaded — scheduled, awaiting Alex review |
-| 8 | 2026-11-04 16:00 | High-performance | Piper M600 SLS (2021) | N665WA | $2,875,000 | — | blocked 2026-11-02: report capture locked (capture grant not created); data pack + draft script in ep8_m600/ |
+| 8 | ~~2026-11-04 16:00~~ | High-performance | Piper M600 SLS (2021) | N665WA | $2,875,000 | — | **dropped permanently** (Alex 2026-11-03): the M600 is a turboprop, outside the single-engine piston target segment; it was also blocked at report capture on 2026-11-02 and never published. Do not retry. Files kept in ep8_m600/ for reference. |
+| 9 | 2026-11-11 16:00 (not met) | Single-engine piston | Beechcraft Bonanza A36 (1981) | N1811Y | $360,000 | — | blocked 2026-11-09: report capture locked (capture grant insert refused by the run's permission check); data pack + draft script in ep9_a36/. Needs the grant SQL in ep9_a36/DATA_PACK.md, then capture + production. |
