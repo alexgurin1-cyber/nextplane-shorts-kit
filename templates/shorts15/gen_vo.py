@@ -43,6 +43,11 @@ S={
  # v1 ("Two Cessna one eighty-two Skylanes" / "The other has no record.") ran ~16.3 s, and "...The other doesn't." still 16.2 s; 182 and B's clean record stay on screen.
  "c182n":["Two Cessna Skylanes. Both one hundred seventy-five thousand dollars.",
           "One has a fresh engine overhaul, and a federal accident record from nineteen eighty-eight.", CTA],
+ # 2026-11-09 daily run: WHAT THE AD LEFT OUT, 1975 Cessna 182P Skylane N9802E, dealer ad tap_2456163 (Livermore CA) $169,950
+ # ("factory brand new engine and factory brand new propeller with only 58 hours since new"); NTSB WPR22LA252, Jul 14 2022,
+ # San Martin CA, substantial damage, 2 aboard, no injuries, Part 91 personal, serial 18263916 matched; ad damage field false, text silent
+ "c182p":["A hundred seventy thousand dollars for this Skylane. Brand-new engine and prop.",
+          "What it leaves out: a twenty twenty-two federal accident record. Substantial damage.", CTA],
  "liq172m":["Is a Cessna one seventy-two M liquid?",
             "A month on the market, and most sellers never touch the price. Every flight school wants one.",
             "Check yours. "+CTA],
