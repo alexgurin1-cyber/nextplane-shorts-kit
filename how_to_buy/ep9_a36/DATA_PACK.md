@@ -142,3 +142,32 @@ insert into public.purchased_reports (user_id, n_number, make, model, year, amou
 values ('95710b00-dab7-489d-85d0-262f53ddd349','N1811Y','BEECH','A36 BONANZA',1981,0,
         '{"internal":"How to Buy episode capture grant (no charge)"}'::jsonb, now()+interval '30 days', now());
 ```
+
+---
+
+## UPDATE 2026-11-10 — live report captured, cross-checked, episode produced
+Alex set standing report access for the capture account (`profiles.subscription_status='active'`) and a one-off N1811Y grant (expires 2026-12-10). `report_capture.py N1811Y` exit 0 (52 sections); element capture 40 cards. The "LOCKED" status above is superseded.
+
+### Report vs Supabase cross-check
+| Report section | Report shows | Supabase / panel | Result |
+|---|---|---|---|
+| Header | $360,000 · NTSB none · "Last sold Oct 2004" · Piney Flats TN | ask $360,000; ntsb 0; cert 2004-10-12; owner city Piney Flats | ✓ |
+| Estimated Market Value | **$299,925**, range $260,000–$361,000, High · 88%, net adjustment +$0 | our 1968–83 A36 typical $299,000 | ✓ estimate voiced; +$0 flagged (REPORT_ISSUES #1) |
+| Listing history | 175 days; $425,000 → $360,000 (−$65,000, −15.3%); 3 cuts Jun 16 −$30,000, Jul 21 −$20,000, Sep 29 −$15,000 | `aircraft_price_history` identical | ✓ |
+| Market comparison | airframe avg 5,237 (this 5,100, −137); engine avg 901 (this 19, −882) | our 1968–83 median 5,139 / 885.5 | ✓ (report figures voiced) |
+| Operating cost | 120 h/yr: fuel $11,160 · insurance $5,880 · engine accrual $4,225 · total **$31,911** · **$266/h** | cost specs 15.5 gph, $68K/1,700 h | report card voiced as-is (REPORT_ISSUES #12) |
+| Flight activity | 92 flights, 38.8 h (24 mo); last 12 mo 57 flights ~30.9 h; 24 mo ~37.9 h; 67% local; home TRI | `aircraft_flight_intel` fetched 2026-11-10 02:19Z: 92 / 38.8 / TRI / 67% | ✓; prior 12 mo = 37.9 − 30.9 ≈ 7 h |
+| Registration | owner a TN LLC since 2004-10-12 (22.1 yrs); release indexed 2026-09-02; 0 agreements · 2 releases (window 2025-10-23 → 2026-11-05) | registry cert 2004-10-12 | ✓ owner name blurred |
+| Airworthiness | 16 ADs · 4 OEM · 4 regulatory; critical item 2024-14-03 (GFC 500 software) | GFC 500 + G3X installed per listing | ✓ |
+| Service difficulty | model 329 total, 12 in 5 yrs, this aircraft 0 | ours 347 / 12 / 0 (model-match differs) | ✓ "twelve in five years" voiced |
+| Seller | dealer, +9.2% above market (n=12), 42% slower vs same models (9 sales), 18 in stock | location wrong (New Orleans) | stance voiced, name/location not (REPORT_ISSUES #8) |
+| Market signal comparables | "Just listed" 1981 A36 $375,000, 2,960 h (N1852S) | N1852S listing: same dealer, 290 h engine, G3X/GTN 750Xi/GFC 500 | ✓ sister-ship beat |
+
+### Engine value (final, report's own rate)
+Report op-cost engine accrual $4,225 / 120 h = **$35.21/h**. Engine hours below the market average: 901 − 19 = **882 h** → 882 × $35.21 = **$31,055 ≈ $31,000**. Gap to the report estimate: $360,000 − $299,925 = **$60,075** → engine ≈ $31K, panel + autopilot ≈ $29K (not valued; "decide what that is worth to you"). The $40/h cost-spec figure above is superseded on air.
+
+### Keep watching — A36 Bonanzas, 2026-10-27 → 2026-11-10
+New tails: **4** (N72WP Oct 27, N1550U Oct 31, N17863 Nov 7, N3849X Nov 9). Price cuts: **9** (N904AD, N316P, N275EA, N480JK, N759VL, N22WS, N3851L, N336NA, N8088J). Increases: **0**. Excluded: N331SA $85,000 → $0 (placeholder).
+
+### Offer (final, on air)
+Report estimate $299,925 + engine ≈ $31,000 ≈ **$330,000** before the panel; sister ship $375,000 with ≈2,140 fewer airframe hours; three cuts; typical A36 cut ≈ 7% → **open around $330,000 (−8.3%)**, subject to pre-buy, engine paperwork, the GFC 500 directive record and a clean title (incl. the September loan-release paperwork).

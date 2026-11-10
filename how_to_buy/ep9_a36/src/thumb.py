@@ -1,0 +1,17 @@
+from PIL import Image, ImageDraw, ImageFont, ImageFilter
+R="/tmp/htb_a36"; F=lambda n,s: ImageFont.truetype(f"{R}/fonts/{n}",s)
+W,H=1280,720; NAVY=(8,16,26); CYAN=(37,197,203)
+bg=Image.open(f"{R}/photos/a36-0.jpg").convert("RGB"); sc=max(W/bg.width,H/bg.height)*1.15
+bg=bg.resize((int(bg.width*sc),int(bg.height*sc)),Image.LANCZOS); x=min((bg.width-W)//2+120,bg.width-W); bg=bg.crop((x,40,x+W,40+H))
+im=Image.alpha_composite(bg.convert("RGBA"),Image.new("RGBA",(W,H),(*NAVY,100)))
+sh=Image.new("RGBA",(W,H),(0,0,0,0)); ImageDraw.Draw(sh).rectangle([0,0,700,H],fill=(*NAVY,230)); im=Image.alpha_composite(im,sh.filter(ImageFilter.GaussianBlur(30)))
+card=Image.open(f"{R}/cap/valuation.png").convert("RGB"); _b=card.crop((96,600,700,630)).filter(ImageFilter.GaussianBlur(10)); card.paste(_b,(96,600)); card=card.crop((80,440,1500,740)); card=card.resize((560,int(560*card.height/card.width)),Image.LANCZOS)
+im=im.convert("RGB"); im.paste(card,(690,520)); d=ImageDraw.Draw(im)
+d.rectangle([688,518,1252,522+card.height],outline=CYAN,width=3)
+d.text((50,45),"HOW TO BUY A",font=F("BarlowCondensed-Bold.ttf",70),fill=(246,249,250))
+d.text((46,105),"BONANZA A36",font=F("BarlowCondensed-Bold.ttf",140),fill=CYAN)
+d.text((50,285),"3 PRICE CUTS.",font=F("BarlowCondensed-Bold.ttf",88),fill=(255,255,255))
+d.text((50,375),"STILL +$60K?",font=F("BarlowCondensed-Bold.ttf",88),fill=(255,255,255))
+d.rounded_rectangle([50,560,560,640],radius=12,fill=CYAN); d.text((305,600),"REAL REPORT · N1811Y",font=F("SpaceMono-Bold.ttf",30),fill=NAVY,anchor="mm")
+d.text((1240,700),"REPRESENTATIVE PHOTO · NOT THE AIRCRAFT FOR SALE",font=F("SpaceMono-Regular.ttf",14),fill=(210,220,228),anchor="rm")
+im.save(f"{R}/thumb.jpg",quality=90); print(im.size)
