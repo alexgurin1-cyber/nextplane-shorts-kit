@@ -17,9 +17,11 @@ slug prefix `num_` (e.g. `num_dmg_sr22`, `num_trn_sr20`, `num_own_single`, `num_
 ## Subject rotation (keeps every clip's number new)
 Each kind cycles through subjects; never repeat the same kind + subject within 8 weeks (check `social_shorts15.slug` AND
 `social_campaign_posts` where campaign = 'numbers_pilot'). Already used: dmg / all singles — pilot `num_dmg_single`,
-posted TikTok 2026-11-07 and Instagram 2026-11-08 16:00Z (Alex approved 2026-11-03), so the next dmg subject is Cirrus SR22.
+posted TikTok 2026-11-07 and Instagram 2026-11-08 16:00Z (Alex approved 2026-11-03); Cirrus SR22 ran 2026-11-10, so the next dmg subject is Cessna 172.
+Damage counts: use tails seen in the last 7 days (drop stale `active` rows), read `damage_notes` for every disclosure
+(exclude "No Damage History"/NDH false positives), and never use a stock photo whose tail is in the counted set.
 Use a model only when at least 30 are for sale; otherwise use the whole category.
-- dmg: all singles → Cirrus SR22 → Cessna 172 → Piper PA-28 → Beechcraft Bonanza → Cessna 182 → Mooney M20 → Cirrus SR20 → twins → turboprops
+- dmg: all singles → Cirrus SR22 (used 2026-11-10, `num_dmg_sr22`, 15 of 309) → Cessna 172 → Piper PA-28 → Beechcraft Bonanza → Cessna 182 → Mooney M20 → Cirrus SR20 → twins → turboprops
 - trn: Cirrus SR20 (used 2026-11-05, `num_trn_sr20`, 37 of 116) → Cessna 172 → Diamond DA40 → Piper PA-28 → Cessna 150/152 → all singles → Piper Seminole / twins
 - own: all singles (used 2026-11-07, `num_own_single`, 603 of 2,687) → Cirrus SR22 → Cessna 172 → Bonanza → Cessna 182 → twins
 - up:  all singles (used 2026-11-08, `num_up_single`, 64 of 2,374; use numbers.sql §4b strict) → Cirrus → Cessna → Piper → Beechcraft → Mooney (use the category when a model has fewer than 5; single-engine pistons only per the 2026-11-03 target segment)

@@ -149,6 +149,11 @@ S={
  # Strict count after row check (history-based first ask, 3-day glitch rule, price sanity screen). campaign/numbers/DATA_20261108.md
  "num_up_single":["Shopping for a single-engine airplane?",
                   "Almost three in a hundred ask more than before. About half were relisted higher. Is yours one of them?", CTA],
+ # 2026-11-10 DAMAGE HISTORY, Cirrus SR22/SR22T (US, N-number, seen in the last 7 days): 15 of 309 (4.9% -> "about one in
+ # twenty") = 14 ads that disclose damage + 1 serial-matched federal substantial-damage record the ad doesn't mention. Disclosed:
+ # 5 prop strikes, 3 hail, 1 parachute (CAPS) pull. campaign/numbers/DATA_20261110.md
+ "num_dmg_sr22":["Shopping for a Cirrus S R twenty-two?",
+                 "About one in twenty for sale has a damage history. Prop strikes, hail, even a parachute pull. Is yours one of them?", CTA],
  "g36up":["About seven hundred thousand dollars for this Bonanza G thirty-six.",
           "In September, same dealer: five hundred fifty thousand. Now with a zero-hour engine.", CTA],
 }

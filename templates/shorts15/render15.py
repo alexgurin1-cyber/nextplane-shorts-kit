@@ -153,6 +153,9 @@ CAPS = {
  "num_dmg_single": [(1, "Shopping for a single-engine airplane?", 0, 4),
                     (2, "One in six for sale", 0, 4), (2, "has a damage history.", 5, 8),
                     (2, "113 ads don't mention it.", 9, 15), (2, "Is yours one of them?", 16, 20)],
+ "num_dmg_sr22": [(1, "Shopping for a Cirrus SR22?", 0, 6),
+                  (2, "About one in twenty for sale", 0, 5), (2, "has a damage history.", 6, 9),
+                  (2, "Prop strikes, hail,", 10, 12), (2, "even a parachute pull.", 13, 16), (2, "Is yours one of them?", 17, 21)],
  "num_trn_sr20": [(1, "Shopping for a Cirrus SR20?", 0, 6),
                   (2, "Nearly one in three", 0, 3), (2, "shows signs of a training past.", 4, 9),
                   (2, "Most averaged over 250 hours a year.", 10, 18), (2, "Is yours one of them?", 19, 23)],
@@ -1373,6 +1376,12 @@ NUM = {
                         subject="SINGLE-ENGINE PISTONS FOR SALE", sub="US · NOV 3, 2026",
                         n=479, of=3001, label="HAVE A DAMAGE HISTORY", plain="ABOUT 1 IN 6", n_at=0,
                         second=("113", "AD DOESN'T MENTION", "A FEDERAL ACCIDENT RECORD", 9), ask_at=16),
+ # 2026-11-10 DAMAGE HISTORY, Cirrus SR22/SR22T (DATA: campaign/numbers/DATA_20261110.md): tails seen in the last 7 days;
+ # ad discloses damage (damage_notes read for all 14) OR serial-matched federal substantial-damage record
+ "num_dmg_sr22": dict(kind="DAMAGE HISTORY CHECK", q1="SHOPPING FOR A", q2="CIRRUS SR22?", hook="hook.jpg", find="find.jpg",
+                      subject="CIRRUS SR22s FOR SALE", sub="US · NOV 10, 2026",
+                      n=15, of=309, label="HAVE A DAMAGE HISTORY", plain="ABOUT 1 IN 20", n_at=0,
+                      second=("5", "ADS DISCLOSE", "A PROP STRIKE", 10), ask_at=17),
  # 2026-11-05 TRAINING HISTORY, Cirrus SR20 (DATA: campaign/numbers/DATA_20261105.md). Strict count after row check:
  # >250 h/yr (builds <= 2024) OR school-registered OR serial-matched instructional accident; ad-words signal dropped (5/5 false hits)
  "num_trn_sr20": dict(kind="TRAINER CHECK", q1="SHOPPING FOR A", q2="CIRRUS SR20?", hook="hook.jpg", find="find.jpg",

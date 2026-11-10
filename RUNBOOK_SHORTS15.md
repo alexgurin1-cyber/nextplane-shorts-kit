@@ -92,6 +92,11 @@ Spec, kinds, subject rotation and wording rules: `campaign/numbers/README.md`. S
 - Video: `https://uiprgookspqnvyumkyse.supabase.co/storage/v1/object/public/rendered_videos/social/<slug>.mp4`.
 - IG caption = body + "\n\n" + ig_tags; `np_buffer.py post` inserts the link block ("Run any N-number — link in bio." + the instagram-tagged report URL) between body and tags. Schedule at the day after the latest scheduled backfill `ig_due` at 01:00Z (6 PM PT).
 - LinkedIn caption = body + "\n\n#GeneralAviation #AircraftSales #AviationData"; `np_buffer.py post` inserts the linkedin-tagged report URL between body and tags. Schedule the next weekday after the latest `li_due` at 15:00Z.
+- Segment screen (Alex 2026-11-03): skip items whose video features twins, turboprops or jets anywhere, including a ranking or
+  comparison (2026-11-10: ord 32 price_per_pound — Cessna 310 hero; ord 33 brazil_sr22 — jets in the export ranking). Check the
+  item's project memory file before posting; mark skipped items 'skipped-off-segment' in both id columns.
+- The LinkedIn queue drops to 7 only after the day's 15:00Z post publishes (~15:05Z); a run before then sees 8. Wait and re-check
+  `np_buffer.py queue` rather than skipping the top-up.
 - Update `ig_post_id, ig_due, li_post_id, li_due`. Keep at most 8 scheduled posts per channel (Buffer free plan queue limit 10); skip the top-up if the queue is full.
 
 ## 6. Report
