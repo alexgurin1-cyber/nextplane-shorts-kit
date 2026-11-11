@@ -4,6 +4,11 @@ URL=f"https://api.elevenlabs.io/v1/text-to-speech/{VOICE}/with-timestamps"
 OUT=os.environ["WORK"]+"/vo"; os.makedirs(OUT, exist_ok=True)
 CTA="Before you call the broker, check the data at NextPlane dot U S."
 S={
+ # 2026-11-11 daily run: SAME PRICE TWINS, Beechcraft A36 Bonanza at $349,000: N8088J (1990, E-2502, 1,844 h since new on the
+ # original engine per both ads, dealer NC, $369,000 Oct 6 -> $349,000 Nov 7) vs N85BB (1973, E-508, 7,315 h, IO-550-B 30 h since
+ # RAM overhaul, dealer NE, $349,000 unchanged since Jul 2). No federal accident record on either (N-number and serial).
+ "a36eng":["Two Bonanza A thirty-sixes. Both three hundred forty-nine thousand dollars.",
+           "One is seventeen years newer, on its original engine. The other has a fresh overhaul.", CTA],
  "sr20":["Three fifty-four nine for this Cirrus S R twenty.",
          "Twelve days ago, same airplane, same hours: two seventy-nine nine.", CTA],
  "a36":["Two A36 Bonanzas. Both two ninety-nine.",

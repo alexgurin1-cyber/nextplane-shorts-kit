@@ -1,6 +1,7 @@
 import json, os, sys, subprocess, urllib.request, urllib.error, threading
 KEY=os.environ["ELEVENLABS_API_KEY"]
 P={
+"a36eng":"warm, confident modern groove for a 15-second social video, 102 BPM, starts instantly on a hard downbeat with a punchy kick, a bright two-note guitar-synth motif that answers itself like a side-by-side comparison, tight hats and a rolling bass, a tense filtered build at about 5 seconds, a satisfying lift at about 8.5 seconds as the fresh engine lands, clean confident resolve in the final 3 seconds, no vocals, not monotone, no samba",
 "sr20":"punchy modern electronic pulse for a 12-second social video, 112 BPM, starts immediately on a hard downbeat with a sub bass hit, tight hi-hats and plucked synth, a quick riser into a bigger hit at about 3.4 seconds where the reveal lands, confident and curious, clean resolve in the final 3 seconds, no vocals, no samba",
 "a36":"tense minimal electronic groove for a 13-second social video, 104 BPM, starts on beat one with a deep kick and ticking clock-like percussion, muted synth bass, builds at about 3 seconds, small lift at 7 seconds, clean resolving chord in the final 3 seconds, no vocals",
 "mirage":"investigative modern underscore for a 14-second social video, 96 BPM, opens instantly with a punchy kick and dark synth stab, pulsing bass, suspense rises at about 4.4 seconds for a reveal, decisive hit at 8 seconds, warm resolve in the final 3 seconds, no vocals, not monotone",

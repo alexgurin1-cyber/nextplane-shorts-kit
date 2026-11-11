@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """NextPlane 15-second vertical (TikTok / Instagram Reels) renderer.
-Usage: render15.py <video> [worker nworkers]   video in {sr20, a36, mirage, pa32, m20k, sr22t, a36cut, sr20g6, c172s, f33a, g36up, arrow3, sr20bm, c182p, liq*, cuts_*, num_*}
+Usage: render15.py <video> [worker nworkers]   video in {sr20, a36, mirage, pa32, m20k, sr22t, a36cut, sr20g6, c172s, f33a, g36up, arrow3, a36eng, sr20bm, c182p, liq*, cuts_*, num_*}
        render15.py <video> info                 -> timeline JSON (used by gen_music.py / mux15.py)
 Layout respects platform UI safe zones: text inside x 64..940, y 210..1440."""
 import json, os, sys, math
@@ -58,6 +58,9 @@ NF = int(TOTAL * FPS)
 
 # ---------------- captions ----------------
 CAPS = {
+ "a36eng": [(1, "Two A36 Bonanzas.", 0, 3), (1, "Both $349,000.", 4, 9),
+            (2, "One is 17 years newer,", 0, 4), (2, "on its original engine.", 5, 8),
+            (2, "The other has", 9, 11), (2, "a fresh overhaul.", 12, 14)],
  "sr20": [(1, "$354,900", 0, 2), (1, "for this Cirrus SR20", 3, 8),
           (2, "Twelve days ago,", 0, 2), (2, "same airplane, same hours:", 3, 6), (2, "$279,900", 7, 9)],
  "a36": [(1, "Two A36 Bonanzas.", 0, 2), (1, "Both $299,000.", 3, 5),
@@ -1176,6 +1179,66 @@ def scene_c182n(im, tt):
             d.text((110, 1205), "NO FEDERAL ACCIDENT RECORD", font=BCB(60), fill=(*CYAN, int(255 * nb)), anchor="lm")
             d.text((110, 1270), "CHECKED BY N-NUMBER AND SERIAL", font=SMR(24), fill=(*OFF, int(255 * nb)), anchor="lm")
 
+def scene_a36eng(im, tt):
+    """SAME PRICE TWINS: Beechcraft A36 Bonanza at $349,000 (2026-11-11). A = N8088J (1990, serial E-2502, 1,844 h since
+    new on airframe and original engine (SNEW), dealer NC; $369,000 Oct 6 -> $349,000 Nov 7); B = N85BB (1973, serial
+    E-508, 7,315 h, engine 30 h since overhaul (RAM IO-550-B), dealer NE, $349,000 unchanged since Jul 2). No federal
+    accident record on either (N-number and serial). Photos are the model (registrations blurred), not the subject tails."""
+    HH = 960
+    dark = 0.6 if tt < T_B2 else 0.36
+    LA = bg_layer(f"{PH}/a.jpg", 0.45, dark=dark, size=(W, HH))
+    LB = bg_layer(f"{PH}/b.jpg", 0.45, dark=dark, size=(W, HH))
+    paste_bg(im, LA, tt, 0, T_LOOK, size=(W, HH), box=(0, 0))
+    paste_bg(im, LB, tt, 0, T_LOOK, size=(W, HH), box=(0, HH), zoom_in=False)
+    im.alpha_composite(GRAD)
+    d = ImageDraw.Draw(im, "RGBA")
+    d.rectangle([0, HH - 3, W, HH + 3], fill=(*CYAN, 255))
+    brand_bug(im)
+    fade = 1 - ease((tt - T_LOOK) / 0.2)
+    if fade <= 0: return
+    if tt < T_B2 + 0.25:
+        pf = (1 - ease((tt - T_B2) / 0.25)) * fade
+        for yy, lab in ((360, "A · 1990 BEECHCRAFT A36 BONANZA"), (1040, "B · 1973 BEECHCRAFT A36 BONANZA")):
+            d.rounded_rectangle([70, yy - 34, 70 + d.textlength(lab, font=SMB(30)) + 40, yy + 34], radius=12,
+                                fill=(8, 20, 31, int(200 * pf)))
+            d.text((90, yy), lab, font=SMB(30), fill=(*OFF, int(255 * pf)), anchor="lm")
+        for yy, t0 in ((580, 0.0), (1225, 0.12)):   # price on screen from the first frame (spec)
+            punch(im, (W / 2, yy), "$349,000", BCB(190), tt, t0, pf)
+        stamp(im, W / 2, HH, "SAME PRICE", ease((tt - wt(1, 4)) / 0.25) * pf)
+        return
+    a = ease((tt - T_B2) / 0.3) * fade
+    # A: 17 years newer, original engine at 1,844 h since new, cut once
+    aa = ease((tt - wt(2, 0)) / 0.3) * a
+    if aa > 0:
+        panel(d, (64, 400, 948, 880), aa, title="A · N8088J", sub="ENGINE + PRICE")
+        ya = ease((tt - wt(2, 2)) / 0.25) * aa
+        if ya > 0:
+            chip(d, 110, 548, "1990 · 1,844 HRS", ya, f=SMB(28))
+        step_chart(d, (120, 640, 880, 690), [(0.0, 369000, "OCT 6"), (0.62, 349000, "NOV 7")],
+                   wt(2, 0), wt(2, 4, True), tt, 345000, 372000, aa)
+        ca = ease((tt - wt(2, 3)) / 0.3) * aa
+        if ca > 0:
+            d.text((900, 548), "CUT · -$20,000", font=BCB(46), fill=(*CYAN, int(255 * ca)), anchor="rm")
+        ea = ease((tt - wt(2, 7)) / 0.25) * aa
+        if ea > 0:
+            d.text((110, 800), "ORIGINAL ENGINE · 1,844 HRS", font=BCB(58), fill=(*WHITE, int(255 * ea)), anchor="lm")
+            d.text((110, 850), "HOURS SINCE NEW, PER THE AD", font=SMR(24), fill=(*OFF, int(255 * ea)), anchor="lm")
+    # B: 1973, 7,315 h, engine 30 h since overhaul, unchanged since July
+    ab = ease((tt - wt(2, 0) - 0.15) / 0.3) * a
+    if ab > 0:
+        panel(d, (64, 990, 948, 1335), ab, title="B · N85BB", sub="ENGINE + PRICE")
+        yb = ease((tt - wt(2, 2)) / 0.25) * ab
+        if yb > 0:
+            chip(d, 110, 1112, "1973 · 7,315 HRS", yb, f=SMB(28))
+        step_chart(d, (120, 1175, 880, 1195), [(0.0, 349000, "JUL 2")],
+                   wt(2, 0), wt(2, 4, True), tt, 345000, 372000, ab)
+        ua = ease((tt - wt(2, 9)) / 0.3) * ab
+        if ua > 0:
+            d.text((900, 1112), "UNCHANGED SINCE JULY", font=BCB(46), fill=(*CYAN, int(255 * ua)), anchor="rm")
+        eb = ease((tt - wt(2, 13)) / 0.25) * ab
+        if eb > 0:
+            d.text((110, 1290), "ENGINE · 30 HRS SINCE OVERHAUL", font=BCB(58), fill=(*CYAN, int(255 * eb)), anchor="lm")
+
 # ---------------- liquidity check (campaign Format A, model-level, no tail) ----------------
 # One entry per clip; the slug must start with "liq". nums: (value, label, beat-2 word index where it drops in,
 # optional plain-words note shown under the number, e.g. "ABOUT A MONTH").
@@ -1479,8 +1542,8 @@ def endbg():
         _EB.append(g.resize((W, H)).convert("RGBA"))
     return _EB[0]
 
-SCENE = scene_liq if V.startswith("liq") else scene_cuts if V.startswith("cuts") else scene_num if V.startswith("num_") else {"sr20": scene_sr20, "a36": scene_a36, "mirage": scene_mirage, "pa32": scene_pa32, "m20k": scene_m20k, "sr22t": scene_sr22t, "a36cut": scene_a36cut, "sr20g6": scene_sr20g6, "arrow3": scene_arrow3, "c182n": scene_c182n, "c172s": scene_c172s, "c182p": scene_c182p, "sr20bm": scene_sr20bm, "f33a": scene_f33a, "g36up": scene_g36up}[V]
-TAILS = ["YOUR N-NUMBER"] if V.startswith(("liq", "cuts", "num_")) else {"sr20": ["N881PF"], "a36": ["N29DL", "N72MD"], "mirage": ["N27RZ"], "pa32": ["N123BE"], "m20k": ["N231HB", "N3594H"], "sr22t": ["N236CB"], "a36cut": ["N614MM"], "sr20g6": ["N665M", "N34AS"], "arrow3": ["N41GF", "N6089H"], "c182n": ["N9051G", "N9164G"], "c172s": ["N20818"], "c182p": ["N9802E"], "sr20bm": ["N190BM"], "f33a": ["N22099"], "g36up": ["N6980B"]}[V]
+SCENE = scene_liq if V.startswith("liq") else scene_cuts if V.startswith("cuts") else scene_num if V.startswith("num_") else {"sr20": scene_sr20, "a36": scene_a36, "mirage": scene_mirage, "pa32": scene_pa32, "m20k": scene_m20k, "sr22t": scene_sr22t, "a36cut": scene_a36cut, "sr20g6": scene_sr20g6, "arrow3": scene_arrow3, "c182n": scene_c182n, "c172s": scene_c172s, "c182p": scene_c182p, "sr20bm": scene_sr20bm, "f33a": scene_f33a, "g36up": scene_g36up, "a36eng": scene_a36eng}[V]
+TAILS = ["YOUR N-NUMBER"] if V.startswith(("liq", "cuts", "num_")) else {"sr20": ["N881PF"], "a36": ["N29DL", "N72MD"], "mirage": ["N27RZ"], "pa32": ["N123BE"], "m20k": ["N231HB", "N3594H"], "sr22t": ["N236CB"], "a36cut": ["N614MM"], "sr20g6": ["N665M", "N34AS"], "arrow3": ["N41GF", "N6089H"], "c182n": ["N9051G", "N9164G"], "c172s": ["N20818"], "c182p": ["N9802E"], "sr20bm": ["N190BM"], "f33a": ["N22099"], "g36up": ["N6980B"], "a36eng": ["N8088J", "N85BB"]}[V]
 
 def frame(i):
     global GRAD
