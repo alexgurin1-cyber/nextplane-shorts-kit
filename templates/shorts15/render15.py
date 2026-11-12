@@ -162,6 +162,10 @@ CAPS = {
  "num_trn_sr20": [(1, "Shopping for a Cirrus SR20?", 0, 6),
                   (2, "Nearly one in three", 0, 3), (2, "shows signs of a training past.", 4, 9),
                   (2, "Most averaged over 250 hours a year.", 10, 18), (2, "Is yours one of them?", 19, 23)],
+ "num_trn_c172": [(1, "Shopping for a Cessna 172?", 0, 5),
+                  (2, "Nearly one in five", 0, 3), (2, "shows signs of a training past.", 4, 9),
+                  (2, "16 are still registered", 10, 13), (2, "to a flight school or club.", 14, 19),
+                  (2, "Is yours one of them?", 20, 24)],
  "num_up_single": [(1, "Shopping for a single-engine airplane?", 0, 4),
                    (2, "Almost 3 in 100 ask more than before.", 0, 8),
                    (2, "About half were relisted higher.", 9, 13), (2, "Is yours one of them?", 14, 18)],
@@ -1451,6 +1455,13 @@ NUM = {
                       subject="CIRRUS SR20s FOR SALE", sub="US · NOV 5, 2026",
                       n=37, of=116, label="SHOW SIGNS OF A TRAINING PAST", plain="NEARLY 1 IN 3", n_at=0,
                       second=("35", "AVERAGED OVER 250 HOURS", "A YEAR SINCE BUILT", 10), ask_at=19),
+ # 2026-11-12 TRAINING HISTORY, Cessna 172 family (DATA: campaign/numbers/DATA_20261112.md): tails seen in the last 7 days;
+ # strict count: >250 h/yr (builds <= 2024) OR school/club-registered OR serial-matched instructional accident OR ad words
+ # that describe the airplane's own past (4 of 13 ad hits held; suitability phrases dropped)
+ "num_trn_c172": dict(kind="TRAINER CHECK", q1="SHOPPING FOR A", q2="CESSNA 172?", hook="hook.jpg", find="find.jpg",
+                      subject="CESSNA 172s FOR SALE", sub="US · NOV 12, 2026",
+                      n=38, of=202, label="SHOW SIGNS OF A TRAINING PAST", plain="NEARLY 1 IN 5", n_at=0,
+                      second=("16", "STILL REGISTERED TO A", "FLIGHT SCHOOL OR CLUB", 10), ask_at=20),
  # 2026-11-07 SELLER OWNERSHIP, all US single-engine pistons (DATA: campaign/numbers/DATA_20261107.md): FAA certificate
  # issue date of the current registrant < 2 years ago, guardrails per numbers.sql §3, tails seen in the last 7 days
  "num_own_single": dict(kind="OWNERSHIP CHECK", q1="SHOPPING FOR A", q2="SINGLE?", hook="hook.jpg", find="find.jpg",
