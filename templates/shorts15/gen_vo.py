@@ -164,6 +164,10 @@ S={
                  "Nearly one in five shows signs of a training past. Sixteen are still registered to a flight school or club. Is yours one of them?", CTA],
  "num_dmg_sr22":["Shopping for a Cirrus S R twenty-two?",
                  "About one in twenty for sale has a damage history. Prop strikes, hail, even a parachute pull. Is yours one of them?", CTA],
+ # 2026-11-13 PRICE HISTORY (up, relisted higher): N784RJ 2014 SR22T G5, same dealer, $518,900 (Apr 18 - Jun 27) ->
+ # $664,900 since Sep 3 with a September 2026 engine overhaul (+$146,000). No federal accident record.
+ "sr22tup":["About six hundred sixty-five thousand dollars for this S R twenty-two T.",
+            "In June, same dealer: five hundred nineteen thousand. Now with an overhauled engine.", CTA],
  "g36up":["About seven hundred thousand dollars for this Bonanza G thirty-six.",
           "In September, same dealer: five hundred fifty thousand. Now with a zero-hour engine.", CTA],
 }

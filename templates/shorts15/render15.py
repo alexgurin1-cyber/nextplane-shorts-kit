@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """NextPlane 15-second vertical (TikTok / Instagram Reels) renderer.
-Usage: render15.py <video> [worker nworkers]   video in {sr20, a36, mirage, pa32, m20k, sr22t, a36cut, sr20g6, c172s, f33a, g36up, arrow3, a36eng, sr20bm, c182p, liq*, cuts_*, num_*}
+Usage: render15.py <video> [worker nworkers]   video in {sr20, a36, mirage, pa32, m20k, sr22t, a36cut, sr20g6, c172s, f33a, g36up, sr22tup, arrow3, a36eng, sr20bm, c182p, liq*, cuts_*, num_*}
        render15.py <video> info                 -> timeline JSON (used by gen_music.py / mux15.py)
 Layout respects platform UI safe zones: text inside x 64..940, y 210..1440."""
 import json, os, sys, math
@@ -90,6 +90,8 @@ CAPS = {
  "a36cut": [(1, "$229,000", 0, 4), (1, "for this Beechcraft Bonanza A36", 5, 9),
             (2, "In August, the same ad asked", 0, 5), (2, "$310,000.", 6, 9),
             (2, "It's been cut three times.", 10, 14)],
+ "sr22tup": [(1, "$664,900", 0, 5), (1, "for this SR22T", 6, 11),
+             (2, "In June, same dealer:", 0, 3), (2, "$518,900.", 4, 7), (2, "Now with an overhauled engine.", 8, 12)],
  "g36up": [(1, "$699,900", 0, 4), (1, "for this Bonanza G36", 5, 9),
            (2, "In September, same dealer:", 0, 3), (2, "$549,900.", 4, 7), (2, "Now with a zero-hour engine.", 8, 12)],
  "f33a": [(1, "$250,000", 0, 4), (1, "for this Bonanza F33A", 5, 10),
@@ -1020,6 +1022,81 @@ def scene_g36up(im, tt):
     if c1 > 0: chip(d, 110, 1150 + yo, "SAME DEALER", c1, f=SMB(28))
     if c2 > 0: chip(d, 370, 1150 + yo, "ZERO-HOUR ENGINE", c2, f=SMB(28))
 
+def scene_sr22tup(im, tt):
+    """PRICE HISTORY (up): N784RJ 2014 SR22T G5, serial 0705, same dealer (Santa Ana CA), two priced ads:
+    $518,900 Apr 18 -> Jun 27 (no change, 'higher time engine') -> off the market -> $664,900 since Sep 3 with a
+    September 2026 overhauled engine (+$146,000), unchanged since. Model photos, registrations blurred."""
+    hook = tt < T_B2 + 0.3
+    im.alpha_composite(blur_backdrop(f"{PH}/sr22tup-hook.jpg" if hook else f"{PH}/sr22tup-bg.jpg", 0.5 if hook else 0.34))
+    im.alpha_composite(GRAD)
+    d = ImageDraw.Draw(im, "RGBA")
+    brand_bug(im)
+    if tt < T_B2 + 0.25:
+        fade = 1 - ease((tt - T_B2) / 0.25)
+        chip(d, W / 2, 360, "FOR SALE NOW", fade, anchor="c")
+        shadow_text(d, (W / 2, 460), "2014 CIRRUS SR22T", BCB(84), OFF, fade)
+        punch(im, (W / 2, 640), "$664,900", BCB(236), tt, 0.0, fade)
+        if fade > 0.02:
+            card = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+            photo_card(card, f"{PH}/sr22tup-hook.jpg", (70, 800, 1010, 1197), tt, 0, T_B2)
+            if fade < 1: card.putalpha(card.getchannel("A").point(lambda v: int(v * fade)))
+            im.alpha_composite(card)
+        d = ImageDraw.Draw(im, "RGBA")
+        la = ease((tt - wt(1, 6)) / 0.2) * fade
+        if la > 0:
+            chip(d, W / 2, 1250, "DEALER AD \u00b7 LISTED SEP 3", la, anchor="c", f=SMB(30), col=OFF, outline=GREY)
+        if fade > 0.02:
+            d.text((990, 1182), "PHOTO: REPRESENTATIVE SR22T", font=SMR(20), fill=(*OFF, int(220 * fade)), anchor="rs")
+        return
+    a = ease((tt - T_B2 - 0.1) / 0.3) * (1 - ease((tt - T_LOOK) / 0.2))
+    if a <= 0: return
+    yo = lerp(40, 0, eout((tt - T_B2 - 0.1) / 0.35))
+    panel(d, (64, 330 + yo, 948, 1230 + yo), a, sub="PRICE HISTORY \u00b7 2 ADS")
+    gx0, gx1, gy0, gy1 = 120, 880, 600 + yo, 1000 + yo
+    ymin, ymax = 440000, 720000
+    X = lambda f: gx0 + f * (gx1 - gx0)
+    Y = lambda v: gy1 - (v - ymin) / (ymax - ymin) * (gy1 - gy0)
+    F_OFF, F_UP = 0.33, 0.68          # Jun 27 last seen, Sep 3 relisted (day 70 and 138 of 209 since Apr 18)
+    # first ad: flat $518,900 Apr 18 -> Jun 27, drawn on "June"
+    p1 = min(max((tt - wt(2, 0)) / 0.45, 0), 1)
+    if p1 > 0:
+        d.line([(X(0), Y(518900)), (X(F_OFF * eout(p1)), Y(518900))], fill=(*CYAN, int(255 * a)), width=9)
+        d.ellipse([X(0) - 9, Y(518900) - 9, X(0) + 9, Y(518900) + 9], fill=(*CYAN, int(255 * a)))
+        d.text((X(0), gy1 + 44), "APR 18", font=SMR(24), fill=(*GREY, int(255 * a)), anchor="ls")
+    la1 = ease((tt - wt(2, 4)) / 0.25) * a
+    if la1 > 0:
+        d.ellipse([X(F_OFF) - 9, Y(518900) - 9, X(F_OFF) + 9, Y(518900) + 9], fill=(*OFF, int(255 * la1)))
+        d.text((X(0), Y(518900) + 50), "$518,900", font=SMB(30), fill=(*OFF, int(255 * la1)), anchor="ls")
+        d.text((X(F_OFF), gy1 + 44), "JUN 27", font=SMR(24), fill=(*GREY, int(255 * la1)), anchor="ms")
+    # off the market Jun 27 -> Sep 3 (dashed)
+    p2 = min(max((tt - wt(2, 7, True) + 0.1) / 0.35, 0), 1)
+    if p2 > 0:
+        xe = lerp(F_OFF, F_UP, p2); xx = F_OFF
+        while xx < xe:
+            d.line([(X(xx), Y(518900)), (X(min(xx + 0.015, xe)), Y(518900))], fill=(*GREY, int(200 * a)), width=4); xx += 0.03
+        if p2 >= 1:
+            d.text((X((F_OFF + F_UP) / 2), Y(518900) + 46), "OFF MARKET", font=SMR(22), fill=(*GREY, int(220 * a)), anchor="ms")
+    # relisted higher on "Now"
+    p3 = min(max((tt - wt(2, 8)) / 0.5, 0), 1)
+    if p3 > 0:
+        yd = lerp(Y(518900), Y(664900), eout(min(p3 * 1.6, 1)))
+        d.line([(X(F_UP), Y(518900)), (X(F_UP), yd)], fill=(*WHITE, int(255 * a)), width=11)
+        if p3 > 0.6:
+            q = (p3 - 0.6) / 0.4
+            d.line([(X(F_UP), Y(664900)), (X(lerp(F_UP, 1.0, q)), Y(664900))], fill=(*WHITE, int(255 * a)), width=11)
+            d.ellipse([X(F_UP) - 10, Y(664900) - 10, X(F_UP) + 10, Y(664900) + 10], fill=(*OFF, int(255 * a)))
+            d.text((X(F_UP) + 16, Y(664900) + 46), "$664,900", font=SMB(30), fill=(*WHITE, int(255 * a)), anchor="ls")
+            d.text((X(F_UP), gy1 + 44), "SEP 3", font=SMR(24), fill=(*GREY, int(255 * a)), anchor="ms")
+    ba = ease((tt - wt(2, 9)) / 0.3) * a
+    if ba > 0:
+        v = counter(146000, tt, wt(2, 9), 0.5)
+        ym = Y(664900) + 6
+        d.rounded_rectangle([X(F_UP) - 330, ym - 42, X(F_UP) - 40, ym + 42], radius=12, fill=(8, 20, 31, int(230 * ba)), outline=(*WHITE, int(200 * ba)), width=3)
+        d.text((X(F_UP) - 185, ym), "+" + money(round(v / 100) * 100), font=BCB(64), fill=(*WHITE, int(255 * ba)), anchor="mm")
+    c1 = ease((tt - wt(2, 2)) / 0.2) * a; c2 = ease((tt - wt(2, 11)) / 0.2) * a
+    if c1 > 0: chip(d, 110, 1150 + yo, "SAME DEALER", c1, f=SMB(28))
+    if c2 > 0: chip(d, 370, 1150 + yo, "ENGINE OVERHAULED SEP 2026", c2, f=SMB(28))
+
 def scene_sr20g6(im, tt):
     """SAME PRICE TWINS: Cirrus SR20 G6s at $489,900. A = N665M (2022, 740 h, cut twice: $534,900 Apr 16 ->
     $514,900 Jun 2 -> $489,900 Sep 29); B = N34AS (2021, 1,785 h, unchanged since Apr 13). No accident record on either.
@@ -1553,8 +1630,8 @@ def endbg():
         _EB.append(g.resize((W, H)).convert("RGBA"))
     return _EB[0]
 
-SCENE = scene_liq if V.startswith("liq") else scene_cuts if V.startswith("cuts") else scene_num if V.startswith("num_") else {"sr20": scene_sr20, "a36": scene_a36, "mirage": scene_mirage, "pa32": scene_pa32, "m20k": scene_m20k, "sr22t": scene_sr22t, "a36cut": scene_a36cut, "sr20g6": scene_sr20g6, "arrow3": scene_arrow3, "c182n": scene_c182n, "c172s": scene_c172s, "c182p": scene_c182p, "sr20bm": scene_sr20bm, "f33a": scene_f33a, "g36up": scene_g36up, "a36eng": scene_a36eng}[V]
-TAILS = ["YOUR N-NUMBER"] if V.startswith(("liq", "cuts", "num_")) else {"sr20": ["N881PF"], "a36": ["N29DL", "N72MD"], "mirage": ["N27RZ"], "pa32": ["N123BE"], "m20k": ["N231HB", "N3594H"], "sr22t": ["N236CB"], "a36cut": ["N614MM"], "sr20g6": ["N665M", "N34AS"], "arrow3": ["N41GF", "N6089H"], "c182n": ["N9051G", "N9164G"], "c172s": ["N20818"], "c182p": ["N9802E"], "sr20bm": ["N190BM"], "f33a": ["N22099"], "g36up": ["N6980B"], "a36eng": ["N8088J", "N85BB"]}[V]
+SCENE = scene_liq if V.startswith("liq") else scene_cuts if V.startswith("cuts") else scene_num if V.startswith("num_") else {"sr20": scene_sr20, "a36": scene_a36, "mirage": scene_mirage, "pa32": scene_pa32, "m20k": scene_m20k, "sr22t": scene_sr22t, "a36cut": scene_a36cut, "sr20g6": scene_sr20g6, "arrow3": scene_arrow3, "c182n": scene_c182n, "c172s": scene_c172s, "c182p": scene_c182p, "sr20bm": scene_sr20bm, "f33a": scene_f33a, "g36up": scene_g36up, "sr22tup": scene_sr22tup, "a36eng": scene_a36eng}[V]
+TAILS = ["YOUR N-NUMBER"] if V.startswith(("liq", "cuts", "num_")) else {"sr20": ["N881PF"], "a36": ["N29DL", "N72MD"], "mirage": ["N27RZ"], "pa32": ["N123BE"], "m20k": ["N231HB", "N3594H"], "sr22t": ["N236CB"], "a36cut": ["N614MM"], "sr20g6": ["N665M", "N34AS"], "arrow3": ["N41GF", "N6089H"], "c182n": ["N9051G", "N9164G"], "c172s": ["N20818"], "c182p": ["N9802E"], "sr20bm": ["N190BM"], "f33a": ["N22099"], "g36up": ["N6980B"], "sr22tup": ["N784RJ"], "a36eng": ["N8088J", "N85BB"]}[V]
 
 def frame(i):
     global GRAD
