@@ -88,6 +88,9 @@ Spec, kinds, subject rotation and wording rules: `campaign/numbers/README.md`. S
 - Publish as §4; log to `social_shorts15` with format `NUMBER — <KIND>`, tails `{MODEL:<subject>}`, hook = the count line.
 
 ## 5. Library backfill top-up (every run)
+- First catch up LinkedIn: `select ord,slug,body from social_backfill where ig_post_id like '6%' and li_post_id is null order by ord` —
+  queue those on LinkedIn before taking a new item (a weekend run can find the LI queue at 8 with nothing publishing until
+  Monday; then it queues Instagram only and leaves li_post_id null for the next run, as on 2026-11-14 ord 41).
 - `select ord,slug,body,ig_tags from social_backfill where ig_post_id is null order by ord limit 1`.
 - Video: `https://uiprgookspqnvyumkyse.supabase.co/storage/v1/object/public/rendered_videos/social/<slug>.mp4`.
 - IG caption = body + "\n\n" + ig_tags; `np_buffer.py post` inserts the link block ("Run any N-number — link in bio." + the instagram-tagged report URL) between body and tags. Schedule at the day after the latest scheduled backfill `ig_due` at 01:00Z (6 PM PT).

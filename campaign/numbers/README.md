@@ -26,7 +26,8 @@ aviation / university / flying club (drop vague "<word> ACADEMY LLC" names, e.g.
 hits held ("perfect flight school aircraft", "ready for a flight school" are suitability, not history).
 - dmg: all singles → Cirrus SR22 (used 2026-11-10, `num_dmg_sr22`, 15 of 309) → Cessna 172 → Piper PA-28 → Beechcraft Bonanza → Cessna 182 → Mooney M20 → Cirrus SR20 → twins → turboprops
 - trn: Cirrus SR20 (used 2026-11-05, `num_trn_sr20`, 37 of 116) → Cessna 172 (used 2026-11-12, `num_trn_c172`, 38 of 202) → Diamond DA40 → Piper PA-28 → Cessna 150/152 → all singles → Piper Seminole / twins
-- own: all singles (used 2026-11-07, `num_own_single`, 603 of 2,687) → Cirrus SR22 → Cessna 172 → Bonanza → Cessna 182 → twins
+- own: all singles (used 2026-11-07, `num_own_single`, 603 of 2,687) → Cirrus SR22 → Cessna 172 → Bonanza (used 2026-11-14, `num_own_bonanza`, 35 of 257; SR22/C172 skipped that week by the two-leads-per-family cap, still next) → Cessna 182 → Mooney M20 → Piper PA-28
+Ownership counts (2026-11-14): also drop tails whose listing serial differs from the FAA master serial — the registration date then belongs to another airframe (16 of 273 Bonanzas).
 - up:  all singles (used 2026-11-08, `num_up_single`, 64 of 2,374; use numbers.sql §4b strict) → Cirrus → Cessna → Piper → Beechcraft → Mooney (use the category when a model has fewer than 5; single-engine pistons only per the 2026-11-03 target segment)
 
 ## Script (three beats, ≤ 15.0 s total)

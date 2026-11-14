@@ -174,6 +174,9 @@ CAPS = {
  "num_own_single": [(1, "Shopping for a single-engine airplane?", 0, 4),
                     (2, "More than one in five sellers", 0, 5), (2, "has owned it under two years.", 6, 11),
                     (2, "238, under one year.", 12, 17), (2, "Is yours one of them?", 18, 22)],
+ "num_own_bonanza": [(1, "Shopping for a Beechcraft Bonanza?", 0, 4),
+                     (2, "Nearly one in seven sellers", 0, 4), (2, "has owned it under two years.", 5, 10),
+                     (2, "12, under one year.", 11, 14), (2, "Is yours one of them?", 15, 19)],
 }[V] + [(3, "Before you call the broker,", CTA0, CTA0 + 4)]
 
 def draw_caption(im, tt):
@@ -1545,6 +1548,12 @@ NUM = {
                         subject="SINGLE-ENGINE PISTONS FOR SALE", sub="US · NOV 7, 2026",
                         n=603, of=2687, label="SELLER REGISTERED IT UNDER 2 YEARS AGO", plain="MORE THAN 1 IN 5", n_at=0,
                         second=("238", "SELLER REGISTERED IT", "UNDER 1 YEAR AGO", 12), ask_at=18),
+ # 2026-11-14 SELLER OWNERSHIP, Beechcraft Bonanza (all Bonanza models; builds <= 2024, seen in the last 7 days; DATA:
+ # campaign/numbers/DATA_20261114.md): numbers.sql §3 guardrails + listing serial must match the FAA serial (16 mismatches dropped)
+ "num_own_bonanza": dict(kind="OWNERSHIP CHECK", q1="SHOPPING FOR A", q2="BONANZA?", hook="hook.jpg", find="find.jpg",
+                         subject="BEECHCRAFT BONANZAS FOR SALE", sub="US · NOV 14, 2026",
+                         n=35, of=257, label="SELLER REGISTERED IT UNDER 2 YEARS AGO", plain="NEARLY 1 IN 7", n_at=0,
+                         second=("12", "SELLER REGISTERED IT", "UNDER 1 YEAR AGO", 11), ask_at=15),
  # 2026-11-08 PRICED HIGHER, all US single-engine pistons seen in the last 7 days (DATA: campaign/numbers/DATA_20261108.md):
  # current ask above the ad's first recorded ask (price-history based, first price held >= 3 days) or above an earlier closed ad
  # for the same tail (+1%..+60%); asks under half the model median screened out; 4 more tails dropped on row check

@@ -149,6 +149,11 @@ S={
  # campaign/numbers/DATA_20261107.md
  "num_own_single":["Shopping for a single-engine airplane?",
                    "More than one in five sellers has owned it under two years. Two hundred thirty-eight, under one year. Is yours one of them?", CTA],
+ # 2026-11-14 SELLER OWNERSHIP, Beechcraft Bonanza (US, N-number, builds <= 2024, seen in the last 7 days, listing serial =
+ # FAA serial): 35 of 257 registered to the seller under 2 years ago (13.6% -> "nearly one in seven"); 12 under 1 year.
+ # campaign/numbers/DATA_20261114.md
+ "num_own_bonanza":["Shopping for a Beechcraft Bonanza?",
+                    "Nearly one in seven sellers has owned it under two years. Twelve, under one year. Is yours one of them?", CTA],
  # 2026-11-08 PRICED HIGHER, US single-engine pistons seen in the last 7 days: 64 of 2,374 (2.7% -> "almost three in a hundred")
  # are priced above their own first ask or above an earlier closed ad for the same tail; 34 above an earlier ad (53% -> "about half").
  # Strict count after row check (history-based first ask, 3-day glitch rule, price sanity screen). campaign/numbers/DATA_20261108.md
