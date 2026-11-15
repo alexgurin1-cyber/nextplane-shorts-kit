@@ -210,6 +210,31 @@ S={
  "g36up":["About seven hundred thousand dollars for this Bonanza G thirty-six.",
           "In September, same dealer: five hundred fifty thousand. Now with a zero-hour engine.", CTA],
 }
+S["seldlr182"]=["This Cessna Skylane has been for sale seven months. Not one price cut.",
+ "Its dealer usually asks about a quarter above the market, and cuts only one airplane in seven.", CTA]
+S["selllc"]=["Three hundred thirty-nine thousand dollars for this Bonanza. The seller is an LLC with just this one airplane.",
+ "Listed in April at three hundred eighty-five thousand. Five price cuts since.", CTA]
+S["dlr182"]=["This Skylane has been for sale seven months. No price cut.",
+ "Its dealer usually asks a quarter above market, and cuts one airplane in seven.", CTA]
+S["llcf33"]=["This Bonanza is sold by an LLC that owns just this one airplane.",
+ "Listed in April at three hundred eighty-five thousand dollars. Five cuts since.", CTA]
+S["dlr2"]=["This dealer has listed twenty-nine airplanes since April. Fifteen sold.",
+ "They usually ask a quarter above market and rarely cut. This Skylane: seven months, no cut.", CTA]
+S["llc2"]=["This seller listed just one airplane this year. An LLC selling its own Skylane.",
+ "One hundred fifty-five thousand dollars in June. Three cuts later: one hundred twenty-five thousand.", CTA]
+S["dlr3"]=["This dealer listed twenty-nine airplanes since April.",
+ "They usually ask a quarter above market. This Skylane: seven months, no cut.", CTA]
+S["llc3"]=["One airplane listed all year. Just an LLC selling its Skylane.",
+ "Three price cuts since June. Thirty thousand dollars off.", CTA]
+S["dlr4"]=[None, None, "Before you call, check the dealer's selling strategy at NextPlane dot U S."]
+S["llc4"]=[None, None, "Before you call, check the seller's strategy at NextPlane dot U S."]
+S["dlr5"]=["Do you know the selling strategy of the dealer behind this airplane?",
+ "This one asks a quarter above market and rarely cuts. This Skylane: seven months, no cut.",
+ "Before you call the broker, find out their strategy at NextPlane dot U S."]
+S["llc5"]=["Do you know the selling strategy of the owner behind this airplane?",
+ "One LLC, one airplane, one ad all year. Three price cuts since June, thirty thousand dollars off.",
+ "Before you call the seller, find out their strategy at NextPlane dot U S."]
+S["llc6"]=[None, "One LLC, one airplane, one ad all year. Three cuts, thirty thousand dollars off.", None]
 # usage: gen_vo.py [slug]  -> only that slug (no need to delete the pilot entries)
 if len(sys.argv) > 1: S = {sys.argv[1]: S[sys.argv[1]]}
 # optional per-slug delivery speed (ElevenLabs voice_settings.speed, 0.7-1.2) when a clip runs over 15.0 s at the default pace
@@ -233,6 +258,7 @@ def gen(bid,text):
     json.dump({"dur":al["character_end_times_seconds"][-1],"words":words},open(f"{OUT}/{bid}.json","w"))
 for v,beats in S.items():
     for i,t in enumerate(beats):
-        bid=f"{v}_b{i+1}"; gen(bid,t)
+        bid=f"{v}_b{i+1}"
+        if t: gen(bid,t)
         d=json.load(open(f"{OUT}/{bid}.json")); bad=[w["w"] for w in d["words"][:-1] if w["e"]-w["s"]>1.8]
         print(bid, round(d["dur"],2), len(d["words"]), "SMEAR "+str(bad) if bad else "ok")

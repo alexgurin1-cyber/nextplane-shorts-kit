@@ -50,14 +50,30 @@ T_B2 = OFFS[BEATS[1]] - 0.12
 T_LOOK = OFFS[BEATS[2]] - 0.70
 _w3 = [w["w"] for w in WD[BEATS[2]]["words"]]
 CTA0 = _w3.index("Before")                    # beat 3 may open with extra words ("Check yours." in liq clips)
-CHK = next(i for i in range(CTA0, len(_w3)) if _w3[i].lower() == "check")
+CHK = next(i for i in range(CTA0, len(_w3)) if _w3[i].lower() in ("check", "find"))
+if V in ("dlr4", "llc4", "dlr5", "llc6"): CHK = next(i for i in range(CHK, len(_w3)) if _w3[i].lower() == "at")
 T_END = wt(3, CHK) - 0.12                    # "check the data at NextPlane.us"
-TOTAL = max(OFFS[BEATS[2]] + WD[BEATS[2]]["dur"] + 0.75, T_END + 2.95)
+TOTAL = max(OFFS[BEATS[2]] + WD[BEATS[2]]["dur"] + 0.75, T_END + (2.6 if V in ("dlr5", "llc6") else 2.95))
 TOTAL = round(TOTAL * FPS) / FPS
 NF = int(TOTAL * FPS)
 
 # ---------------- captions ----------------
 CAPS = {
+ "dlr5": [(1, "Do you know the selling strategy", 0, 5), (1, "of the dealer behind this airplane?", 6, 11),
+          (2, "This one asks", 0, 2), (2, "a quarter above market", 3, 6), (2, "and rarely cuts.", 7, 9),
+          (2, "This Skylane:", 10, 11), (2, "seven months, no cut.", 12, 15),
+          (3, "Before you call the broker,", 0, 4), (3, "find out their strategy", 5, 8)],
+ "llc6": [(1, "Do you know the selling strategy", 0, 5), (1, "of the owner behind this airplane?", 6, 11),
+          (2, "One LLC, one airplane,", 0, 3), (2, "one ad all year.", 4, 7), (2, "Three cuts,", 8, 9), (2, "$30,000 off.", 10, 13),
+          (3, "Before you call the seller,", 0, 4), (3, "find out their strategy", 5, 8)],
+ "dlr3": [(1, "This dealer listed 29 airplanes", 0, 4), (1, "since April.", 5, 6),
+          (2, "They usually ask", 0, 2), (2, "a quarter above market.", 3, 6), (2, "This Skylane:", 7, 8), (2, "seven months, no cut.", 9, 12)],
+ "llc3": [(1, "One airplane listed all year.", 0, 4), (1, "Just an LLC selling its Skylane.", 5, 10),
+          (2, "Three price cuts since June.", 0, 4), (2, "$30,000 off.", 5, 8)],
+ "dlr182": [(1, "This Skylane has been for sale", 0, 5), (1, "seven months.", 6, 7), (1, "No price cut.", 8, 10),
+            (2, "Its dealer usually asks", 0, 3), (2, "a quarter above market,", 4, 7), (2, "and cuts one airplane in seven.", 8, 13)],
+ "llcf33": [(1, "This Bonanza is sold by an LLC", 0, 6), (1, "that owns just this one airplane.", 7, 12),
+            (2, "Listed in April at $385,000.", 0, 8), (2, "Five cuts since.", 9, 11)],
  "a36eng": [(1, "Two A36 Bonanzas.", 0, 3), (1, "Both $349,000.", 4, 9),
             (2, "One is 17 years newer,", 0, 4), (2, "on its original engine.", 5, 8),
             (2, "The other has", 9, 11), (2, "a fresh overhaul.", 12, 14)],
@@ -196,7 +212,7 @@ CAPS = {
  "num_own_bonanza": [(1, "Shopping for a Beechcraft Bonanza?", 0, 4),
                      (2, "Nearly one in seven sellers", 0, 4), (2, "has owned it under two years.", 5, 10),
                      (2, "12, under one year.", 11, 14), (2, "Is yours one of them?", 15, 19)],
-}[V] + [(3, "Before you call the broker,", CTA0, CTA0 + 4)]
+}[{"dlr4": "dlr3", "llc4": "llc3"}.get(V, V)] + ([] if V in ("dlr5", "llc6") else [(3, "Before you call,", CTA0, CTA0 + 2), (3, {"dlr4": "check the dealer's selling strategy", "llc4": "check the seller's strategy"}.get(V, ""), CTA0 + 3, CHK - 1)] if V in ("dlr4", "llc4") else [(3, "Before you call the broker,", CTA0, CTA0 + 4)])
 
 def draw_caption(im, tt):
     d = ImageDraw.Draw(im, "RGBA")
@@ -330,7 +346,7 @@ def lookup(im, tt, t0, tails):
         d.ellipse([x0 + 30 + i * 34, y0 + 26, x0 + 52 + i * 34, y0 + 48], fill=(*c, int(255 * a)))
     d.rounded_rectangle([x0 + 150, y0 + 16, x1 - 30, y0 + 58], radius=20, fill=(255, 255, 255, int(255 * a)))
     d.text((x0 + 172, y0 + 37), "nextplane.us/aircraft-report", font=SMR(26), fill=(70, 80, 90, int(255 * a)), anchor="lm")
-    d.text((W / 2, y0 + 160), "PLUG IN THE N-NUMBER", font=BCB(72), fill=(*NAVY, int(255 * a)), anchor="mm")
+    d.text((W / 2, y0 + 160), {"dlr4": "CHECK THE DEALER'S STRATEGY", "llc4": "CHECK THE SELLER'S STRATEGY", "dlr5": "FIND OUT THEIR STRATEGY", "llc6": "FIND OUT THEIR STRATEGY"}.get(V, "PLUG IN THE N-NUMBER"), font=BCB(60 if V in ("dlr4", "llc4") else 66 if V in ("dlr5", "llc6") else 72), fill=(*NAVY, int(255 * a)), anchor="mm")
     # input + typing
     full = "  ".join(tails)
     n = int(len(full) * min(max((tt - t0 - 0.25) / 0.55, 0), 1))
@@ -1820,6 +1836,246 @@ def scene_demo(im, tt):
     st, w2 = c["stamp"]
     stamp(im, W / 2, y + 150, st, ease((tt - wt(2, w2)) / 0.25) * a, ang=-4, col=WHITE, size=72)
 
+def scene_dlr182(im, tt):
+    """SELLER SIDE (anonymous dealer): N735AB 1977 Cessna 182Q, dealer ad 248932121, $289,000 since Apr 18 2026, no price change
+    (211 days at Nov 15). NextPlane estimate $218,894 (54 comps, high). Dealer (name withheld) dealer_stats_monthly 2026-11-01:
+    29 listings, 15 sold, median 71 days to sell, 14.3% of listings cut, avg ask +26.69% vs market over 10 priced listings.
+    Tail, price, dealer name and location are deliberately NOT shown. Model photos, registrations blurred."""
+    hook = tt < T_B2 + 0.3
+    im.alpha_composite(blur_backdrop(f"{PH}/dhook.jpg" if hook else f"{PH}/dbg.jpg", 0.5 if hook else 0.34))
+    im.alpha_composite(GRAD)
+    d = ImageDraw.Draw(im, "RGBA")
+    brand_bug(im)
+    if tt < T_B2 + 0.25:
+        fade = 1 - ease((tt - T_B2) / 0.25)
+        chip(d, W / 2, 360, "WHO'S SELLING IT?", fade, anchor="c")
+        shadow_text(d, (W / 2, 460), "CESSNA 182 SKYLANE", BCB(84), OFF, fade)
+        punch(im, (W / 2, 640), "7 MONTHS", BCB(230), tt, 0.0, fade)
+        if fade > 0.02:
+            card = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+            photo_card(card, f"{PH}/dhook.jpg", (70, 800, 1010, 1197), tt, 0, T_B2)
+            if fade < 1: card.putalpha(card.getchannel("A").point(lambda v: int(v * fade)))
+            im.alpha_composite(card)
+        d = ImageDraw.Draw(im, "RGBA")
+        la = ease((tt - wt(1, 8)) / 0.2) * fade
+        if la > 0:
+            chip(d, W / 2, 1250, "FOR SALE SINCE APRIL \u00b7 NO PRICE CUT", la, anchor="c", f=SMB(30), col=OFF, outline=GREY)
+        return
+    a = ease((tt - T_B2 - 0.1) / 0.3) * (1 - ease((tt - T_LOOK) / 0.2))
+    if a <= 0: return
+    yo = lerp(40, 0, eout((tt - T_B2 - 0.1) / 0.35))
+    panel(d, (64, 330 + yo, 948, 1330 + yo), a, title="NEXTPLANE SELLER PROFILE", sub="DEALER \u00b7 NAME WITHHELD")
+    rows = [("71 DAYS", "THEIR AIRPLANES USUALLY SELL IN", T_B2 + 0.35), ("+27%", "THEY ASK ABOVE MARKET, ON AVERAGE", wt(2, 3)),
+            ("1 IN 7", "OF THEIR AIRPLANES GET A PRICE CUT", wt(2, 9))]
+    for k, (val, lab, t0) in enumerate(rows):
+        y0 = 450 + yo + k * 230
+        la = ease((tt - t0 + 0.1) / 0.25) * a
+        if la <= 0: continue
+        d.text((110, y0), lab, font=SMB(30), fill=(*GREY, int(255 * la)), anchor="lm")
+        drop_in(im, (104, y0 + 95), val, BCB(140), CYAN if k == 1 else WHITE, tt, t0 - 0.1)
+        d = ImageDraw.Draw(im, "RGBA")
+    sa = ease((tt - wt(2, 11)) / 0.25) * a
+    stamp(im, W / 2, 1210 + yo, "THIS ONE: 211 DAYS, NO CUT", sa, ang=-4, col=CYAN, size=58)
+
+def scene_llcf33(im, tt):
+    """SELLER SIDE (one-airplane LLC): N781WC 1987 Beechcraft F33A Bonanza, private ad tap_2454525 listed Apr 20 2026.
+    Registered to an LLC since Apr 18 2024 (cert_issue_date); that LLC name holds 1 aircraft in the FAA registry.
+    Price history (aircraft_price_history): $385,000 -> $375,000 May 16 -> $369,500 May 29 -> $365,000 Jun 13
+    -> $349,000 Aug 25 -> $339,000 Oct 21 (five cuts, -$46,000). Tail, LLC name and location deliberately not shown."""
+    hook = tt < T_B2 + 0.3
+    im.alpha_composite(blur_backdrop(f"{PH}/lhook.jpg" if hook else f"{PH}/lbg.jpg", 0.5 if hook else 0.34))
+    im.alpha_composite(GRAD)
+    d = ImageDraw.Draw(im, "RGBA")
+    brand_bug(im)
+    if tt < T_B2 + 0.25:
+        fade = 1 - ease((tt - T_B2) / 0.25)
+        chip(d, W / 2, 360, "WHO'S SELLING IT?", fade, anchor="c")
+        shadow_text(d, (W / 2, 460), "BEECHCRAFT BONANZA F33A", BCB(80), OFF, fade)
+        punch(im, (W / 2, 640), "$339,000", BCB(230), tt, 0.0, fade)
+        if fade > 0.02:
+            card = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+            photo_card(card, f"{PH}/lhook.jpg", (70, 800, 1010, 1197), tt, 0, T_B2)
+            if fade < 1: card.putalpha(card.getchannel("A").point(lambda v: int(v * fade)))
+            im.alpha_composite(card)
+        d = ImageDraw.Draw(im, "RGBA")
+        la = ease((tt - wt(1, 6)) / 0.2) * fade
+        if la > 0:
+            chip(d, W / 2, 1250, "SELLER: AN LLC \u00b7 OWNS 1 AIRPLANE", la, anchor="c", f=SMB(30), col=OFF, outline=GREY)
+        return
+    a = ease((tt - T_B2 - 0.1) / 0.3) * (1 - ease((tt - T_LOOK) / 0.2))
+    if a <= 0: return
+    yo = lerp(40, 0, eout((tt - T_B2 - 0.1) / 0.35))
+    panel(d, (64, 330 + yo, 948, 1230 + yo), a, title="NEXTPLANE SELLER PROFILE", sub="LLC \u00b7 1 AIRPLANE")
+    d.text((110, 455 + yo), "OWNED BY THE LLC SINCE 2024", font=SMB(28), fill=(*GREY, int(255 * a)), anchor="lm")
+    pts = [(0.0, 385000, "APR"), (0.16, 375000, False), (0.26, 369500, False), (0.36, 365000, False), (0.62, 349000, False), (0.84, 339000, "OCT 21")]
+    box = (120, 580 + yo, 880, 1000 + yo)
+    ymin, ymax = 325000, 395000
+    X, Y = step_chart(d, box, pts, wt(2, 0), wt(2, 10), tt, ymin, ymax, a)
+    ba = ease((tt - wt(2, 10)) / 0.3) * a
+    if ba > 0:
+        v = counter(46000, tt, wt(2, 10), 0.5)
+        yc = Y(377000)
+        d.rounded_rectangle([590, yc - 42, 880, yc + 42], radius=12, fill=(8, 20, 31, int(230 * ba)), outline=(*CYAN, int(200 * ba)), width=3)
+        d.text((735, yc), "-" + money(round(v / 100) * 100), font=BCB(64), fill=(*CYAN, int(255 * ba)), anchor="mm")
+    stamp(im, W / 2, 1135 + yo, "5 CUTS SINCE APRIL", ease((tt - wt(2, 11)) / 0.25) * a, ang=-4, col=WHITE, size=52)
+
+def scene_dlr3(im, tt):
+    """SELLER SIDE v2 (dealer first): dealer (name withheld), dealer_stats_monthly 2026-11-01: first listing seen 2026-04-14,
+    29 listings, 15 sold, median 71 days to sell, 14.3% cut, avg ask +26.69% vs market (10 priced). Example: N735AB Cessna 182Q,
+    $289,000 since Apr 18 2026, no price change (211 days). Tail, price, name, location not shown."""
+    hook = tt < T_B2 + 0.3
+    im.alpha_composite(blur_backdrop(f"{PH}/dhook.jpg" if hook else f"{PH}/dbg.jpg", 0.5 if hook else 0.34))
+    im.alpha_composite(GRAD)
+    d = ImageDraw.Draw(im, "RGBA")
+    brand_bug(im)
+    if tt < T_B2 + 0.25:
+        fade = 1 - ease((tt - T_B2) / 0.25)
+        chip(d, W / 2, 360, "WHO'S SELLING IT?", fade, anchor="c")
+        shadow_text(d, (W / 2, 460), "ONE DEALER, SINCE APRIL", BCB(84), OFF, fade)
+        punch(im, (W / 2, 640), "29 AIRPLANES", BCB(165), tt, 0.0, fade)
+        if fade > 0.02:
+            card = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+            photo_card(card, f"{PH}/dhook.jpg", (70, 800, 1010, 1197), tt, 0, T_B2)
+            if fade < 1: card.putalpha(card.getchannel("A").point(lambda v: int(v * fade)))
+            im.alpha_composite(card)
+        d = ImageDraw.Draw(im, "RGBA")
+        la = ease((tt - wt(1, 4)) / 0.2) * fade
+        if la > 0:
+            chip(d, W / 2, 1250, "29 LISTED \u00b7 15 SOLD \u00b7 NAME WITHHELD", la, anchor="c", f=SMB(30), col=OFF, outline=GREY)
+        return
+    a = ease((tt - T_B2 - 0.1) / 0.3) * (1 - ease((tt - T_LOOK) / 0.2))
+    if a <= 0: return
+    yo = lerp(40, 0, eout((tt - T_B2 - 0.1) / 0.35))
+    panel(d, (64, 330 + yo, 948, 1330 + yo), a, title="NEXTPLANE DEALER PROFILE", sub="NAME WITHHELD")
+    rows = [("+27%", "THEY ASK ABOVE MARKET, ON AVERAGE", wt(2, 2)), ("1 IN 7", "OF THEIR AIRPLANES GET A PRICE CUT", wt(2, 5)),
+            ("71 DAYS", "THEIR AIRPLANES USUALLY SELL IN", wt(2, 6, True))]
+    for k, (val, lab, t0) in enumerate(rows):
+        y0 = 450 + yo + k * 230
+        la = ease((tt - t0 + 0.1) / 0.25) * a
+        if la <= 0: continue
+        d.text((110, y0), lab, font=SMB(30), fill=(*GREY, int(255 * la)), anchor="lm")
+        drop_in(im, (104, y0 + 95), val, BCB(140), CYAN if k == 0 else WHITE, tt, t0 - 0.1)
+        d = ImageDraw.Draw(im, "RGBA")
+    sa = ease((tt - wt(2, 8)) / 0.25) * a
+    stamp(im, W / 2, 1210 + yo, "THIS SKYLANE: 7 MONTHS, NO CUT", sa, ang=-4, col=CYAN, size=54)
+
+def scene_llc3(im, tt):
+    """SELLER SIDE v2 (one-airplane LLC): N9020G 1972 Cessna 182N Skylane, private ad tap_2457208 listed Jun 17 2026; the ad's
+    seller name appears on 1 tail only in NextPlane listings (2026); registered owner an LLC since Sep 21 2023 holding 1 aircraft.
+    Price history: $155,000 -> $150,000 Aug 1 -> $140,000 Sep 29 -> $125,000 Oct 25 (3 cuts, -$30,000). Still listed Nov 13.
+    Tail, LLC name and location not shown."""
+    hook = tt < T_B2 + 0.3
+    im.alpha_composite(blur_backdrop(f"{PH}/lhook2.jpg" if hook else f"{PH}/dbg.jpg", 0.5 if hook else 0.34))
+    im.alpha_composite(GRAD)
+    d = ImageDraw.Draw(im, "RGBA")
+    brand_bug(im)
+    if tt < T_B2 + 0.25:
+        fade = 1 - ease((tt - T_B2) / 0.25)
+        chip(d, W / 2, 360, "WHO'S SELLING IT?", fade, anchor="c")
+        shadow_text(d, (W / 2, 460), "ONE SELLER, ONE AD IN 2026", BCB(84), OFF, fade)
+        punch(im, (W / 2, 640), "1 AIRPLANE", BCB(190), tt, 0.0, fade)
+        if fade > 0.02:
+            card = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+            photo_card(card, f"{PH}/lhook2.jpg", (70, 800, 1010, 1197), tt, 0, T_B2)
+            if fade < 1: card.putalpha(card.getchannel("A").point(lambda v: int(v * fade)))
+            im.alpha_composite(card)
+        d = ImageDraw.Draw(im, "RGBA")
+        la = ease((tt - wt(1, 7)) / 0.2) * fade
+        if la > 0:
+            chip(d, W / 2, 1250, "AN LLC \u00b7 OWNS 1 AIRPLANE \u00b7 1972 SKYLANE", la, anchor="c", f=SMB(30), col=OFF, outline=GREY)
+        return
+    a = ease((tt - T_B2 - 0.1) / 0.3) * (1 - ease((tt - T_LOOK) / 0.2))
+    if a <= 0: return
+    yo = lerp(40, 0, eout((tt - T_B2 - 0.1) / 0.35))
+    panel(d, (64, 330 + yo, 948, 1230 + yo), a, title="NEXTPLANE SELLER PROFILE", sub="LLC \u00b7 1 AIRPLANE")
+    d.text((110, 455 + yo), "ITS ONLY AD THIS YEAR \u00b7 PRICE HISTORY", font=SMB(28), fill=(*GREY, int(255 * a)), anchor="lm")
+    pts = [(0.0, 155000, "JUN 17"), (0.25, 150000, False), (0.55, 140000, False), (0.78, 125000, "OCT 25")]
+    box = (120, 580 + yo, 880, 1000 + yo)
+    ymin, ymax = 115000, 165000
+    X, Y = step_chart(d, box, pts, wt(2, 0), wt(2, 4, True), tt, ymin, ymax, a)
+    ba = ease((tt - wt(2, 5)) / 0.3) * a
+    if ba > 0:
+        v = counter(30000, tt, wt(2, 5), 0.5)
+        yc = Y(152000)
+        d.rounded_rectangle([590, yc - 42, 880, yc + 42], radius=12, fill=(8, 20, 31, int(230 * ba)), outline=(*CYAN, int(200 * ba)), width=3)
+        d.text((735, yc), "-" + money(round(v / 100) * 100), font=BCB(64), fill=(*CYAN, int(255 * ba)), anchor="mm")
+    stamp(im, W / 2, 1135 + yo, "3 CUTS SINCE JUNE", ease((tt - wt(2, 3)) / 0.25) * a, ang=-4, col=WHITE, size=52)
+
+def hook_question(im, d, tt, who, photo, chip_txt, chip_at):
+    fade = 1 - ease((tt - T_B2) / 0.25)
+    chip(d, W / 2, 360, "SELLER STRATEGY", fade, anchor="c")
+    shadow_text(d, (W / 2, 470), "DO YOU KNOW THE", BCB(84), OFF, fade)
+    punch(im, (W / 2, 610), who + " STRATEGY?", BCB(118), tt, 0.0, fade)
+    if fade > 0.02:
+        card = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+        photo_card(card, photo, (70, 760, 1010, 1157), tt, 0, T_B2)
+        if fade < 1: card.putalpha(card.getchannel("A").point(lambda v: int(v * fade)))
+        im.alpha_composite(card)
+    d = ImageDraw.Draw(im, "RGBA")
+    la = ease((tt - wt(1, chip_at)) / 0.2) * fade
+    if la > 0:
+        chip(d, W / 2, 1220, chip_txt, la, anchor="c", f=SMB(30), col=OFF, outline=GREY)
+
+def scene_dlr5(im, tt):
+    """SELLER STRATEGY v4 (question first): same facts as scene_dlr3 (dealer_stats_monthly 2026-11-01; N735AB example)."""
+    hook = tt < T_B2 + 0.3
+    im.alpha_composite(blur_backdrop(f"{PH}/dhook.jpg" if hook else f"{PH}/dbg.jpg", 0.5 if hook else 0.34))
+    im.alpha_composite(GRAD)
+    d = ImageDraw.Draw(im, "RGBA")
+    brand_bug(im)
+    if tt < T_B2 + 0.25:
+        hook_question(im, d, tt, "DEALER'S", f"{PH}/dhook.jpg", "A DEALER \u00b7 NAME WITHHELD", 8)
+        return
+    a = ease((tt - T_B2 - 0.1) / 0.3) * (1 - ease((tt - T_LOOK) / 0.2))
+    if a <= 0: return
+    yo = lerp(40, 0, eout((tt - T_B2 - 0.1) / 0.35))
+    panel(d, (64, 330 + yo, 948, 1330 + yo), a, title="NEXTPLANE DEALER PROFILE", sub="NAME WITHHELD")
+    d.text((110, 450 + yo), "29 LISTED SINCE APRIL \u00b7 15 SOLD", font=SMB(30), fill=(*OFF, int(255 * a)), anchor="lm")
+    rows = [("+27%", "THEY ASK ABOVE MARKET, ON AVERAGE", wt(2, 2)), ("1 IN 7", "OF THEIR AIRPLANES GET A PRICE CUT", wt(2, 8)),
+            ("71 DAYS", "THEIR AIRPLANES USUALLY SELL IN", wt(2, 9, True))]
+    for k, (val, lab, t0) in enumerate(rows):
+        y0 = 540 + yo + k * 200
+        la = ease((tt - t0 + 0.1) / 0.25) * a
+        if la <= 0: continue
+        d.text((110, y0), lab, font=SMB(28), fill=(*GREY, int(255 * la)), anchor="lm")
+        drop_in(im, (104, y0 + 88), val, BCB(124), CYAN if k == 0 else WHITE, tt, t0 - 0.1)
+        d = ImageDraw.Draw(im, "RGBA")
+    sa = ease((tt - wt(2, 11)) / 0.25) * a
+    stamp(im, W / 2, 1220 + yo, "THIS SKYLANE: 7 MONTHS, NO CUT", sa, ang=-4, col=CYAN, size=54)
+
+def scene_llc6(im, tt):
+    """SELLER STRATEGY v4 (question first): same facts as scene_llc3 (N9020G; owner LLC with 1 aircraft; ad seller name on 1 tail)."""
+    hook = tt < T_B2 + 0.3
+    im.alpha_composite(blur_backdrop(f"{PH}/lhook2.jpg" if hook else f"{PH}/dbg.jpg", 0.5 if hook else 0.34))
+    im.alpha_composite(GRAD)
+    d = ImageDraw.Draw(im, "RGBA")
+    brand_bug(im)
+    if tt < T_B2 + 0.25:
+        hook_question(im, d, tt, "OWNER'S", f"{PH}/lhook2.jpg", "PRIVATE SELLER \u00b7 AN LLC", 8)
+        return
+    a = ease((tt - T_B2 - 0.1) / 0.3) * (1 - ease((tt - T_LOOK) / 0.2))
+    if a <= 0: return
+    yo = lerp(40, 0, eout((tt - T_B2 - 0.1) / 0.35))
+    panel(d, (64, 330 + yo, 948, 1230 + yo), a, title="NEXTPLANE SELLER PROFILE", sub="NAME WITHHELD")
+    tags = [("1 LLC", 1), ("1 AIRPLANE", 3), ("1 AD IN 2026", 7)]
+    x = 110
+    for txt, wi in tags:
+        ca = ease((tt - wt(2, wi) + 0.05) / 0.2) * a
+        if ca > 0: x += chip(d, x, 460 + yo, txt, ca, f=SMB(30)) + 16
+        else: x += d.textlength(txt, font=SMB(30)) + 60
+    pts = [(0.0, 155000, "JUN 17"), (0.25, 150000, False), (0.55, 140000, False), (0.78, 125000, "OCT 25")]
+    box = (120, 600 + yo, 880, 1000 + yo)
+    ymin, ymax = 115000, 165000
+    X, Y = step_chart(d, box, pts, wt(2, 7), wt(2, 9, True), tt, ymin, ymax, a)
+    ba = ease((tt - wt(2, 10)) / 0.3) * a
+    if ba > 0:
+        v = counter(30000, tt, wt(2, 10), 0.5)
+        yc = Y(152000)
+        d.rounded_rectangle([590, yc - 42, 880, yc + 42], radius=12, fill=(8, 20, 31, int(230 * ba)), outline=(*CYAN, int(200 * ba)), width=3)
+        d.text((735, yc), "-" + money(round(v / 100) * 100), font=BCB(64), fill=(*CYAN, int(255 * ba)), anchor="mm")
+    stamp(im, W / 2, 1135 + yo, "3 CUTS SINCE JUNE", ease((tt - wt(2, 9)) / 0.25) * a, ang=-4, col=WHITE, size=52)
+
+
 _EB = []
 def endbg():
     if not _EB:
@@ -1830,8 +2086,8 @@ def endbg():
         _EB.append(g.resize((W, H)).convert("RGBA"))
     return _EB[0]
 
-SCENE = scene_demo if V.startswith("demo_") else scene_liq if V.startswith("liq") else scene_cuts if V.startswith("cuts") else scene_num if V.startswith("num_") else {"sr20": scene_sr20, "a36": scene_a36, "mirage": scene_mirage, "pa32": scene_pa32, "m20k": scene_m20k, "sr22t": scene_sr22t, "a36cut": scene_a36cut, "sr20g6": scene_sr20g6, "arrow3": scene_arrow3, "c182n": scene_c182n, "c172s": scene_c172s, "c182p": scene_c182p, "sr20bm": scene_sr20bm, "f33a": scene_f33a, "g36up": scene_g36up, "sr22tup": scene_sr22tup, "a36eng": scene_a36eng}[V]
-TAILS = [DEMO[V]["tail"]] if V.startswith("demo_") else ["YOUR N-NUMBER"] if V.startswith(("liq", "cuts", "num_")) else {"sr20": ["N881PF"], "a36": ["N29DL", "N72MD"], "mirage": ["N27RZ"], "pa32": ["N123BE"], "m20k": ["N231HB", "N3594H"], "sr22t": ["N236CB"], "a36cut": ["N614MM"], "sr20g6": ["N665M", "N34AS"], "arrow3": ["N41GF", "N6089H"], "c182n": ["N9051G", "N9164G"], "c172s": ["N20818"], "c182p": ["N9802E"], "sr20bm": ["N190BM"], "f33a": ["N22099"], "g36up": ["N6980B"], "sr22tup": ["N784RJ"], "a36eng": ["N8088J", "N85BB"]}[V]
+SCENE = scene_demo if V.startswith("demo_") else scene_liq if V.startswith("liq") else scene_cuts if V.startswith("cuts") else scene_num if V.startswith("num_") else {"sr20": scene_sr20, "a36": scene_a36, "mirage": scene_mirage, "pa32": scene_pa32, "m20k": scene_m20k, "sr22t": scene_sr22t, "a36cut": scene_a36cut, "sr20g6": scene_sr20g6, "arrow3": scene_arrow3, "c182n": scene_c182n, "c172s": scene_c172s, "c182p": scene_c182p, "sr20bm": scene_sr20bm, "f33a": scene_f33a, "g36up": scene_g36up, "sr22tup": scene_sr22tup, "a36eng": scene_a36eng, "dlr182": scene_dlr182, "llcf33": scene_llcf33, "dlr3": scene_dlr3, "llc3": scene_llc3, "dlr4": scene_dlr3, "llc4": scene_llc3, "dlr5": scene_dlr5, "llc6": scene_llc6}[V]
+TAILS = [DEMO[V]["tail"]] if V.startswith("demo_") else ["YOUR N-NUMBER"] if V.startswith(("liq", "cuts", "num_")) else {"sr20": ["N881PF"], "a36": ["N29DL", "N72MD"], "mirage": ["N27RZ"], "pa32": ["N123BE"], "m20k": ["N231HB", "N3594H"], "sr22t": ["N236CB"], "a36cut": ["N614MM"], "sr20g6": ["N665M", "N34AS"], "arrow3": ["N41GF", "N6089H"], "c182n": ["N9051G", "N9164G"], "c172s": ["N20818"], "c182p": ["N9802E"], "sr20bm": ["N190BM"], "f33a": ["N22099"], "g36up": ["N6980B"], "sr22tup": ["N784RJ"], "a36eng": ["N8088J", "N85BB"], "dlr182": ["YOUR N-NUMBER"], "llcf33": ["YOUR N-NUMBER"], "dlr3": ["YOUR N-NUMBER"], "llc3": ["YOUR N-NUMBER"], "dlr4": ["YOUR N-NUMBER"], "llc4": ["YOUR N-NUMBER"], "dlr5": ["YOUR N-NUMBER"], "llc6": ["YOUR N-NUMBER"]}[V]
 
 def frame(i):
     global GRAD
