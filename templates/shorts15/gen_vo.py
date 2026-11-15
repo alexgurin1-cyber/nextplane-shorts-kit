@@ -157,6 +157,12 @@ S={
  # 2026-11-08 PRICED HIGHER, US single-engine pistons seen in the last 7 days: 64 of 2,374 (2.7% -> "almost three in a hundred")
  # are priced above their own first ask or above an earlier closed ad for the same tail; 34 above an earlier ad (53% -> "about half").
  # Strict count after row check (history-based first ask, 3-day glitch rule, price sanity screen). campaign/numbers/DATA_20261108.md
+ # 2026-11-15 PRICED HIGHER, US Piper single-engine pistons seen in the last 7 days: 13 of 485 (2.7% -> "almost three in a
+ # hundred") after row check (4 dropped: N12345 placeholder, N31920 glitch first ask, N478MD serial mismatch, N5889V serial
+ # mismatch +59%); largest: Malibu Mirage s/n 4636508 ad closed Jun 16 at $659,000 -> new ad Aug 5 at $789,000 (+$130,000).
+ # campaign/numbers/DATA_20261115.md
+ "num_up_piper":["Shopping for a single-engine Piper?",
+                 "Almost three in a hundred ask more than before. One Malibu came back a hundred thirty thousand dollars higher. Is yours one of them?", CTA],
  "num_up_single":["Shopping for a single-engine airplane?",
                   "Almost three in a hundred ask more than before. About half were relisted higher. Is yours one of them?", CTA],
  # 2026-11-10 DAMAGE HISTORY, Cirrus SR22/SR22T (US, N-number, seen in the last 7 days): 15 of 309 (4.9% -> "about one in

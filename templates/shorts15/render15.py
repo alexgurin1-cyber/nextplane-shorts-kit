@@ -171,6 +171,9 @@ CAPS = {
  "num_up_single": [(1, "Shopping for a single-engine airplane?", 0, 4),
                    (2, "Almost 3 in 100 ask more than before.", 0, 8),
                    (2, "About half were relisted higher.", 9, 13), (2, "Is yours one of them?", 14, 18)],
+ "num_up_piper": [(1, "Shopping for a single-engine Piper?", 0, 4),
+                  (2, "Almost 3 in 100 ask more than before.", 0, 8),
+                  (2, "One Malibu came back", 9, 12), (2, "$130,000 higher.", 13, 18), (2, "Is yours one of them?", 19, 23)],
  "num_own_single": [(1, "Shopping for a single-engine airplane?", 0, 4),
                     (2, "More than one in five sellers", 0, 5), (2, "has owned it under two years.", 6, 11),
                     (2, "238, under one year.", 12, 17), (2, "Is yours one of them?", 18, 22)],
@@ -1557,6 +1560,12 @@ NUM = {
  # 2026-11-08 PRICED HIGHER, all US single-engine pistons seen in the last 7 days (DATA: campaign/numbers/DATA_20261108.md):
  # current ask above the ad's first recorded ask (price-history based, first price held >= 3 days) or above an earlier closed ad
  # for the same tail (+1%..+60%); asks under half the model median screened out; 4 more tails dropped on row check
+ # 2026-11-15 PRICED HIGHER, Piper single-engine pistons (US, N-number, seen in the last 7 days; numbers.sql §4b with
+ # model_re '^PIPER '; DATA: campaign/numbers/DATA_20261115.md): 17 by query, 13 after row check, base 485 (placeholder N12345 out)
+ "num_up_piper": dict(kind="PRICE HISTORY CHECK", q1="SHOPPING FOR A", q2="PIPER?", hook="hook.jpg", find="find.jpg",
+                      subject="PIPER SINGLES FOR SALE", sub="US · NOV 15, 2026",
+                      n=13, of=485, label="PRICED HIGHER THAN BEFORE", plain="ALMOST 3 IN 100", n_at=0,
+                      second=("+$130,000", "ONE MALIBU MIRAGE CAME", "BACK ABOVE ITS LAST AD", 9), ask_at=19),
  "num_up_single": dict(kind="PRICE HISTORY CHECK", q1="SHOPPING FOR A", q2="SINGLE?", hook="hook.jpg", find="find.jpg",
                        subject="SINGLE-ENGINE PISTONS FOR SALE", sub="US · NOV 8, 2026",
                        n=64, of=2374, label="PRICED HIGHER THAN BEFORE", plain="ALMOST 3 IN 100", n_at=0,
