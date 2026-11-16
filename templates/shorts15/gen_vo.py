@@ -163,6 +163,10 @@ S={
  # campaign/numbers/DATA_20261115.md
  "num_up_piper":["Shopping for a single-engine Piper?",
                  "Almost three in a hundred ask more than before. One Malibu came back a hundred thirty thousand dollars higher. Is yours one of them?", CTA],
+ # 2026-11-16 ONE DOLLAR FIGURE, Cessna 182 family (US, N-number, seen in the last 7 days): 89 of 227 (39.2% -> "almost four
+ # in ten") ask less than their first recorded ask; median cut $15,000 (cuts > 35% dropped). campaign/numbers/DATA_20261116.md
+ "num_dol_c182cut":["Shopping for a Cessna one eighty-two? How much do sellers cut?",
+                    "Almost four in ten have cut the price. The typical cut: fifteen thousand dollars. See every cut on yours.", CTA],
  "num_up_single":["Shopping for a single-engine airplane?",
                   "Almost three in a hundred ask more than before. About half were relisted higher. Is yours one of them?", CTA],
  # 2026-11-10 DAMAGE HISTORY, Cirrus SR22/SR22T (US, N-number, seen in the last 7 days): 15 of 309 (4.9% -> "about one in

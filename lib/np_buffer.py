@@ -2,6 +2,10 @@
 """NextPlane -> Buffer helper (cloud runs). Needs env BUFFER_API_KEY.
   np_buffer.py post CHANNEL(ig|tt|li) VIDEO_URL DUE_ISO TEXT_FILE   -> prints post id
   np_buffer.py queue [POST_ID...]                                  -> lists scheduled posts per channel (+ full text of POST_IDs)
+  np_buffer.py slot [YYYY-MM-DD]                                   -> 9:00 AM Pacific as UTC ISO (16:00Z PDT / 17:00Z PST)
+  np_buffer.py freeday [START_YYYY-MM-DD]                           -> SLOT FIRST rule (2026-11-15): first Pacific day, from
+                                                                     START (default tomorrow), whose morning slot is free on
+                                                                     BOTH tt and ig; prints day, weekday, slot ISO, queue counts
   np_buffer.py fix POST_ID CHANNEL VIDEO_URL OLD NEW                -> replace OLD with NEW in a scheduled post's text
                                                                      (Buffer's editPost needs the video asset and IG reel type re-sent)
 """
@@ -45,8 +49,39 @@ def fix(pid, ch, url, old, new):
     r = gql(EDIT, {"input": inp})["editPost"]
     if "message" in r: raise RuntimeError(r["message"])
     return r["post"]["id"]
+def slot(day):
+    """9:00 AM America/Los_Angeles on `day` (date) as a UTC ISO string."""
+    import datetime as dt
+    from zoneinfo import ZoneInfo
+    t = dt.datetime.combine(day, dt.time(9, 0), ZoneInfo("America/Los_Angeles"))
+    return t.astimezone(dt.timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.000Z")
+def scheduled(ch):
+    q = """query($o:OrganizationId!,$c:[ChannelId!]){posts(input:{organizationId:$o,filter:{channelIds:$c,status:[scheduled]}},first:50){edges{node{id dueAt}}}}"""
+    return [e["node"]["dueAt"] for e in gql(q, {"o": ORG, "c": [CH[ch][0]]})["posts"]["edges"]]
+def freeday(start=None):
+    """A Pacific day's morning slot counts as taken when a post is due 15:00Z-18:59Z that day (older posts sit at
+    16:00Z, which is 8 AM during standard time; treat them as that day's morning clip)."""
+    import datetime as dt
+    from zoneinfo import ZoneInfo
+    pt = ZoneInfo("America/Los_Angeles")
+    start = start or (dt.datetime.now(pt).date() + dt.timedelta(days=1))
+    taken, counts = set(), {}
+    for ch in ("tt", "ig"):
+        due = scheduled(ch); counts[ch] = len(due)
+        for d in due:
+            u = dt.datetime.fromisoformat(d.replace("Z", "+00:00"))
+            if 15 <= u.hour <= 18: taken.add((ch, u.astimezone(pt).date()))
+    day = start
+    while ("tt", day) in taken or ("ig", day) in taken: day += dt.timedelta(days=1)
+    return day, counts
 if __name__ == "__main__":
     c = sys.argv[1]
+    if c == "slot":
+        import datetime as dt; print(slot(dt.date.fromisoformat(sys.argv[2]))); sys.exit()
+    if c == "freeday":
+        import datetime as dt
+        d, n = freeday(dt.date.fromisoformat(sys.argv[2]) if len(sys.argv) > 2 else None)
+        print(d.isoformat(), d.strftime("%A"), slot(d), "queued:", n); sys.exit()
     if c == "fix": print(fix(*sys.argv[2:7]))
     elif c == "post": print(post(sys.argv[2], sys.argv[3], sys.argv[4], open(sys.argv[5]).read()))
     elif c == "queue":

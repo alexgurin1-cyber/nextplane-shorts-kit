@@ -177,6 +177,9 @@ CAPS = {
  "num_own_single": [(1, "Shopping for a single-engine airplane?", 0, 4),
                     (2, "More than one in five sellers", 0, 5), (2, "has owned it under two years.", 6, 11),
                     (2, "238, under one year.", 12, 17), (2, "Is yours one of them?", 18, 22)],
+ "num_dol_c182cut": [(1, "Shopping for a Cessna 182?", 0, 5), (1, "How much do sellers cut?", 6, 10),
+                     (2, "Almost 4 in 10 have cut the price.", 0, 7), (2, "The typical cut: $15,000.", 8, 13),
+                     (2, "See every cut on yours.", 14, 18)],
  "num_own_bonanza": [(1, "Shopping for a Beechcraft Bonanza?", 0, 4),
                      (2, "Nearly one in seven sellers", 0, 4), (2, "has owned it under two years.", 5, 10),
                      (2, "12, under one year.", 11, 14), (2, "Is yours one of them?", 15, 19)],
@@ -1566,6 +1569,15 @@ NUM = {
                       subject="PIPER SINGLES FOR SALE", sub="US · NOV 15, 2026",
                       n=13, of=485, label="PRICED HIGHER THAN BEFORE", plain="ALMOST 3 IN 100", n_at=0,
                       second=("+$130,000", "ONE MALIBU MIRAGE CAME", "BACK ABOVE ITS LAST AD", 9), ask_at=19),
+ # 2026-11-16 ONE DOLLAR FIGURE (lane, first edition), Cessna 182 family (US, N-number, piston_single, seen in the last 7 days,
+ # one row per tail; DATA: campaign/numbers/DATA_20261116.md): 89 of 227 ask less than their first recorded ask in the current ad
+ # (cuts > 35% dropped as data glitches: N2439B, N865JP, N34DW); median cut $15,000. dollar=True switches scene_num to the
+ # dollar layout: share row first (n/of + dot grid), then the dollar figure (money) at money_at, then the stamp.
+ "num_dol_c182cut": dict(kind="HOW MUCH DO SELLERS CUT?", q1="SHOPPING FOR A", q2="CESSNA 182?", hook="hook.jpg", find="find.jpg",
+                         subject="CESSNA 182s FOR SALE", sub="ASKING PRICES · US · NOV 16, 2026", dollar=True,
+                         n=89, of=227, label="HAVE CUT THE PRICE SINCE FIRST LISTED", plain="ALMOST 4 IN 10", n_at=0,
+                         money=15000, money_at=11, m1="TYPICAL CUT", m2="(MEDIAN OF THE 89)",
+                         grid_note="EACH DOT = 1% OF THE 182s FOR SALE · LIT = CUT", stamp="SEE EVERY CUT ON YOURS", ask_at=14),
  "num_up_single": dict(kind="PRICE HISTORY CHECK", q1="SHOPPING FOR A", q2="SINGLE?", hook="hook.jpg", find="find.jpg",
                        subject="SINGLE-ENGINE PISTONS FOR SALE", sub="US · NOV 8, 2026",
                        n=64, of=2374, label="PRICED HIGHER THAN BEFORE", plain="ALMOST 3 IN 100", n_at=0,
@@ -1624,7 +1636,17 @@ def scene_num(im, tt):
             chip(d, 908 - tw, 548 + yo, c["plain"], pa, f=SMB(28))
         lit = round(100 * c["n"] / c["of"])
         dot_grid(d, 132, 790 + yo, lit, tt, t0 + 0.15, la)
-        d.text((W / 2, 1002 + yo), "EACH DOT = 1% OF THE AIRPLANES FOR SALE", font=SMR(24), fill=(*GREY, int(255 * la)), anchor="mm")
+        d.text((W / 2, 1002 + yo), c.get("grid_note", "EACH DOT = 1% OF THE AIRPLANES FOR SALE"), font=SMR(24), fill=(*GREY, int(255 * la)), anchor="mm")
+    if c.get("dollar"):   # ONE DOLLAR FIGURE: exact dollars counted up on screen, plain dollars in the VO
+        t1 = wt(2, c["money_at"]) - 0.1
+        sa = ease((tt - t1) / 0.25) * a
+        if sa > 0:
+            val = money(round(counter(c["money"], tt, t1, 0.55) / 100) * 100)
+            drop_in(im, (104, 1078 + yo), val, BCB(128), CYAN, tt, t1)
+            d = ImageDraw.Draw(im, "RGBA")
+            lx = 104 + d.textlength(money(c["money"]), font=BCB(128)) + 26
+            d.text((lx, 1058 + yo), c["m1"], font=SMB(30), fill=(*OFF, int(255 * sa)), anchor="lm")
+            d.text((lx, 1098 + yo), c["m2"], font=SMB(26), fill=(*GREY, int(255 * sa)), anchor="lm")
     if c.get("second"):
         val, l1, l2, wi = c["second"]
         t1 = wt(2, wi) - 0.1
@@ -1635,7 +1657,7 @@ def scene_num(im, tt):
             lx = 104 + d.textlength(val, font=BCB(120)) + 26
             d.text((lx, 1068 + yo), l1, font=SMB(28), fill=(*OFF, int(255 * sa)), anchor="lm")
             d.text((lx, 1108 + yo), l2, font=SMB(28), fill=(*OFF, int(255 * sa)), anchor="lm")
-    stamp(im, W / 2, 1218 + yo, "IS YOURS ONE OF THEM?", ease((tt - wt(2, c["ask_at"]) + 0.1) / 0.25) * a,
+    stamp(im, W / 2, (1242 if c.get("dollar") else 1218) + yo, c.get("stamp", "IS YOURS ONE OF THEM?"), ease((tt - wt(2, c["ask_at"]) + 0.1) / 0.25) * a,
           ang=-3, col=WHITE, size=60)
 
 _EB = []
