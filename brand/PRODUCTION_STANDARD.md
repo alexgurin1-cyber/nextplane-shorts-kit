@@ -93,7 +93,7 @@ Chart component standards:
 - Axis lines draw on (0→full width over ~20 frames), values count up, highlight point pulses once
 - One highlighted number per chart — the number IS the story; everything else is context
 - Always a source line ("Based on N listings, FAA registry") — credibility is the brand
-- Reuse the same RPCs that power the report (market_velocity, valuation, comp matrix) so clip data always matches what a buyer sees for $9.99
+- Reuse the same RPCs that power the report (market_velocity, valuation, comp matrix) so clip data always matches what a buyer sees for $29
 
 ## Layer 4 — Render standard (the spec every file must meet)
 

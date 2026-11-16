@@ -13,7 +13,7 @@ import re
 
 BASE = "https://nextplane.us/aircraft-report"
 PLATFORMS = ("youtube", "instagram", "tiktok", "linkedin")
-BIO_LINE = "Run any N-number — link in bio."
+BIO_LINE = "Check the N-number before you call — link in bio."  # positioning 2026-11-16 (brand/POSITIONING.md)
 
 
 def url(platform):
@@ -41,7 +41,7 @@ def with_link(text, platform, position="end"):
         return text
     # drop older hand-written link lines so the block is not duplicated
     text = "\n".join(l for l in text.split("\n")
-                     if not re.search(r"link in (our )?bio|Look up any aircraft by N-number", l, re.I)).rstrip()
+                     if not re.search(r"link in (our )?bio|Look up any aircraft by N-number|Run any N-number", l, re.I)).rstrip()
     link = url(platform)
     block = (BIO_LINE + "\n" + link) if platform in ("instagram", "tiktok") else link
     # keep a trailing hashtag line last

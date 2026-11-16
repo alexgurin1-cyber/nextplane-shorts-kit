@@ -1,5 +1,7 @@
 # NextPlane Weekday Short — cloud runbook
 
+> **Positioning (Alex, 2026-11-16):** read `brand/POSITIONING.md` before writing any script, title, caption or description. The line is "Know what to offer before you call the seller." Never call the product a history report. The closing line "Don't buy the story, buy the data." is unchanged.
+
 This is the procedure for the "Weekday NextPlane Short" scheduled task. It runs entirely in a Claude cloud session: **no access to Alex's Mac is required or expected.** Do not request folder access to the Mac.
 
 ## 0. Bootstrap (about 2 minutes)

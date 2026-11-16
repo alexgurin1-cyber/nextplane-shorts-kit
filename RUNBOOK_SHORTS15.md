@@ -1,5 +1,7 @@
 # NextPlane 15-Second Vertical (TikTok + Instagram Reels) — daily cloud runbook
 
+> **Positioning (Alex, 2026-11-16):** read `brand/POSITIONING.md` before writing any script, title, caption or description. The line is "Know what to offer before you call the seller." Never call the product a history report. The closing line "Don't buy the story, buy the data." is unchanged.
+
 Procedure for the "Daily NextPlane 15-second Short" scheduled task. Runs entirely in a Claude cloud session; never request access to Alex's computer or use Claude in Chrome. The library backfill top-up is STOPPED (Alex, 2026-11-15; see §5).
 
 Approved format (Alex, 2026-10-09): `templates/shorts15/PILOTS.md` (spec + the three pilots: SR20 price jump, A36 same-price twins, Malibu Mirage "what the ad left out"). Code: `templates/shorts15/` (`gen_vo.py`, `gen_music.py`, `render15.py`, `mux15.py`). Market-number clips (added 2026-11-03): `campaign/numbers/` + `scene_num()`, pilot `num_dmg_single`.

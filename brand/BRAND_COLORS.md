@@ -46,7 +46,7 @@ If you need to redraw it in Python or another tool, the structure is:
 The logo can stand alone (compass mark) or be paired with the NEXTPLANE wordmark.
 
 - Profile pic / favicon contexts: logo only
-- Banner / hero contexts: logo + wordmark + tagline ("The aircraft history report.")
+- Banner / hero contexts: logo + wordmark + tagline ("Know what to offer before you call the seller.") — see brand/POSITIONING.md
 
 ## Do not modify
 

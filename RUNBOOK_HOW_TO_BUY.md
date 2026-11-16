@@ -1,5 +1,7 @@
 # NextPlane "How to Buy a…" weekly episode — cloud runbook
 
+> **Positioning (Alex, 2026-11-16):** read `brand/POSITIONING.md` before writing any script, title, caption or description. The line is "Know what to offer before you call the seller." Never call the product a history report. The closing line "Don't buy the story, buy the data." is unchanged.
+
 This runbook is for the scheduled task "Weekly how to buy episode", which runs on Mondays. The whole run happens in a Claude cloud session: **no access to Alex's Mac is required or expected.** Do not request folder access or use Claude in Chrome.
 
 ## 0. Bootstrap

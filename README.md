@@ -1,5 +1,7 @@
 # nextplane-shorts-kit
 
+> **Positioning (Alex, 2026-11-16):** read `brand/POSITIONING.md` before writing any script, title, caption or description. The line is "Know what to offer before you call the seller." Never call the product a history report. The closing line "Don't buy the story, buy the data." is unchanged.
+
 Production kit for NextPlane YouTube Shorts. The weekday scheduled task clones it into a Claude cloud session, so the Mac does not need to be on.
 
 - `RUNBOOK.md`: the full procedure the scheduled run follows
