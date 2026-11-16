@@ -7,10 +7,12 @@ The scheduled task "Weekly how to buy episode" reads and updates this file on ev
 - The episode walks the aircraft through the live NextPlane single-aircraft report on nextplane.us and presents every finding, including the asking price and NextPlane's valuation against it.
 - **Target segment (Alex, 2026-11-03, standing):** every episode covers a single-engine piston airplane that NextPlane customers actually buy reports for. Never twins, turboprops (including Piper M500/M600/M700, TBM, PC-12, Caravan), jets or helicopters. Market statistics in an episode are for the featured model or single-engine pistons only, and the episode says so. The old piston/high-performance alternation is retired.
 
-## Rotation (single-engine piston only, from 2026-11-03)
-Take the first model in this order that has no episode below:
-Cirrus SR22 / SR22T → Beechcraft Bonanza A36 → Cirrus SR20 → Mooney M20J / M20K → Piper PA-46 Malibu / Mirage / Matrix (piston) → Diamond DA40 (only if the DA40 NG episode does not already cover it) → Piper PA-32 Saratoga / Lance → Cessna 210 → Cessna 206.
-Already covered: Cirrus SR22 (Ep1), Cessna 172 (Ep3), Cessna 182 (Ep5), Piper PA-28 (Ep7), Diamond DA40 NG (per Alex 2026-11-03); Piper M350 (Ep4) and TBM 930 (Ep6) are legacy high-performance episodes.
+## Rotation (single-engine piston only)
+**Cirrus first (Alex, 2026-11-16, standing):** Cirrus SR22T → Cirrus SR22 → Cirrus SR20, skipping any already covered. Each Cirrus episode states the generation (G1, G2, G3, G5, G6, G7, G7+; there is no G4) and compares only within that generation.
+Then, in this order, skipping any already covered: Mooney M20J / M20K → Piper PA-46 Malibu / Mirage / Matrix (piston) → Diamond DA40 (only if the DA40 NG episode does not already cover it) → Piper PA-32 Saratoga / Lance → Cessna 210 → Cessna 206.
+Only single-engine pistons are eligible: never twins, turboprops (Piper M500 / M600 / M700, TBM, PC-12, Caravan), jets or helicopters.
+Already covered: Cirrus SR22 (Ep1, legacy cut — the Cirrus-first order may still revisit the SR22 as a product-demonstration episode), Cessna 172 (Ep3), Piper M350 (Ep4, piston), Cessna 182 (Ep5), Piper PA-28 (Ep7), Beechcraft Bonanza A36 (Ep9), Cirrus SR22T G6 (Ep10), Diamond DA40 NG (per Alex 2026-11-03). Ep6 (TBM 930) is a legacy turboprop episode from before the target segment.
+**Format (Alex, 2026-11-16, standing): product demonstration first** — every episode is built around the live nextplane.us report on the one featured airplane (report on screen at least half the running time, the lookup shown, closing chapter "What to offer", end card "$29 per airplane").
 
 ## Episodes
 | Ep | Publish (UTC) | Class | Aircraft | Hero tail | Ask | YouTube | Status |
@@ -22,5 +24,6 @@ Already covered: Cirrus SR22 (Ep1), Cessna 172 (Ep3), Cessna 182 (Ep5), Piper PA
 | 5 | 2026-10-14 16:00 | Piston single | Cessna 182 Skylane (1998 182S) | N23383 | $279,000 | MuMm1lpqwkA (public as of 2026-10-19) | shipped |
 | 6 | 2026-10-21 16:00 | High-performance | Daher TBM 930 (2016) | N24MY | $3,295,000 | 87m5EfbGQPg (v2, public as of 2026-10-26) | shipped |
 | 7 | 2026-10-28 16:00 | Piston single | Piper PA-28 Archer II (1981 PA-28-181) | N8395H | $180,000 | XcqQNsKCoO4 (private, scheduled 2026-10-28 16:00Z) | uploaded — scheduled, awaiting Alex review |
-| 8 | ~~2026-11-04 16:00~~ | High-performance | Piper M600 SLS (2021) | N665WA | $2,875,000 | — | **dropped permanently** (Alex 2026-11-03): the M600 is a turboprop, outside the single-engine piston target segment; it was also blocked at report capture on 2026-11-02 and never published. Do not retry. Files kept in ep8_m600/ for reference. |
+| 8 | ~~2026-11-04 16:00~~ | High-performance | Piper M600 SLS (2021) | N665WA | $2,875,000 | — | **dropped permanently** (Alex 2026-11-03, reconfirmed 2026-11-16): the M600 is a turboprop, outside the single-engine piston target segment; it was also blocked at report capture on 2026-11-02 and never published. Do not retry. Files kept in ep8_m600/ for reference. |
 | 9 | 2026-11-11 16:00 | Single-engine piston | Beechcraft Bonanza A36 (1981) | N1811Y | $360,000 | dOICRbQklLY (private, scheduled 2026-11-11 16:00Z) | uploaded — scheduled, awaiting Alex review (capture unblocked 2026-11-10 after Alex set standing report access) |
+| 10 | 2026-11-18 16:00 | Single-engine piston | Cirrus SR22T G6 (2023) | N657CB | $819,000 | pKaFij0Y18o (private, scheduled 2026-11-18 16:00Z) | uploaded — scheduled, awaiting Alex review (first product-demonstration episode) |

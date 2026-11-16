@@ -1,0 +1,18 @@
+from PIL import Image, ImageDraw, ImageFont, ImageFilter
+R="/tmp/htb_sr22t"; F=lambda n,s: ImageFont.truetype(f"{R}/fonts/{n}",s)
+W,H=1280,720; NAVY=(8,16,26); CYAN=(37,197,203)
+bg=Image.open(f"{R}/photos/sr22t-1.jpg").convert("RGB"); sc=max(W/bg.width,H/bg.height)*1.12
+bg=bg.resize((int(bg.width*sc),int(bg.height*sc)),Image.LANCZOS); x=bg.width-W; bg=bg.crop((x,(bg.height-H)//2,x+W,(bg.height-H)//2+H))
+im=Image.alpha_composite(bg.convert("RGBA"),Image.new("RGBA",(W,H),(*NAVY,90)))
+sh=Image.new("RGBA",(W,H),(0,0,0,0)); ImageDraw.Draw(sh).rectangle([0,0,720,H],fill=(*NAVY,235)); im=Image.alpha_composite(im,sh.filter(ImageFilter.GaussianBlur(30))).convert("RGB")
+card=Image.open(f"{R}/cap/valafter.png").convert("RGB").crop((80,440,2210,780))
+_b=card.crop((15,160,520,205)).filter(ImageFilter.GaussianBlur(10)); card.paste(_b,(15,160))
+card=card.resize((560,int(560*card.height/card.width)),Image.LANCZOS)
+im.paste(card,(690,560)); d=ImageDraw.Draw(im); d.rectangle([688,558,1252,562+card.height],outline=CYAN,width=3)
+d.text((50,40),"HOW TO BUY A",font=F("BarlowCondensed-Bold.ttf",70),fill=(246,249,250))
+d.text((46,100),"CIRRUS SR22T",font=F("BarlowCondensed-Bold.ttf",140),fill=CYAN)
+d.text((50,285),"$819K. RIGHT PRICE?",font=F("BarlowCondensed-Bold.ttf",84),fill=(255,255,255))
+d.text((50,375),"1,678 HRS ON A 2023",font=F("BarlowCondensed-Bold.ttf",84),fill=(255,255,255))
+d.rounded_rectangle([50,560,600,640],radius=12,fill=CYAN); d.text((325,600),"REAL REPORT · N657CB",font=F("SpaceMono-Bold.ttf",32),fill=NAVY,anchor="mm")
+d.text((1240,700),"REPRESENTATIVE PHOTO · NOT THE AIRCRAFT FOR SALE",font=F("SpaceMono-Regular.ttf",14),fill=(210,220,228),anchor="rm")
+im.save(f"{R}/thumb.jpg",quality=90); print(im.size)
