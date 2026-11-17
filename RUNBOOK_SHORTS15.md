@@ -22,18 +22,19 @@ Read memory `feedback-plain-language-videos`, `feedback-no-source-sites`, `feedb
   `np_buffer.py slot <day>`. The topic lane is the lane of the POST DAY's weekday, not of today. If the POST DAY is more than
   seven days ahead, or a channel already holds 10 scheduled posts (Buffer free plan), produce nothing and send the ACTION NEEDED
   email (§6). Never move, edit or delete posts this run did not create.
-- **Topic lanes by weekday of the POST DAY (Alex approved 2026-11-15; replaces the 2026-11-03 table):**
+- **Topic lanes by weekday of the POST DAY (Alex approved 2026-11-15; changed 2026-11-16 to put product demonstrations first):**
 
   | POST DAY | Lane | Formats |
   |---|---|---|
-  | Mon | ONE DOLLAR FIGURE | §4c number template with a dollar figure (`dollar=True` in `NUM`), pilot `num_dol_c182cut` |
+  | Mon | REPORT DEMO | §1d — live report on one Cirrus (until 2026-11-30) for sale now |
   | Tue | ONE AIRPLANE, ONE FINDING | always SELLER STRATEGY (§1b), alternating DEALER / OWNER |
   | Wed | BUYER EDUCATION | NUMBER — DAMAGE / TRAINING / SELLER OWNERSHIP / PRICED HIGHER (§4c) or NUMBER — LIQUIDITY (§1c), LIQUIDITY every other Wednesday |
-  | Thu | ONE AIRPLANE, ONE FINDING | WHAT THE AD LEFT OUT, SAME PRICE TWINS or PRICE HISTORY, never the same one twice in a row |
-  | Fri | COST OF OWNING | one NextPlane operating-cost estimate (v_listing_estimated_cost / operating-cost functions; read their definitions), per hour or per year, labelled as an estimate with the assumed hours; if none reproduces, ONE DOLLAR FIGURE |
+  | Thu | REPORT DEMO | §1d; WHAT THE AD LEFT OUT, SAME PRICE TWINS or PRICE HISTORY may be the demo's angle, but the report must be on screen |
+  | Fri | REPORT DEMO | §1d |
   | Sat | DIRECTOR ON CAMERA | produced separately in Google Vids — skip to the next free day, unless Saturday is today/tomorrow and empty (then ONE DOLLAR FIGURE) |
-  | Sun | ONE DOLLAR FIGURE | as Monday |
+  | Sun | ONE DOLLAR FIGURE | §4c number template with a dollar figure (`dollar=True` in `NUM`), pilot `num_dol_c182cut` |
 
+  COST OF OWNING is no longer in the rotation (fallback only). Fallback order: REPORT DEMO → ONE DOLLAR FIGURE → BUYER EDUCATION → COST OF OWNING.
   Evening STAND CONVERSATION clips (Tue/Thu 22:00Z) are produced separately and do not occupy the morning slot.
   If a lane has no candidate that verifies, use the next lane in the list and record `fallback=` in notes.
 - **Target segment (Alex, 2026-11-03):** single-engine pistons only (Cirrus SR20/SR22/SR22T; Cessna 172/182, 150/152, 177, 206,
@@ -44,7 +45,7 @@ Read memory `feedback-plain-language-videos`, `feedback-no-source-sites`, `feedb
   top vs bottom ask for the same model and year). Exact figure on screen, plain dollars in the VO, basis on screen in a few words
   ("ASKING PRICES · US · <date>"); asking prices are never called sale prices. Opening: the buyer's question about that model,
   then the number; end on why the report matters for that airplane (stamp e.g. "SEE EVERY CUT ON YOURS"), not "Is yours one of them?".
-- **ONE AIRPLANE, ONE FINDING (Thu):** PRICE HISTORY: prefer an airplane now priced **higher** than before (relisted higher, or raised in the same ad —
+- **Single-airplane angles (now only as the angle of a Thursday REPORT DEMO):** PRICE HISTORY: prefer an airplane now priced **higher** than before (relisted higher, or raised in the same ad —
   Alex 2026-11-03 liked the SR20 N881PF case, $279,900 → $354,900) when one verifies row by row (both ads, dates and
   prices, not a reverted cut); otherwise a cut sequence. Older log rows use format "PRICE JUMP"; treat them as PRICE HISTORY.
   Never reuse a tail from `social_shorts15`.
@@ -87,6 +88,29 @@ least one cut (optionally yearly value change), from the same sold-listing SQL a
 (`campaign/liquidity/` queries and the `liq*` render template) — never run `campaign/liquidity/drain.py`, never rank models, no
 twins/turboprops/jets. Needs >= 20 sold airplanes; show the count ("of 66 sold"). No model reused within eight weeks (check
 `social_shorts15` notes and the October liquidity_check rows). Log format = BUYER EDUCATION, subformat = NUMBER — LIQUIDITY.
+
+## 1d. REPORT DEMO (Mon/Thu/Fri — Alex, 2026-11-16; first edition demo_sr22n656, 2026-11-17)
+Positioning: "Know what to offer before you call the seller", $29 per airplane. Show the live report on ONE single-engine piston
+for sale right now (status active, last_seen_at within 4 days, US N-number, asking price, not a share ad).
+- CIRRUS FIRST: until 2026-11-30 every demo is an SR20/SR22/SR22T, rotating model and generation (G2, G3, G5, G6, G7), never the
+  same model in two consecutive demos; from 2026-12-01 at least every other demo is a Cirrus. Never reuse a tail from
+  social_shorts15 (check ALL rows, including old SAME PRICE TWINS pairs), social_campaign_posts or a YouTube video.
+- Pick the candidate whose report most changes the offer, verified row by row: ask >= 5% off the report's estimated value, 2+ cuts,
+  90+ days for sale, an accident record the ad omits, a clear seller pattern, or two live ads that disagree on price.
+- Capture: `python3 $KIT/lib/report_capture.py <tail> $WORK/report` (capture login from memory reference-nextplane-capture-login).
+  Exit 3 (locked): one other candidate, then the next lane with fallback=REPORT DEMO (capture locked). Never fake a report screen.
+- Panels: `python3 demo_crop.py $WORK/report/sec_XX_*.png $WORK/rc/<name>.png x0,y0,x1,y1 --blur ...` — crop NARROW (about
+  400–550 px of the 1600 px section, so the text is about 2x on the vertical frame), blur seller/dealer/owner names, phones,
+  addresses and source labels/fine print, and look at every crop. Charts with dealer legends: crop the legend out.
+- Script (30–38 words, ≤ 15.0 s total; the CTA beat alone is ~4.1 s, so b1 + b2 must stay under ~9 s): b1 names the airplane
+  and asks one doubt (rotate price, time on market, seller, accident record, usage, engine); b2 "The report: ..." the one answer;
+  b3 the verbatim CTA. Further figures (e.g. the estimated value) go on screen only.
+- Render: add `DEMO[<slug>]` (hook photo, backdrop, label, price, question, panels with their word anchors, callout boxes in
+  940-px panel coordinates, chip, stamp) and `CAPS[<slug>]` in render15.py; slugs start `demo_` → `scene_demo()`, GAP 0.75 s
+  before the CTA, lookup card shows the real tail and "$29 PER AIRPLANE".
+- Caption: the same question, the report's answer in one or two sentences, "Plug the N-number into nextplane.us before you call —
+  $29 per airplane.", credits, <= 5 hashtags. Data pack: `campaign/demo/DATA_<yyyymmdd>_<tail>.md`.
+- Log format = REPORT DEMO, subformat = PRICE | TIME ON MARKET | SELLER | ACCIDENT RECORD | USAGE | ENGINE.
 
 ## 2. Script (≈30–36 words, three beats)
 - b1 hook: asking price + model; b2 the one finding; b3 the verbatim CTA "Before you call the broker, check the data at NextPlane dot U S."
@@ -153,8 +177,8 @@ The October liquidity campaign is also over (no campaign posts, no `drain.py`); 
 
 ## 6. Report (Alex, 2026-11-15 — standing)
 No routine summary email. The "NextPlane morning social brief" task reads `social_shorts15`, so the row is the report:
-- format = the lane name exactly: ONE DOLLAR FIGURE, ONE AIRPLANE, ONE FINDING, BUYER EDUCATION, COST OF OWNING.
-- notes = `lane=<lane>; subformat=<WHAT THE AD LEFT OUT | SELLER STRATEGY — DEALER | SELLER STRATEGY — OWNER | NUMBER — DAMAGE HISTORY | NUMBER — LIQUIDITY | ... | none>; source=NextPlane render pipeline (real photos, synthetic voice); length_s=<s>; post_day=<YYYY-MM-DD>; basis=<table/view, filter and date behind the on-screen figure; dealer_id/tail for seller clips>; title=<= 60 chars>; fallback=<planned lane or none>`
+- format = the lane name exactly: REPORT DEMO, ONE DOLLAR FIGURE, ONE AIRPLANE, ONE FINDING, BUYER EDUCATION, COST OF OWNING.
+- notes = `lane=<lane>; subformat=<PRICE | TIME ON MARKET | SELLER | ACCIDENT RECORD | USAGE | ENGINE (REPORT DEMO) | WHAT THE AD LEFT OUT | SELLER STRATEGY — DEALER | SELLER STRATEGY — OWNER | NUMBER — DAMAGE HISTORY | NUMBER — LIQUIDITY | ... | none>; source=NextPlane render pipeline (real photos, synthetic voice); length_s=<s>; post_day=<YYYY-MM-DD>; basis=<table/view, filter and date behind the on-screen figure; dealer_id/tail for seller clips>; title=<= 60 chars>; fallback=<planned lane or none>`
 - hook, tails, video_url, tt_post_id, ig_post_id, due_at as before.
 Email only when the run fails or needs a decision: to avg@nextplane.us only, subject "ACTION NEEDED — NextPlane daily clip …",
 formal register, stating what failed and where it stopped (also when the POST DAY is > 7 days out or a channel holds 10 posts).

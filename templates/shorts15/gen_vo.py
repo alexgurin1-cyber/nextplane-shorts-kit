@@ -165,6 +165,11 @@ S={
                  "Almost three in a hundred ask more than before. One Malibu came back a hundred thirty thousand dollars higher. Is yours one of them?", CTA],
  # 2026-11-16 ONE DOLLAR FIGURE, Cessna 182 family (US, N-number, seen in the last 7 days): 89 of 227 (39.2% -> "almost four
  # in ten") ask less than their first recorded ask; median cut $15,000 (cuts > 35% dropped). campaign/numbers/DATA_20261116.md
+ # 2026-11-17 daily run: REPORT DEMO (post day Fri 2026-11-20), 2004 Cirrus SR22 G2 N656CD, serial 1006, dealer UT, 930 h.
+ # Two live ads, same dealer, both seen 2026-11-17: tap_2456749 $360,000 unchanged since Jul 4; 256792343 $299,000 after three cuts
+ # ($360,000 Jun 2 -> $349,000 Jul 9 -> $329,000 Sep 5 -> $299,000 Oct 31). Report: "Live ads disagree on price"; est. value $325,000.
+ "demo_sr22n656":["You found this S R twenty-two at three hundred sixty thousand. Is that the right price?",
+                  "The report: a second live ad, same airplane, two hundred ninety-nine thousand.", CTA],
  "num_dol_c182cut":["Shopping for a Cessna one eighty-two? How much do sellers cut?",
                     "Almost four in ten have cut the price. The typical cut: fifteen thousand dollars. See every cut on yours.", CTA],
  "num_up_single":["Shopping for a single-engine airplane?",

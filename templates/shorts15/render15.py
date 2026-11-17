@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """NextPlane 15-second vertical (TikTok / Instagram Reels) renderer.
-Usage: render15.py <video> [worker nworkers]   video in {sr20, a36, mirage, pa32, m20k, sr22t, a36cut, sr20g6, c172s, f33a, g36up, sr22tup, arrow3, a36eng, sr20bm, c182p, liq*, cuts_*, num_*}
+Usage: render15.py <video> [worker nworkers]   video in {demo_*, sr20, a36, mirage, pa32, m20k, sr22t, a36cut, sr20g6, c172s, f33a, g36up, sr22tup, arrow3, a36eng, sr20bm, c182p, liq*, cuts_*, num_*}
        render15.py <video> info                 -> timeline JSON (used by gen_music.py / mux15.py)
 Layout respects platform UI safe zones: text inside x 64..940, y 210..1440."""
 import json, os, sys, math
@@ -38,7 +38,7 @@ V = sys.argv[1]
 VO = f"{ROOT}/vo"
 BEATS = [f"{V}_b{i}" for i in (1, 2, 3)]
 WD = {b: json.load(open(f"{VO}/{b}.json")) for b in BEATS}
-GAP = {1: 0.30, 2: 1.20} if V.startswith("liq") else {1: 0.30, 2: 0.85}   # liq: room for the silent verdict word
+GAP = {1: 0.30, 2: 1.20} if V.startswith("liq") else {1: 0.30, 2: 0.75} if V.startswith("demo_") else {1: 0.30, 2: 0.85}   # liq: room for the silent verdict word
 OFFS = {}; t = 0.15
 for i, b in enumerate(BEATS):
     OFFS[b] = t
@@ -177,6 +177,9 @@ CAPS = {
  "num_own_single": [(1, "Shopping for a single-engine airplane?", 0, 4),
                     (2, "More than one in five sellers", 0, 5), (2, "has owned it under two years.", 6, 11),
                     (2, "238, under one year.", 12, 17), (2, "Is yours one of them?", 18, 22)],
+ # REPORT DEMO clips (scene_demo): b1 = airplane + one doubt as a question, b2 = the report's answer
+ "demo_sr22n656": [(1, "You found this SR22 at $360,000.", 0, 10), (1, "Is that the right price?", 11, 15),
+                   (2, "The report: a second live ad,", 0, 5), (2, "same airplane: $299,000.", 6, 11)],
  "num_dol_c182cut": [(1, "Shopping for a Cessna 182?", 0, 5), (1, "How much do sellers cut?", 6, 10),
                      (2, "Almost 4 in 10 have cut the price.", 0, 7), (2, "The typical cut: $15,000.", 8, 13),
                      (2, "See every cut on yours.", 14, 18)],
@@ -334,6 +337,8 @@ def lookup(im, tt, t0, tails):
     d.rounded_rectangle([W / 2 - bw_ / 2, y0 + 450 - bh_ / 2, W / 2 + bw_ / 2, y0 + 450 + bh_ / 2], radius=50,
                         fill=(*CYAN, int(255 * a * max(pa, 0.35))))
     d.text((W / 2, y0 + 452), "GET THE REPORT", font=BCB(50), fill=(*NAVY, int(255 * a)), anchor="mm")
+    if V.startswith("demo_"):   # REPORT DEMO: the price is on screen in beat 3 (Alex, 2026-11-16)
+        d.text((W / 2, y0 + 530), "$29 PER AIRPLANE", font=SMB(34), fill=(*NAVY, int(255 * a * pa)), anchor="mm")
 
 # ---------------- step chart ----------------
 def step_chart(d, box, pts, t_from, t_to, tt, ymin, ymax, a=1.0, hi_last=True, labels=True, lw=7):
@@ -1660,6 +1665,82 @@ def scene_num(im, tt):
     stamp(im, W / 2, (1242 if c.get("dollar") else 1218) + yo, c.get("stamp", "IS YOURS ONE OF THEM?"), ease((tt - wt(2, c["ask_at"]) + 0.1) / 0.25) * a,
           ang=-3, col=WHITE, size=60)
 
+# ---------------- REPORT DEMO (Alex, 2026-11-16): the live report on one airplane for sale right now ----------------
+# Panels are crops of the captured report (lib/report_capture.py -> demo_crop.py, names/sources masked) in $WORK/rc/.
+# Per clip: DEMO[slug] = hook photo, backdrop, on-screen labels, panel files and the word anchors of the callouts.
+DEMO = {
+ # 2004 Cirrus SR22 G2 N656CD (serial 1006, dealer UT). Two live ads, same dealer, both seen 2026-11-17: $360,000 (unchanged
+ # since Jul 4) and $299,000 (three cuts: Jun 2 $360,000 -> Jul 9 $349,000 -> Sep 5 $329,000 -> Oct 31 $299,000).
+ # Report "Listing history" -> "Live ads disagree on price"; "Estimated Market Value" $325,000 (range $279,900-$350,000, 161 comps).
+ "demo_sr22n656": dict(hook="sr22-0b.jpg", back="g2-0b.jpg", label="2004 CIRRUS SR22 · FOR SALE NOW", price="$360,000",
+     ask="IS THAT THE RIGHT PRICE?", ask_at=11, tail="N656CD",
+     panels=[("ads.png", 0, "LISTING HISTORY"), ("chart.png", 4, None), ("value.png", 8, "ESTIMATED MARKET VALUE")],
+     # callouts: (panel index, box in panel px at 940 wide, word index in beat 2, label)
+     calls=[(0, (34, 94, 180, 140), 8, None), (2, (32, 72, 476, 158), 11, None)],
+     chip1=("SAME AIRPLANE · SAME DEALER", 6), stamp=("$61,000 APART", 9)),
+}
+_DP = {}
+def demo_panel(fn, w):
+    k = (fn, w)
+    if k not in _DP:
+        p = Image.open(f"{ROOT}/rc/{fn}").convert("RGB")
+        _DP[k] = p.resize((w, int(p.height * w / p.width)), Image.LANCZOS)
+    return _DP[k]
+
+def scene_demo(im, tt):
+    c = DEMO[V]
+    hook = tt < T_B2 + 0.3
+    im.alpha_composite(blur_backdrop(f"{PH}/{c['hook'] if hook else c['back']}", 0.5 if hook else 0.3))
+    im.alpha_composite(GRAD)
+    d = ImageDraw.Draw(im, "RGBA")
+    brand_bug(im)
+    if tt < T_B2 + 0.25:
+        fade = 1 - ease((tt - T_B2) / 0.25)
+        chip(d, W / 2, 372, c["label"], fade, anchor="c", f=SMB(30))
+        punch(im, (W / 2, 520), c["price"], BCB(210), tt, 0.0, fade)
+        if fade > 0.02:
+            card = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+            photo_card(card, f"{PH}/{c['hook']}", (70, 660, 1010, 1160), tt, 0, T_B2)
+            if fade < 1: card.putalpha(card.getchannel("A").point(lambda v: int(v * fade)))
+            im.alpha_composite(card)
+        d = ImageDraw.Draw(im, "RGBA")
+        qa = ease((tt - wt(1, c["ask_at"]) + 0.05) / 0.2) * fade
+        if qa > 0: shadow_text(d, (W / 2, 1245), c["ask"], BCB(76), CYAN, qa)
+        return
+    a = ease((tt - T_B2 - 0.05) / 0.3) * (1 - ease((tt - T_LOOK) / 0.2))
+    if a <= 0: return
+    PW, X0 = 860, 110 - 36
+    chip(d, X0, 330, "NEXTPLANE REPORT · " + c["tail"], a, f=SMB(30))
+    y = 390; boxes = []
+    for i, (fn, wi, lab) in enumerate(c["panels"]):
+        pa = ease((tt - wt(2, wi) + 0.1) / 0.3) * a
+        p = demo_panel(fn, PW)
+        if lab and pa > 0:
+            d.text((X0 + 4, y + 6), lab, font=SMB(24), fill=(*CYAN, int(255 * pa)), anchor="lt"); 
+        yy = y + (34 if lab else 0)
+        if pa > 0:
+            z = lerp(1.0, 1.035, min(max((tt - T_B2) / max(T_LOOK - T_B2, 0.1), 0), 1))   # gentle push-in
+            cw, ch = int(p.width / z), int(p.height / z)
+            fr = p.crop(((p.width - cw) // 2, (p.height - ch) // 2, (p.width - cw) // 2 + cw, (p.height - ch) // 2 + ch)).resize(p.size, Image.BILINEAR)
+            fr = fr.convert("RGBA"); fr.putalpha(int(255 * pa))
+            m = Image.new("L", fr.size, 0); ImageDraw.Draw(m).rounded_rectangle([0, 0, fr.width - 1, fr.height - 1], radius=18, fill=int(255 * pa))
+            im.paste(fr, (X0, int(yy + lerp(30, 0, eout(pa)))), m)
+            d = ImageDraw.Draw(im, "RGBA")
+        boxes.append((yy, PW / 940))
+        y = yy + p.height + 26
+    for pi, (bx0, by0, bx1, by1), wi, lab in c["calls"]:
+        ca = ease((tt - wt(2, wi)) / 0.2) * a
+        if ca <= 0: continue
+        yy, sc = boxes[pi]
+        r = [X0 + bx0 * sc - 8, yy + by0 * sc - 8, X0 + bx1 * sc + 8, yy + by1 * sc + 8]
+        g = lerp(14, 0, eout(ca))
+        d.rounded_rectangle([r[0] - g, r[1] - g, r[2] + g, r[3] + g], radius=12, outline=(*CYAN, int(255 * ca)), width=6)
+    t1, w1 = c["chip1"]
+    ca = ease((tt - wt(2, w1)) / 0.25) * a
+    if ca > 0: chip(d, W / 2, y + 30, t1, ca, anchor="c", f=SMB(30))
+    st, w2 = c["stamp"]
+    stamp(im, W / 2, y + 150, st, ease((tt - wt(2, w2)) / 0.25) * a, ang=-4, col=WHITE, size=72)
+
 _EB = []
 def endbg():
     if not _EB:
@@ -1670,8 +1751,8 @@ def endbg():
         _EB.append(g.resize((W, H)).convert("RGBA"))
     return _EB[0]
 
-SCENE = scene_liq if V.startswith("liq") else scene_cuts if V.startswith("cuts") else scene_num if V.startswith("num_") else {"sr20": scene_sr20, "a36": scene_a36, "mirage": scene_mirage, "pa32": scene_pa32, "m20k": scene_m20k, "sr22t": scene_sr22t, "a36cut": scene_a36cut, "sr20g6": scene_sr20g6, "arrow3": scene_arrow3, "c182n": scene_c182n, "c172s": scene_c172s, "c182p": scene_c182p, "sr20bm": scene_sr20bm, "f33a": scene_f33a, "g36up": scene_g36up, "sr22tup": scene_sr22tup, "a36eng": scene_a36eng}[V]
-TAILS = ["YOUR N-NUMBER"] if V.startswith(("liq", "cuts", "num_")) else {"sr20": ["N881PF"], "a36": ["N29DL", "N72MD"], "mirage": ["N27RZ"], "pa32": ["N123BE"], "m20k": ["N231HB", "N3594H"], "sr22t": ["N236CB"], "a36cut": ["N614MM"], "sr20g6": ["N665M", "N34AS"], "arrow3": ["N41GF", "N6089H"], "c182n": ["N9051G", "N9164G"], "c172s": ["N20818"], "c182p": ["N9802E"], "sr20bm": ["N190BM"], "f33a": ["N22099"], "g36up": ["N6980B"], "sr22tup": ["N784RJ"], "a36eng": ["N8088J", "N85BB"]}[V]
+SCENE = scene_demo if V.startswith("demo_") else scene_liq if V.startswith("liq") else scene_cuts if V.startswith("cuts") else scene_num if V.startswith("num_") else {"sr20": scene_sr20, "a36": scene_a36, "mirage": scene_mirage, "pa32": scene_pa32, "m20k": scene_m20k, "sr22t": scene_sr22t, "a36cut": scene_a36cut, "sr20g6": scene_sr20g6, "arrow3": scene_arrow3, "c182n": scene_c182n, "c172s": scene_c172s, "c182p": scene_c182p, "sr20bm": scene_sr20bm, "f33a": scene_f33a, "g36up": scene_g36up, "sr22tup": scene_sr22tup, "a36eng": scene_a36eng}[V]
+TAILS = [DEMO[V]["tail"]] if V.startswith("demo_") else ["YOUR N-NUMBER"] if V.startswith(("liq", "cuts", "num_")) else {"sr20": ["N881PF"], "a36": ["N29DL", "N72MD"], "mirage": ["N27RZ"], "pa32": ["N123BE"], "m20k": ["N231HB", "N3594H"], "sr22t": ["N236CB"], "a36cut": ["N614MM"], "sr20g6": ["N665M", "N34AS"], "arrow3": ["N41GF", "N6089H"], "c182n": ["N9051G", "N9164G"], "c172s": ["N20818"], "c182p": ["N9802E"], "sr20bm": ["N190BM"], "f33a": ["N22099"], "g36up": ["N6980B"], "sr22tup": ["N784RJ"], "a36eng": ["N8088J", "N85BB"]}[V]
 
 def frame(i):
     global GRAD
