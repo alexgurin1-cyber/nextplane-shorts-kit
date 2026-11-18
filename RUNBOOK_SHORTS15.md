@@ -101,7 +101,10 @@ for sale right now (status active, last_seen_at within 4 days, US N-number, aski
   Exit 3 (locked): one other candidate, then the next lane with fallback=REPORT DEMO (capture locked). Never fake a report screen.
 - Panels: `python3 demo_crop.py $WORK/report/sec_XX_*.png $WORK/rc/<name>.png x0,y0,x1,y1 --blur ...` — crop NARROW (about
   400–550 px of the 1600 px section, so the text is about 2x on the vertical frame), blur seller/dealer/owner names, phones,
-  addresses and source labels/fine print, and look at every crop. Charts with dealer legends: crop the legend out.
+  addresses and source labels/fine print, and look at every crop. Charts with dealer legends: crop the legend out. Leave >= 15 px
+  of margin left and right: the gentle push-in (1.035) clips the panel edges. Before choosing a tail also check the How to Buy
+  cohort lists (how_to_buy/*/src/cohort.py) — tails in a published YouTube chart count as used. `psize` in DEMO shrinks the hook
+  price for 7-figure asks (168 for $1,084,900).
 - Script (30–38 words, ≤ 15.0 s total; the CTA beat alone is ~4.1 s, so b1 + b2 must stay under ~9 s): b1 names the airplane
   and asks one doubt (rotate price, time on market, seller, accident record, usage, engine); b2 "The report: ..." the one answer;
   b3 the verbatim CTA. Further figures (e.g. the estimated value) go on screen only.

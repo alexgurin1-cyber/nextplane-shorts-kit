@@ -180,6 +180,8 @@ CAPS = {
  # REPORT DEMO clips (scene_demo): b1 = airplane + one doubt as a question, b2 = the report's answer
  "demo_sr22n656": [(1, "You found this SR22 at $360,000.", 0, 10), (1, "Is that the right price?", 11, 15),
                    (2, "The report: a second live ad,", 0, 5), (2, "same airplane: $299,000.", 6, 11)],
+ "demo_sr22tn772": [(1, "You found this SR22T at $1,084,900.", 0, 11), (1, "How long has it been for sale?", 12, 18),
+                   (2, "The report: over 6 months,", 0, 4), (2, "three cuts,", 5, 6), (2, "$55,000 off.", 7, 9)],
  "num_dol_c182cut": [(1, "Shopping for a Cessna 182?", 0, 5), (1, "How much do sellers cut?", 6, 10),
                      (2, "Almost 4 in 10 have cut the price.", 0, 7), (2, "The typical cut: $15,000.", 8, 13),
                      (2, "See every cut on yours.", 14, 18)],
@@ -1678,6 +1680,14 @@ DEMO = {
      # callouts: (panel index, box in panel px at 940 wide, word index in beat 2, label)
      calls=[(0, (34, 94, 180, 140), 8, None), (2, (32, 72, 476, 158), 11, None)],
      chip1=("SAME AIRPLANE · SAME DEALER", 6), stamp=("$61,000 APART", 9)),
+ # 2024 Cirrus SR22T G7 N772RG (serial 10037, dealer TN, 261 h). One continuous ad, first seen Apr 13 2026 at $1,139,900; cuts
+ # May 6 -> $1,124,900, Jul 29 -> $1,099,900, Oct 9 -> $1,084,900 (-$55,000, -4.8%). Report captured 2026-11-18 ~15:10Z,
+ # "Listing history": time on market "More than 6 months", 3 cuts. Est. value $1,129,900 (45 G7 comps) - not used on screen.
+ "demo_sr22tn772": dict(hook="hook9.jpg", back="back1.jpg", label="2024 CIRRUS SR22T · FOR SALE NOW", price="$1,084,900",
+     psize=168, ask="HOW LONG HAS IT BEEN FOR SALE?", ask_at=12, tail="N772RG",
+     panels=[("tom.png", 1, "LISTING HISTORY"), ("chart.png", 5, None), ("cuts.png", 5, None)],
+     calls=[(0, (20, 28, 249, 65), 2, None), (2, (158, 2, 425, 160), 6, None), (0, (640, 59, 758, 89), 7, None)],
+     chip1=("3 CUTS SINCE MAY", 6), stamp=("$55,000 OFF", 8)),
 }
 _DP = {}
 def demo_panel(fn, w):
@@ -1697,7 +1707,7 @@ def scene_demo(im, tt):
     if tt < T_B2 + 0.25:
         fade = 1 - ease((tt - T_B2) / 0.25)
         chip(d, W / 2, 372, c["label"], fade, anchor="c", f=SMB(30))
-        punch(im, (W / 2, 520), c["price"], BCB(210), tt, 0.0, fade)
+        punch(im, (W / 2, 520), c["price"], BCB(c.get("psize", 210)), tt, 0.0, fade)
         if fade > 0.02:
             card = Image.new("RGBA", (W, H), (0, 0, 0, 0))
             photo_card(card, f"{PH}/{c['hook']}", (70, 660, 1010, 1160), tt, 0, T_B2)

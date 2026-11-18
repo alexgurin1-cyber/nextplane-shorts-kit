@@ -170,6 +170,10 @@ S={
  # ($360,000 Jun 2 -> $349,000 Jul 9 -> $329,000 Sep 5 -> $299,000 Oct 31). Report: "Live ads disagree on price"; est. value $325,000.
  "demo_sr22n656":["You found this S R twenty-two at three hundred sixty thousand. Is that the right price?",
                   "The report: a second live ad, same airplane, two hundred ninety-nine thousand.", CTA],
+ # 2026-11-18 daily run: REPORT DEMO (post day Fri 2026-11-20), 2024 Cirrus SR22T G7 N772RG, serial 10037, dealer TN, 261 h.
+ # One ad, first seen Apr 13 at $1,139,900; cuts May 6, Jul 29, Oct 9 -> $1,084,900. Report: "More than 6 months", 3 cuts, -$55,000.
+ "demo_sr22tn772":["You found this S R twenty-two Turbo at one million eighty-five thousand. How long has it been for sale?",
+                   "The report: over six months, three cuts, fifty-five thousand off.", CTA],
  "num_dol_c182cut":["Shopping for a Cessna one eighty-two? How much do sellers cut?",
                     "Almost four in ten have cut the price. The typical cut: fifteen thousand dollars. See every cut on yours.", CTA],
  "num_up_single":["Shopping for a single-engine airplane?",
