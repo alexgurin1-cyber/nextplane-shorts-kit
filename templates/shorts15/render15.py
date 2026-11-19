@@ -182,6 +182,9 @@ CAPS = {
                    (2, "The report: a second live ad,", 0, 5), (2, "same airplane: $299,000.", 6, 11)],
  "demo_sr22tn772": [(1, "You found this SR22T at $1,084,900.", 0, 11), (1, "How long has it been for sale?", 12, 18),
                    (2, "The report: over 6 months,", 0, 4), (2, "three cuts,", 5, 6), (2, "$55,000 off.", 7, 9)],
+ "num_dol_g36gap": [(1, "Buying a 2008 Bonanza G36?", 0, 7), (1, "What should it cost?", 8, 11),
+                    (2, "Six are for sale,", 0, 3), (2, "priced almost $250,000 apart.", 4, 11),
+                    (2, "See what's behind yours.", 12, 15)],
  "num_dol_c182cut": [(1, "Shopping for a Cessna 182?", 0, 5), (1, "How much do sellers cut?", 6, 10),
                      (2, "Almost 4 in 10 have cut the price.", 0, 7), (2, "The typical cut: $15,000.", 8, 13),
                      (2, "See every cut on yours.", 14, 18)],
@@ -1580,6 +1583,17 @@ NUM = {
  # one row per tail; DATA: campaign/numbers/DATA_20261116.md): 89 of 227 ask less than their first recorded ask in the current ad
  # (cuts > 35% dropped as data glitches: N2439B, N865JP, N34DW); median cut $15,000. dollar=True switches scene_num to the
  # dollar layout: share row first (n/of + dot grid), then the dollar figure (money) at money_at, then the stamp.
+ # 2026-11-19 ONE DOLLAR FIGURE, Beechcraft Bonanza G36 model year 2008 (US, N-number, piston_single, seen in the last 7 days, one
+ # row per tail; FAA year and serial match on all six; DATA: campaign/numbers/DATA_20261119.md): six for sale, asks $519,000,
+ # $599,000, $599,500, $680,000, $699,000, $764,900 -> top minus bottom $245,900. range=... switches scene_num to the price-range
+ # layout: count, a price axis with one dot per airplane (lowest and highest labelled), then the gap (money) and the stamp.
+ "num_dol_g36gap": dict(kind="WHAT SHOULD IT COST?", q1="BUYING A 2008", q2="BONANZA G36?", hook="hook.jpg", find="find.jpg",
+                        photo_note="PHOTO: REPRESENTATIVE G36", dollar=True,
+                        subject="2008 BONANZA G36s FOR SALE", sub="ASKING PRICES · US · NOV 19, 2026",
+                        n=6, label="SAME MODEL · SAME YEAR", n_at=0,
+                        range=[519000, 599000, 599500, 680000, 699000, 764900], axis=(500000, 800000, 100000),
+                        money=245900, money_at=5, m1="APART", m2="LOWEST vs HIGHEST ASK",
+                        stamp="SEE WHAT'S BEHIND YOURS", ask_at=12),
  "num_dol_c182cut": dict(kind="HOW MUCH DO SELLERS CUT?", q1="SHOPPING FOR A", q2="CESSNA 182?", hook="hook.jpg", find="find.jpg",
                          subject="CESSNA 182s FOR SALE", sub="ASKING PRICES · US · NOV 16, 2026", dollar=True,
                          n=89, of=227, label="HAVE CUT THE PRICE SINCE FIRST LISTED", plain="ALMOST 4 IN 10", n_at=0,
@@ -1618,6 +1632,8 @@ def scene_num(im, tt):
         if fade > 0.02:
             card = Image.new("RGBA", (W, H), (0, 0, 0, 0))
             photo_card(card, f"{PH}/{c['hook']}", (70, 800, 1010, 1197), tt, 0, T_B2)
+            if c.get("photo_note"):
+                ImageDraw.Draw(card, "RGBA").text((990, 1182), c["photo_note"], font=SMR(20), fill=(*OFF, 220), anchor="rs")
             if fade < 1: card.putalpha(card.getchannel("A").point(lambda v: int(v * fade)))
             im.alpha_composite(card)
         return
@@ -1629,7 +1645,39 @@ def scene_num(im, tt):
     # main count: "479" + "OF 3,001"
     t0 = wt(2, c["n_at"]) - 0.1
     la = ease((tt - t0) / 0.25) * a
-    if la > 0:
+    if la > 0 and c.get("range"):   # price-range layout (ONE DOLLAR FIGURE "same model, same year" gap)
+        drop_in(im, (104, 590 + yo), str(c["n"]), BCB(170), CYAN, tt, t0)
+        d = ImageDraw.Draw(im, "RGBA")
+        nx = 104 + d.textlength(str(c["n"]), font=BCB(170)) + 26
+        d.text((nx, 612 + yo), "FOR SALE", font=BCB(64), fill=(*OFF, int(255 * la)), anchor="lm")
+        d.text((110, 700 + yo), c["label"], font=SMB(32), fill=(*OFF, int(255 * la)), anchor="lm")
+        lo, hi, step = c["axis"]; X0, X1, AY = 150, 870, 870 + yo
+        px = lambda v: X0 + (v - lo) / (hi - lo) * (X1 - X0)
+        d.line([X0, AY, X1, AY], fill=(*GREY, int(200 * la)), width=4)
+        for v in range(lo, hi + 1, step):
+            d.line([px(v), AY - 10, px(v), AY + 10], fill=(*GREY, int(200 * la)), width=3)
+            d.text((px(v), AY + 34), f"${v // 1000}K", font=SMR(24), fill=(*GREY, int(255 * la)), anchor="mm")
+        pr = sorted(c["range"]); placed = []
+        for k, v in enumerate(pr):
+            tk = t0 + 0.25 + 0.16 * k
+            pa = ease((tt - tk) / 0.18) * la
+            if pa <= 0: continue
+            x = px(v); lvl = sum(1 for q in placed if abs(q - x) < 30); placed.append(x)
+            y = AY - 36 - 40 * lvl
+            end = k in (0, len(pr) - 1)
+            r = 17 if end else 14
+            d.line([x, y + r, x, AY], fill=(*(CYAN if end else OFF), int(150 * pa)), width=2)
+            d.ellipse([x - r, y - r, x + r, y + r], fill=(*(CYAN if end else OFF), int(255 * pa)))
+            if end:
+                d.text((x, y - 44), money(v), font=SMB(30), fill=(*CYAN, int(255 * pa)), anchor="mm")
+        d.text((W / 2, AY + 80), "ONE DOT = ONE AIRPLANE FOR SALE", font=SMR(24), fill=(*GREY, int(255 * la)), anchor="mm")
+        t1 = wt(2, c["money_at"]) - 0.1   # bracket from lowest to highest when the gap is spoken
+        ba = ease((tt - t1) / 0.3) * la
+        if ba > 0:
+            xa, xb = px(pr[0]), lerp(px(pr[0]), px(pr[-1]), eout((tt - t1) / 0.45))
+            d.line([xa, AY + 122, xb, AY + 122], fill=(*CYAN, int(255 * ba)), width=6)
+            for xx in (xa, xb): d.line([xx, AY + 108, xx, AY + 136], fill=(*CYAN, int(255 * ba)), width=6)
+    elif la > 0:
         v = int(round(counter(c["n"], tt, t0, 0.5)))
         txt = f"{v:,}"
         drop_in(im, (104, 590 + yo), txt, BCB(170), CYAN, tt, t0)
@@ -1649,11 +1697,12 @@ def scene_num(im, tt):
         sa = ease((tt - t1) / 0.25) * a
         if sa > 0:
             val = money(round(counter(c["money"], tt, t1, 0.55) / 100) * 100)
-            drop_in(im, (104, 1078 + yo), val, BCB(128), CYAN, tt, t1)
+            my = 1078
+            drop_in(im, (104, my + yo), val, BCB(128), CYAN, tt, t1)
             d = ImageDraw.Draw(im, "RGBA")
             lx = 104 + d.textlength(money(c["money"]), font=BCB(128)) + 26
-            d.text((lx, 1058 + yo), c["m1"], font=SMB(30), fill=(*OFF, int(255 * sa)), anchor="lm")
-            d.text((lx, 1098 + yo), c["m2"], font=SMB(26), fill=(*GREY, int(255 * sa)), anchor="lm")
+            d.text((lx, my - 20 + yo), c["m1"], font=SMB(30), fill=(*OFF, int(255 * sa)), anchor="lm")
+            d.text((lx, my + 20 + yo), c["m2"], font=SMB(26), fill=(*GREY, int(255 * sa)), anchor="lm")
     if c.get("second"):
         val, l1, l2, wi = c["second"]
         t1 = wt(2, wi) - 0.1
@@ -1664,7 +1713,7 @@ def scene_num(im, tt):
             lx = 104 + d.textlength(val, font=BCB(120)) + 26
             d.text((lx, 1068 + yo), l1, font=SMB(28), fill=(*OFF, int(255 * sa)), anchor="lm")
             d.text((lx, 1108 + yo), l2, font=SMB(28), fill=(*OFF, int(255 * sa)), anchor="lm")
-    stamp(im, W / 2, (1242 if c.get("dollar") else 1218) + yo, c.get("stamp", "IS YOURS ONE OF THEM?"), ease((tt - wt(2, c["ask_at"]) + 0.1) / 0.25) * a,
+    stamp(im, W / 2, (1250 if c.get("range") else 1242 if c.get("dollar") else 1218) + yo, c.get("stamp", "IS YOURS ONE OF THEM?"), ease((tt - wt(2, c["ask_at"]) + 0.1) / 0.25) * a,
           ang=-3, col=WHITE, size=60)
 
 # ---------------- REPORT DEMO (Alex, 2026-11-16): the live report on one airplane for sale right now ----------------

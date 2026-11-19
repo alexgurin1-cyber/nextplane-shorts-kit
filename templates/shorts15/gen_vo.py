@@ -174,6 +174,11 @@ S={
  # One ad, first seen Apr 13 at $1,139,900; cuts May 6, Jul 29, Oct 9 -> $1,084,900. Report: "More than 6 months", 3 cuts, -$55,000.
  "demo_sr22tn772":["You found this S R twenty-two Turbo at one million eighty-five thousand. How long has it been for sale?",
                    "The report: over six months, three cuts, fifty-five thousand off.", CTA],
+ # 2026-11-19 daily run: ONE DOLLAR FIGURE (post day Sun 2026-11-22), Beechcraft Bonanza G36, model year 2008 (US, N-number,
+ # seen in the last 7 days, one row per tail, FAA year + serial checked): 6 for sale, $519,000 to $764,900 -> $245,900 apart.
+ # campaign/numbers/DATA_20261119.md
+ "num_dol_g36gap":["Buying a two thousand eight Bonanza G thirty-six? What should it cost?",
+                   "Six are for sale, priced almost two hundred fifty thousand dollars apart. See what's behind yours.", CTA],
  "num_dol_c182cut":["Shopping for a Cessna one eighty-two? How much do sellers cut?",
                     "Almost four in ten have cut the price. The typical cut: fifteen thousand dollars. See every cut on yours.", CTA],
  "num_up_single":["Shopping for a single-engine airplane?",
@@ -197,9 +202,14 @@ S={
 }
 # usage: gen_vo.py [slug]  -> only that slug (no need to delete the pilot entries)
 if len(sys.argv) > 1: S = {sys.argv[1]: S[sys.argv[1]]}
+# optional per-slug delivery speed (ElevenLabs voice_settings.speed, 0.7-1.2) when a clip runs over 15.0 s at the default pace
+SPEED={"num_dol_g36gap":1.1}
 def gen(bid,text):
     if os.path.exists(f"{OUT}/{bid}.json"): return
-    body=json.dumps({"text":text,"model_id":"eleven_turbo_v2_5","voice_settings":{"stability":0.62,"similarity_boost":0.85,"style":0.25,"use_speaker_boost":True}}).encode()
+    vs={"stability":0.62,"similarity_boost":0.85,"style":0.25,"use_speaker_boost":True}
+    sp=SPEED.get(bid.rsplit("_b",1)[0])
+    if sp: vs["speed"]=sp
+    body=json.dumps({"text":text,"model_id":"eleven_turbo_v2_5","voice_settings":vs}).encode()
     r=json.load(urllib.request.urlopen(urllib.request.Request(URL,data=body,headers={"xi-api-key":KEY,"Content-Type":"application/json"}),timeout=180))
     open(f"{OUT}/{bid}.mp3","wb").write(base64.b64decode(r["audio_base64"]))
     al=r["alignment"]; words=[]; cur=""; ws=None
