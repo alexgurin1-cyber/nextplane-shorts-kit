@@ -43,9 +43,11 @@ Read memory `feedback-plain-language-videos`, `feedback-no-source-sites`, `feedb
   two clips in a week (count the 22:00Z stand clips too); favour Cirrus, Cessna 182/172, Bonanza, PA-46.
 - **ONE DOLLAR FIGURE:** one verified dollar amount about one popular model (typical price cut in dollars, depreciation per day,
   top vs bottom ask for the same model and year). Exact figure on screen, plain dollars in the VO, basis on screen in a few words
-  ("ASKING PRICES · US · <date>"); asking prices are never called sale prices. Kinds so far: typical cut (`num_dol_c182cut`,
+  ("ASKING PRICES · US · <date>"); asking prices are never called sale prices. Kinds so far: typical cut (`num_dol_c182cut`, `num_dol_pa46cut`;
   `dollar=True`) and same model + same year, lowest vs highest ask (`num_dol_g36gap`, `range=[asks]` + `axis=` in `NUM`: price
   axis with one dot per airplane, bracket, the gap); check FAA year/serial and every ad of each tail before using a range.
+  Keep `grid_note` and `subject` short (about 45 / 38 characters) or they run past the panel edge; drop parts planes and
+  odd currency-converted first asks (count the cut from the next recorded price).
   If the VO runs over 15.0 s, set a per-slug `SPEED` (≤ 1.1) in gen_vo.py rather than cutting the opening question. Opening: the buyer's question about that model,
   then the number; end on why the report matters for that airplane (stamp e.g. "SEE EVERY CUT ON YOURS"), not "Is yours one of them?".
 - **Single-airplane angles (now only as the angle of a Thursday REPORT DEMO):** PRICE HISTORY: prefer an airplane now priced **higher** than before (relisted higher, or raised in the same ad —

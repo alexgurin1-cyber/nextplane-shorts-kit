@@ -179,6 +179,11 @@ S={
  # campaign/numbers/DATA_20261119.md
  "num_dol_g36gap":["Buying a two thousand eight Bonanza G thirty-six? What should it cost?",
                    "Six are for sale, priced almost two hundred fifty thousand dollars apart. See what's behind yours.", CTA],
+ # 2026-11-20 daily run: ONE DOLLAR FIGURE (post day Sat 2026-11-21, Director slot empty and tomorrow), Piper PA-46 piston
+ # (Malibu, Mirage, Matrix, M350; US, N-number, seen in the last 7 days, parts plane N504EZ dropped): 17 of 57 ask less than their
+ # first recorded ask; median cut $52,000. campaign/numbers/DATA_20261120.md
+ "num_dol_pa46cut":["Shopping for a Piper Malibu? How much do sellers cut?",
+                    "Almost three in ten have cut the price. The typical cut: fifty-two thousand dollars. See every cut on yours.", CTA],
  "num_dol_c182cut":["Shopping for a Cessna one eighty-two? How much do sellers cut?",
                     "Almost four in ten have cut the price. The typical cut: fifteen thousand dollars. See every cut on yours.", CTA],
  "num_up_single":["Shopping for a single-engine airplane?",
@@ -203,7 +208,7 @@ S={
 # usage: gen_vo.py [slug]  -> only that slug (no need to delete the pilot entries)
 if len(sys.argv) > 1: S = {sys.argv[1]: S[sys.argv[1]]}
 # optional per-slug delivery speed (ElevenLabs voice_settings.speed, 0.7-1.2) when a clip runs over 15.0 s at the default pace
-SPEED={"num_dol_g36gap":1.1}
+SPEED={"num_dol_g36gap":1.1, "num_dol_pa46cut":1.1}
 def gen(bid,text):
     if os.path.exists(f"{OUT}/{bid}.json"): return
     vs={"stability":0.62,"similarity_boost":0.85,"style":0.25,"use_speaker_boost":True}
