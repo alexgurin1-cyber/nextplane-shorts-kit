@@ -182,6 +182,8 @@ CAPS = {
                    (2, "The report: a second live ad,", 0, 5), (2, "same airplane: $299,000.", 6, 11)],
  "demo_sr22tn772": [(1, "You found this SR22T at $1,084,900.", 0, 11), (1, "How long has it been for sale?", 12, 18),
                    (2, "The report: over 6 months,", 0, 4), (2, "three cuts,", 5, 6), (2, "$55,000 off.", 7, 9)],
+ "demo_sr20n264": [(1, "You found this SR20 at $499,900.", 0, 10), (1, "Is it a bargain?", 11, 14),
+                   (2, "The report: cut $99,100,", 0, 6), (2, "and still above most SR20s like it.", 7, 15)],
  "num_dol_g36gap": [(1, "Buying a 2008 Bonanza G36?", 0, 7), (1, "What should it cost?", 8, 11),
                     (2, "Six are for sale,", 0, 3), (2, "priced almost $250,000 apart.", 4, 11),
                     (2, "See what's behind yours.", 12, 15)],
@@ -1746,6 +1748,15 @@ DEMO = {
      panels=[("tom.png", 1, "LISTING HISTORY"), ("chart.png", 5, None), ("cuts.png", 5, None)],
      calls=[(0, (20, 28, 249, 65), 2, None), (2, (158, 2, 425, 160), 6, None), (0, (640, 59, 758, 89), 7, None)],
      chip1=("3 CUTS SINCE MAY", 6), stamp=("$55,000 OFF", 8)),
+ # 2023 Cirrus SR20 G6 N264HS (serial 9385, dealer). One ad, first seen Sep 11 2026 at $599,000; cuts Oct 15 -> $579,000,
+ # Nov 11 -> $499,900 (-$99,100, -16.5%). Report captured 2026-11-21: "Listing history" (price since first seen, step chart),
+ # "Price position vs. market" 74th percentile of 48 comps, "Estimated Market Value" $489,450 (G6 comps, range $449,975-$499,900).
+ "demo_sr20n264": dict(hook="hook.jpg", back="back.jpg", label="2023 CIRRUS SR20 · FOR SALE NOW", price="$499,900",
+     ask="IS IT A BARGAIN?", ask_at=11, tail="N264HS",
+     panels=[("first.png", 1, "LISTING HISTORY"), ("pct.png", 8, "PRICE POSITION VS. MARKET"),
+             ("value.png", 8, "ESTIMATED MARKET VALUE")],
+     calls=[(0, (316, 124, 540, 166), 2, None), (1, (36, 52, 150, 112), 10, None), (2, (44, 92, 252, 148), 14, None)],
+     chip1=("2 CUTS SINCE SEPTEMBER", 5), stamp=("STILL ABOVE MOST", 10)),
 }
 _DP = {}
 def demo_panel(fn, w):

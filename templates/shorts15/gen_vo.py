@@ -177,6 +177,11 @@ S={
  # 2026-11-19 daily run: ONE DOLLAR FIGURE (post day Sun 2026-11-22), Beechcraft Bonanza G36, model year 2008 (US, N-number,
  # seen in the last 7 days, one row per tail, FAA year + serial checked): 6 for sale, $519,000 to $764,900 -> $245,900 apart.
  # campaign/numbers/DATA_20261119.md
+ # 2026-11-21 daily run: REPORT DEMO (post day Mon 2026-11-23), 2023 Cirrus SR20 G6 N264HS (serial 9385, dealer), ad 260289165:
+ # first seen Sep 11 2026 at $599,000, cut Oct 15 -> $579,000, Nov 11 -> $499,900 (-$99,100, -16.5%). Report captured 2026-11-21:
+ # priced at the 74th percentile of 48 comparable G6 listings; estimated value $489,450. campaign/demo/DATA_20261121_N264HS.md
+ "demo_sr20n264":["You found this S R twenty at about five hundred thousand. Is it a bargain?",
+                  "The report: cut almost a hundred thousand, and still above most S R twenties like it.", CTA],
  "num_dol_g36gap":["Buying a two thousand eight Bonanza G thirty-six? What should it cost?",
                    "Six are for sale, priced almost two hundred fifty thousand dollars apart. See what's behind yours.", CTA],
  # 2026-11-20 daily run: ONE DOLLAR FIGURE (post day Sat 2026-11-21, Director slot empty and tomorrow), Piper PA-46 piston
