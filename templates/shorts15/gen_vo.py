@@ -235,10 +235,13 @@ S["llc5"]=["Do you know the selling strategy of the owner behind this airplane?"
  "One LLC, one airplane, one ad all year. Three price cuts since June, thirty thousand dollars off.",
  "Before you call the seller, find out their strategy at NextPlane dot U S."]
 S["llc6"]=[None, "One LLC, one airplane, one ad all year. Three cuts, thirty thousand dollars off.", None]
+S["sdl_f33a"]=["Do you know the selling strategy of the dealer behind this airplane?",
+ "This one asks sixteen percent over market, then cuts half. This Bonanza: five months, two cuts.",
+ "Before you call the broker, find out their strategy at NextPlane dot U S."]
 # usage: gen_vo.py [slug]  -> only that slug (no need to delete the pilot entries)
 if len(sys.argv) > 1: S = {sys.argv[1]: S[sys.argv[1]]}
 # optional per-slug delivery speed (ElevenLabs voice_settings.speed, 0.7-1.2) when a clip runs over 15.0 s at the default pace
-SPEED={"num_dol_g36gap":1.1, "num_dol_pa46cut":1.1}
+SPEED={"sdl_f33a":1.1, "num_dol_g36gap":1.1, "num_dol_pa46cut":1.1}
 def gen(bid,text):
     if os.path.exists(f"{OUT}/{bid}.json"): return
     vs={"stability":0.62,"similarity_boost":0.85,"style":0.25,"use_speaker_boost":True}

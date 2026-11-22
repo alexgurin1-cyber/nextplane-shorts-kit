@@ -35,6 +35,8 @@ def money(v): return "${:,.0f}".format(v)
 
 # ---------------- timeline from VO ----------------
 V = sys.argv[1]
+# SELLER STRATEGY v4 clips (question hook + "find out their strategy" CTA): pilots dlr5/llc6, daily clips sdl_<x> (dealer) / sow_<x> (owner)
+STRAT = V in ("dlr5", "llc6") or V.startswith(("sdl_", "sow_"))
 VO = f"{ROOT}/vo"
 BEATS = [f"{V}_b{i}" for i in (1, 2, 3)]
 WD = {b: json.load(open(f"{VO}/{b}.json")) for b in BEATS}
@@ -51,14 +53,18 @@ T_LOOK = OFFS[BEATS[2]] - 0.70
 _w3 = [w["w"] for w in WD[BEATS[2]]["words"]]
 CTA0 = _w3.index("Before")                    # beat 3 may open with extra words ("Check yours." in liq clips)
 CHK = next(i for i in range(CTA0, len(_w3)) if _w3[i].lower() in ("check", "find"))
-if V in ("dlr4", "llc4", "dlr5", "llc6"): CHK = next(i for i in range(CHK, len(_w3)) if _w3[i].lower() == "at")
+if V in ("dlr4", "llc4") or STRAT: CHK = next(i for i in range(CHK, len(_w3)) if _w3[i].lower() == "at")
 T_END = wt(3, CHK) - 0.12                    # "check the data at NextPlane.us"
-TOTAL = max(OFFS[BEATS[2]] + WD[BEATS[2]]["dur"] + 0.75, T_END + (2.6 if V in ("dlr5", "llc6") else 2.95))
+TOTAL = max(OFFS[BEATS[2]] + WD[BEATS[2]]["dur"] + 0.75, T_END + (2.6 if STRAT else 2.95))
 TOTAL = round(TOTAL * FPS) / FPS
 NF = int(TOTAL * FPS)
 
 # ---------------- captions ----------------
 CAPS = {
+ "sdl_f33a": [(1, "Do you know the selling strategy", 0, 5), (1, "of the dealer behind this airplane?", 6, 11),
+          (2, "This one asks", 0, 2), (2, "16% over market,", 3, 6), (2, "then cuts half.", 7, 9),
+          (2, "This Bonanza:", 10, 11), (2, "five months, two cuts.", 12, 15),
+          (3, "Before you call the broker,", 0, 4), (3, "find out their strategy", 5, 8)],
  "dlr5": [(1, "Do you know the selling strategy", 0, 5), (1, "of the dealer behind this airplane?", 6, 11),
           (2, "This one asks", 0, 2), (2, "a quarter above market", 3, 6), (2, "and rarely cuts.", 7, 9),
           (2, "This Skylane:", 10, 11), (2, "seven months, no cut.", 12, 15),
@@ -212,7 +218,7 @@ CAPS = {
  "num_own_bonanza": [(1, "Shopping for a Beechcraft Bonanza?", 0, 4),
                      (2, "Nearly one in seven sellers", 0, 4), (2, "has owned it under two years.", 5, 10),
                      (2, "12, under one year.", 11, 14), (2, "Is yours one of them?", 15, 19)],
-}[{"dlr4": "dlr3", "llc4": "llc3"}.get(V, V)] + ([] if V in ("dlr5", "llc6") else [(3, "Before you call,", CTA0, CTA0 + 2), (3, {"dlr4": "check the dealer's selling strategy", "llc4": "check the seller's strategy"}.get(V, ""), CTA0 + 3, CHK - 1)] if V in ("dlr4", "llc4") else [(3, "Before you call the broker,", CTA0, CTA0 + 4)])
+}[{"dlr4": "dlr3", "llc4": "llc3"}.get(V, V)] + ([] if STRAT else [(3, "Before you call,", CTA0, CTA0 + 2), (3, {"dlr4": "check the dealer's selling strategy", "llc4": "check the seller's strategy"}.get(V, ""), CTA0 + 3, CHK - 1)] if V in ("dlr4", "llc4") else [(3, "Before you call the broker,", CTA0, CTA0 + 4)])
 
 def draw_caption(im, tt):
     d = ImageDraw.Draw(im, "RGBA")
@@ -346,7 +352,7 @@ def lookup(im, tt, t0, tails):
         d.ellipse([x0 + 30 + i * 34, y0 + 26, x0 + 52 + i * 34, y0 + 48], fill=(*c, int(255 * a)))
     d.rounded_rectangle([x0 + 150, y0 + 16, x1 - 30, y0 + 58], radius=20, fill=(255, 255, 255, int(255 * a)))
     d.text((x0 + 172, y0 + 37), "nextplane.us/aircraft-report", font=SMR(26), fill=(70, 80, 90, int(255 * a)), anchor="lm")
-    d.text((W / 2, y0 + 160), {"dlr4": "CHECK THE DEALER'S STRATEGY", "llc4": "CHECK THE SELLER'S STRATEGY", "dlr5": "FIND OUT THEIR STRATEGY", "llc6": "FIND OUT THEIR STRATEGY"}.get(V, "PLUG IN THE N-NUMBER"), font=BCB(60 if V in ("dlr4", "llc4") else 66 if V in ("dlr5", "llc6") else 72), fill=(*NAVY, int(255 * a)), anchor="mm")
+    d.text((W / 2, y0 + 160), {"dlr4": "CHECK THE DEALER'S STRATEGY", "llc4": "CHECK THE SELLER'S STRATEGY", "dlr5": "FIND OUT THEIR STRATEGY", "llc6": "FIND OUT THEIR STRATEGY"}.get(V, "FIND OUT THEIR STRATEGY" if STRAT else "PLUG IN THE N-NUMBER"), font=BCB(60 if V in ("dlr4", "llc4") else 66 if STRAT else 72), fill=(*NAVY, int(255 * a)), anchor="mm")
     # input + typing
     full = "  ".join(tails)
     n = int(len(full) * min(max((tt - t0 - 0.25) / 0.55, 0), 1))
@@ -2076,6 +2082,49 @@ def scene_llc6(im, tt):
     stamp(im, W / 2, 1135 + yo, "3 CUTS SINCE JUNE", ease((tt - wt(2, 9)) / 0.25) * a, ang=-4, col=WHITE, size=52)
 
 
+
+# ---- SELLER STRATEGY — DEALER daily clips (sdl_<x>): copy scene_sdl_f33a, change only DLR numbers, word anchors, photos ----
+# DLR[slug]: profile figures from dealer_stats_monthly (latest snapshot) vs the median US dealer meeting the same thresholds
+# (scored_listings >= 5 for ask vs market and cut share, sold_total >= 5 for days to sell). Rows: (value, label, beat-2 word,
+# typical-dealer value). Never the dealer's name/city/state, the tail, or the example airplane's asking price.
+DLR = {
+ # dealer 0254176e-1ff1-497a-9396-a95efd034bd8, snapshot 2026-11-01: first listing Apr 14 2026, 66 listings, 34 sold,
+ # avg ask +16.00% vs market (16 scored), 50.0% with a price cut, median 67 days to sell. Typical dealer: +2.83%, 25.45%, 58 d.
+ # Example: 1989 Bonanza F33A N57GW (ad 257530747), first seen Jun 20 2026, cuts Oct 27 and Nov 5 2026, still listed Nov 21.
+ "sdl_f33a": dict(hook="hook.jpg", back="back.jpg", head="66 LISTED SINCE APRIL \u00b7 34 SOLD", hook_at=8,
+     rows=[("+16%", "THEY ASK ABOVE MARKET, ON AVERAGE", 3, "+3%"), ("1 IN 2", "OF THEIR AIRPLANES GET A PRICE CUT", 8, "1 IN 4"),
+           ("67 DAYS", "THEIR AIRPLANES USUALLY SELL IN", 10, "58 DAYS")],
+     stamp=("THIS BONANZA: 5 MONTHS, 2 CUTS", 12), kind="STARTS HIGH, THEN CUTS"),
+}
+
+def scene_sdl(im, tt):
+    c = DLR[V]
+    hook = tt < T_B2 + 0.3
+    im.alpha_composite(blur_backdrop(f"{PH}/{c['hook'] if hook else c['back']}", 0.5 if hook else 0.34))
+    im.alpha_composite(GRAD)
+    d = ImageDraw.Draw(im, "RGBA")
+    brand_bug(im)
+    if tt < T_B2 + 0.25:
+        hook_question(im, d, tt, "DEALER'S", f"{PH}/{c['hook']}", "A DEALER \u00b7 NAME WITHHELD", c["hook_at"])
+        return
+    a = ease((tt - T_B2 - 0.1) / 0.3) * (1 - ease((tt - T_LOOK) / 0.2))
+    if a <= 0: return
+    yo = lerp(40, 0, eout((tt - T_B2 - 0.1) / 0.35))
+    panel(d, (64, 330 + yo, 948, 1330 + yo), a, title="NEXTPLANE DEALER PROFILE", sub="NAME WITHHELD")
+    d.text((110, 450 + yo), c["head"], font=SMB(30), fill=(*OFF, int(255 * a)), anchor="lm")
+    for k, (val, lab, wi, typ) in enumerate(c["rows"]):
+        t0 = wt(2, wi)
+        y0 = 540 + yo + k * 200
+        la = ease((tt - t0 + 0.1) / 0.25) * a
+        if la <= 0: continue
+        d.text((110, y0), lab, font=SMB(28), fill=(*GREY, int(255 * la)), anchor="lm")
+        drop_in(im, (104, y0 + 88), val, BCB(124), CYAN if k == 0 else WHITE, tt, t0 - 0.1)
+        d = ImageDraw.Draw(im, "RGBA")
+        d.text((900, y0 + 66), "TYPICAL DEALER", font=SMB(24), fill=(*GREY, int(220 * la)), anchor="rm")
+        d.text((900, y0 + 112), typ, font=BCB(56), fill=(*OFF, int(235 * la)), anchor="rm")
+    st, w2 = c["stamp"]
+    stamp(im, W / 2, 1220 + yo, st, ease((tt - wt(2, w2)) / 0.25) * a, ang=-4, col=CYAN, size=54)
+
 _EB = []
 def endbg():
     if not _EB:
@@ -2086,8 +2135,8 @@ def endbg():
         _EB.append(g.resize((W, H)).convert("RGBA"))
     return _EB[0]
 
-SCENE = scene_demo if V.startswith("demo_") else scene_liq if V.startswith("liq") else scene_cuts if V.startswith("cuts") else scene_num if V.startswith("num_") else {"sr20": scene_sr20, "a36": scene_a36, "mirage": scene_mirage, "pa32": scene_pa32, "m20k": scene_m20k, "sr22t": scene_sr22t, "a36cut": scene_a36cut, "sr20g6": scene_sr20g6, "arrow3": scene_arrow3, "c182n": scene_c182n, "c172s": scene_c172s, "c182p": scene_c182p, "sr20bm": scene_sr20bm, "f33a": scene_f33a, "g36up": scene_g36up, "sr22tup": scene_sr22tup, "a36eng": scene_a36eng, "dlr182": scene_dlr182, "llcf33": scene_llcf33, "dlr3": scene_dlr3, "llc3": scene_llc3, "dlr4": scene_dlr3, "llc4": scene_llc3, "dlr5": scene_dlr5, "llc6": scene_llc6}[V]
-TAILS = [DEMO[V]["tail"]] if V.startswith("demo_") else ["YOUR N-NUMBER"] if V.startswith(("liq", "cuts", "num_")) else {"sr20": ["N881PF"], "a36": ["N29DL", "N72MD"], "mirage": ["N27RZ"], "pa32": ["N123BE"], "m20k": ["N231HB", "N3594H"], "sr22t": ["N236CB"], "a36cut": ["N614MM"], "sr20g6": ["N665M", "N34AS"], "arrow3": ["N41GF", "N6089H"], "c182n": ["N9051G", "N9164G"], "c172s": ["N20818"], "c182p": ["N9802E"], "sr20bm": ["N190BM"], "f33a": ["N22099"], "g36up": ["N6980B"], "sr22tup": ["N784RJ"], "a36eng": ["N8088J", "N85BB"], "dlr182": ["YOUR N-NUMBER"], "llcf33": ["YOUR N-NUMBER"], "dlr3": ["YOUR N-NUMBER"], "llc3": ["YOUR N-NUMBER"], "dlr4": ["YOUR N-NUMBER"], "llc4": ["YOUR N-NUMBER"], "dlr5": ["YOUR N-NUMBER"], "llc6": ["YOUR N-NUMBER"]}[V]
+SCENE = scene_sdl if V.startswith("sdl_") else scene_demo if V.startswith("demo_") else scene_liq if V.startswith("liq") else scene_cuts if V.startswith("cuts") else scene_num if V.startswith("num_") else {"sr20": scene_sr20, "a36": scene_a36, "mirage": scene_mirage, "pa32": scene_pa32, "m20k": scene_m20k, "sr22t": scene_sr22t, "a36cut": scene_a36cut, "sr20g6": scene_sr20g6, "arrow3": scene_arrow3, "c182n": scene_c182n, "c172s": scene_c172s, "c182p": scene_c182p, "sr20bm": scene_sr20bm, "f33a": scene_f33a, "g36up": scene_g36up, "sr22tup": scene_sr22tup, "a36eng": scene_a36eng, "dlr182": scene_dlr182, "llcf33": scene_llcf33, "dlr3": scene_dlr3, "llc3": scene_llc3, "dlr4": scene_dlr3, "llc4": scene_llc3, "dlr5": scene_dlr5, "llc6": scene_llc6}[V]
+TAILS = ["YOUR N-NUMBER"] if V.startswith(("sdl_", "sow_")) else [DEMO[V]["tail"]] if V.startswith("demo_") else ["YOUR N-NUMBER"] if V.startswith(("liq", "cuts", "num_")) else {"sr20": ["N881PF"], "a36": ["N29DL", "N72MD"], "mirage": ["N27RZ"], "pa32": ["N123BE"], "m20k": ["N231HB", "N3594H"], "sr22t": ["N236CB"], "a36cut": ["N614MM"], "sr20g6": ["N665M", "N34AS"], "arrow3": ["N41GF", "N6089H"], "c182n": ["N9051G", "N9164G"], "c172s": ["N20818"], "c182p": ["N9802E"], "sr20bm": ["N190BM"], "f33a": ["N22099"], "g36up": ["N6980B"], "sr22tup": ["N784RJ"], "a36eng": ["N8088J", "N85BB"], "dlr182": ["YOUR N-NUMBER"], "llcf33": ["YOUR N-NUMBER"], "dlr3": ["YOUR N-NUMBER"], "llc3": ["YOUR N-NUMBER"], "dlr4": ["YOUR N-NUMBER"], "llc4": ["YOUR N-NUMBER"], "dlr5": ["YOUR N-NUMBER"], "llc6": ["YOUR N-NUMBER"]}[V]
 
 def frame(i):
     global GRAD

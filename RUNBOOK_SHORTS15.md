@@ -79,10 +79,19 @@ airplane as the example. Alternate (check the last `subformat=` in `social_short
 - Anonymity: never show or say the dealer's/owner's name, city, state, the tail, or anything identifying; model photos only (not
   the ad's), every registration blurred; lookup card "YOUR N-NUMBER". Same dealer or tail not within eight weeks (store dealer_id
   and tail in `basis=`; also check `social_campaign_posts` campaign = seller_strategy_pilot: dealer of N735AB, and N9020G).
-- Production: `hook_question()`, `scene_dlr5()` (dealer), `scene_llc6()` (owner) in render15.py (lookup title "FIND OUT THEIR
+- Production (daily clips, from 2026-11-22): DEALER clips use slug `sdl_<x>` → generic `scene_sdl()` driven by `DLR[slug]`
+  (hook/back photos, header line, three rows (value, label, beat-2 word, typical-dealer value), stamp); add `CAPS[slug]`,
+  `S[slug]`, `P[slug]` and nothing else — the `STRAT` flag (slugs `sdl_`/`sow_`, pilots dlr5/llc6) switches on the strategy CTA,
+  lookup title and 2.6 s end card. First clip `sdl_f33a` (14.7 s; b2 at SPEED 1.1). OWNER clips: slug `sow_<x>`, copy
+  `scene_llc6()` into a `scene_sow()` the same way. Pilots: `hook_question()`, `scene_dlr5()` (dealer), `scene_llc6()` (owner) in render15.py (lookup title "FIND OUT THEIR
   STRATEGY", end card from "at NextPlane", 2.6 s). If the kit lacks scene_dlr5, apply Drive file 1zpQZFBY6qHuVVJQtBwiiPSCj68I6L9ye
   ("nextplane-kit-patch-seller-strategy-2026-11-15.patch") with `git am` and push. Copy the scene per clip; change only numbers,
   word anchors, chips, photos.
+- Timing: the fixed b1 + b3 take ~7.4 s at SPEED 1.1, so b2 must be <= ~16 words (e.g. "This one asks sixteen percent over
+  market, then cuts half. This Bonanza: five months, two cuts."). Typical-dealer medians on 2026-11-01: +2.83%, 25.45% cut
+  (n=58, scored_listings >= 5), 58 days (n=229, sold_total >= 5). Listing -> dealer: aircraft_listings.seller_name =
+  dealer_aliases.alias. Skip tails already in other clips (e.g. N707FF/N939P were in num_dol_g36gap). Photos: registrations and
+  school/operator logos with `blur_reg.py --strong`.
 - Caption: the same question, the seller's numbers in one or two sentences, one sentence of buyer meaning inside the data, "plug the
   N-number into nextplane.us before you call", credits, <= 5 hashtags.
 
