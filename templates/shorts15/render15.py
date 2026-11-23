@@ -206,6 +206,9 @@ CAPS = {
                    (2, "The report: over 6 months,", 0, 4), (2, "three cuts,", 5, 6), (2, "$55,000 off.", 7, 9)],
  "demo_sr20n264": [(1, "You found this SR20 at $499,900.", 0, 10), (1, "Is it a bargain?", 11, 14),
                    (2, "The report: cut $99,100,", 0, 6), (2, "and still above most SR20s like it.", 7, 15)],
+ "demo_sr22n25": [(1, "You found this SR22 at $309,900.", 0, 11), (1, "Has it ever been in an accident?", 12, 18),
+                  (2, "The report: yes,", 0, 2), (2, "a federal accident record,", 3, 6), (2, "October 2022.", 7, 9),
+                  (2, "Still priced mid-market.", 10, 12)],
  "num_dol_g36gap": [(1, "Buying a 2008 Bonanza G36?", 0, 7), (1, "What should it cost?", 8, 11),
                     (2, "Six are for sale,", 0, 3), (2, "priced almost $250,000 apart.", 4, 11),
                     (2, "See what's behind yours.", 12, 15)],
@@ -1779,6 +1782,16 @@ DEMO = {
              ("value.png", 8, "ESTIMATED MARKET VALUE")],
      calls=[(0, (316, 124, 540, 166), 2, None), (1, (36, 52, 150, 112), 10, None), (2, (44, 92, 252, 148), 14, None)],
      chip1=("2 CUTS SINCE SEPTEMBER", 5), stamp=("STILL ABOVE MOST", 10)),
+ # 2006 Cirrus SR22 G2 N25HW (serial 2021, dealer). One ad, first seen 2026-11-23 at $309,900. Federal accident record
+ # CEN23LA017 (2022-10-23, substantial damage, serial 2021 matches). Report captured 2026-11-23: header tile "Report (Oct 23,
+ # 2022)" (source word in the label removed, glyphs shifted), "Price position vs. market" 46th percentile of 80 G2 comps,
+ # "Estimated Market Value" $317,750 (range $279,900-$360,024). Doubt: ACCIDENT RECORD.
+ "demo_sr22n25": dict(hook="hook.jpg", back="back.jpg", label="2006 CIRRUS SR22 · FOR SALE NOW", price="$309,900",
+     ask="HAS IT EVER BEEN IN AN ACCIDENT?", ask_at=12, tail="N25HW",
+     panels=[("hdr.png", 3, "AT THE TOP OF THE REPORT"), ("pct.png", 10, "PRICE POSITION VS. MARKET"),
+             ("value.png", 11, "ESTIMATED MARKET VALUE")],
+     calls=[(0, (488, 50, 922, 106), 5, None), (1, (36, 62, 150, 116), 11, None), (2, (52, 50, 490, 148), 12, None)],
+     chip1=("ACCIDENT RECORD · OCT 23, 2022", 7), stamp=("PRICED MID-MARKET", 12)),
 }
 _DP = {}
 def demo_panel(fn, w):

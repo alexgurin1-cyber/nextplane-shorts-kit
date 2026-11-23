@@ -182,6 +182,12 @@ S={
  # priced at the 74th percentile of 48 comparable G6 listings; estimated value $489,450. campaign/demo/DATA_20261121_N264HS.md
  "demo_sr20n264":["You found this S R twenty at about five hundred thousand. Is it a bargain?",
                   "The report: cut almost a hundred thousand, and still above most S R twenties like it.", CTA],
+ # 2026-11-23 daily run: REPORT DEMO (post day Thu 2026-11-26), 2006 Cirrus SR22 G2 N25HW (serial 2021, dealer), ad 262675585
+ # first seen 2026-11-23 at $309,900. Federal accident record CEN23LA017, 2022-10-23, serial 2021 (exact registration + serial match).
+ # Report captured 2026-11-23: header "Report (Oct 23, 2022)", 46th percentile of 80 G2 comps, est. value $317,750.
+ # campaign/demo/DATA_20261123_N25HW.md
+ "demo_sr22n25":["You found this S R twenty-two at about three hundred ten thousand. Has it ever been in an accident?",
+                 "The report: yes, a federal accident record, October twenty twenty-two. Still priced mid-market.", CTA],
  "num_dol_g36gap":["Buying a two thousand eight Bonanza G thirty-six? What should it cost?",
                    "Six are for sale, priced almost two hundred fifty thousand dollars apart. See what's behind yours.", CTA],
  # 2026-11-20 daily run: ONE DOLLAR FIGURE (post day Sat 2026-11-21, Director slot empty and tomorrow), Piper PA-46 piston
@@ -241,7 +247,7 @@ S["sdl_f33a"]=["Do you know the selling strategy of the dealer behind this airpl
 # usage: gen_vo.py [slug]  -> only that slug (no need to delete the pilot entries)
 if len(sys.argv) > 1: S = {sys.argv[1]: S[sys.argv[1]]}
 # optional per-slug delivery speed (ElevenLabs voice_settings.speed, 0.7-1.2) when a clip runs over 15.0 s at the default pace
-SPEED={"sdl_f33a":1.1, "num_dol_g36gap":1.1, "num_dol_pa46cut":1.1}
+SPEED={"demo_sr22n25":1.1, "sdl_f33a":1.1, "num_dol_g36gap":1.1, "num_dol_pa46cut":1.1}
 def gen(bid,text):
     if os.path.exists(f"{OUT}/{bid}.json"): return
     vs={"stability":0.62,"similarity_boost":0.85,"style":0.25,"use_speaker_boost":True}
