@@ -129,6 +129,11 @@ for sale right now (status active, last_seen_at within 4 days, US N-number, aski
   before the CTA, lookup card shows the real tail and "$29 PER AIRPLANE".
 - Caption: the same question, the report's answer in one or two sentences, "Plug the N-number into nextplane.us before you call —
   $29 per airplane.", credits, <= 5 hashtags. Data pack: `campaign/demo/DATA_<yyyymmdd>_<tail>.md`.
+- SELLER doubt (first: demo_sr22tn378, 2026-11-24): the seller section's "This listing vs. their usual" tiles (time on market vs
+  the dealer's typical sale, "pts below/above their usual") sit below the first 900 px of sec_22, so crop them from full.png
+  (find the y with a downscaled contact sheet; full.png is 1x and the page column is offset). Never show the dealer name, HQ
+  city, map or the "Listed by" row. Use the approved opening without the price in the VO ("You found this SR22 Turbo. Do you
+  know how this seller negotiates?") — with the price spoken, b1 ran 6.1 s and the clip 16.5 s.
 - Log format = REPORT DEMO, subformat = PRICE | TIME ON MARKET | SELLER | ACCIDENT RECORD | USAGE | ENGINE.
 
 ## 2. Script (≈30–36 words, three beats)

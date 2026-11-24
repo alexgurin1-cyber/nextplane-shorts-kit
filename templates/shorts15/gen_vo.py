@@ -188,6 +188,12 @@ S={
  # campaign/demo/DATA_20261123_N25HW.md
  "demo_sr22n25":["You found this S R twenty-two at about three hundred ten thousand. Has it ever been in an accident?",
                  "The report: yes, a federal accident record, October twenty twenty-two. Still priced mid-market.", CTA],
+ # 2026-11-24 daily run: REPORT DEMO (post day Fri 2026-11-27), 2014 Cirrus SR22T G5 N378WT (dealer), ad 254812715 first seen
+ # Apr 16 2026 at $599,900; cuts Aug 5 -> $579,900, Sep 7 -> $569,900, Sep 17 -> $559,900. Report captured 2026-11-24: "This listing
+ # vs. their usual": time on market 222 days, dealer's typical sale (all aircraft) 55 days, 6.4 pts below their usual (-6.6% vs
+ # market, expected ~$599,450, 46 comps). Doubt: SELLER. campaign/demo/DATA_20261124_N378WT.md
+ "demo_sr22tn378":["You found this S R twenty-two Turbo. Do you know how this seller negotiates?",
+                   "The report: this dealer usually sells in fifty-five days. This one: over seven months, three cuts.", CTA],
  "num_dol_g36gap":["Buying a two thousand eight Bonanza G thirty-six? What should it cost?",
                    "Six are for sale, priced almost two hundred fifty thousand dollars apart. See what's behind yours.", CTA],
  # 2026-11-20 daily run: ONE DOLLAR FIGURE (post day Sat 2026-11-21, Director slot empty and tomorrow), Piper PA-46 piston
@@ -247,7 +253,7 @@ S["sdl_f33a"]=["Do you know the selling strategy of the dealer behind this airpl
 # usage: gen_vo.py [slug]  -> only that slug (no need to delete the pilot entries)
 if len(sys.argv) > 1: S = {sys.argv[1]: S[sys.argv[1]]}
 # optional per-slug delivery speed (ElevenLabs voice_settings.speed, 0.7-1.2) when a clip runs over 15.0 s at the default pace
-SPEED={"demo_sr22n25":1.1, "sdl_f33a":1.1, "num_dol_g36gap":1.1, "num_dol_pa46cut":1.1}
+SPEED={"demo_sr22tn378":1.1, "demo_sr22n25":1.1, "sdl_f33a":1.1, "num_dol_g36gap":1.1, "num_dol_pa46cut":1.1}
 def gen(bid,text):
     if os.path.exists(f"{OUT}/{bid}.json"): return
     vs={"stability":0.62,"similarity_boost":0.85,"style":0.25,"use_speaker_boost":True}

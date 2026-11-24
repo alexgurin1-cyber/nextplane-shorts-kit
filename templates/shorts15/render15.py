@@ -209,6 +209,9 @@ CAPS = {
  "demo_sr22n25": [(1, "You found this SR22 at $309,900.", 0, 11), (1, "Has it ever been in an accident?", 12, 18),
                   (2, "The report: yes,", 0, 2), (2, "a federal accident record,", 3, 6), (2, "October 2022.", 7, 9),
                   (2, "Still priced mid-market.", 10, 12)],
+ "demo_sr22tn378": [(1, "You found this SR22T.", 0, 6), (1, "Do you know how this seller negotiates?", 7, 13),
+                   (2, "The report: this dealer", 0, 3), (2, "usually sells in 55 days.", 4, 8),
+                   (2, "This one: over 7 months,", 9, 13), (2, "three cuts.", 14, 15)],
  "num_dol_g36gap": [(1, "Buying a 2008 Bonanza G36?", 0, 7), (1, "What should it cost?", 8, 11),
                     (2, "Six are for sale,", 0, 3), (2, "priced almost $250,000 apart.", 4, 11),
                     (2, "See what's behind yours.", 12, 15)],
@@ -1786,6 +1789,16 @@ DEMO = {
  # CEN23LA017 (2022-10-23, substantial damage, serial 2021 matches). Report captured 2026-11-23: header tile "Report (Oct 23,
  # 2022)" (source word in the label removed, glyphs shifted), "Price position vs. market" 46th percentile of 80 G2 comps,
  # "Estimated Market Value" $317,750 (range $279,900-$360,024). Doubt: ACCIDENT RECORD.
+ # 2014 Cirrus SR22T G5 N378WT (dealer). One ad, first seen Apr 16 2026 at $599,900; cuts Aug 5 -> $579,900, Sep 7 -> $569,900,
+ # Sep 17 -> $559,900 (-$40,000). Report captured 2026-11-24, seller section "This listing vs. their usual": time on market 222 days,
+ # dealer's typical sale (all aircraft) 55 days; 6.4 pts below their usual (their usual -0.2% vs market). Doubt: SELLER.
+ # Panels from full.png (tom, norm) and sec_02 (cuts); dealer name, HQ city and map not shown.
+ "demo_sr22tn378": dict(hook="hook.jpg", back="back.jpg", label="2014 CIRRUS SR22T · FOR SALE NOW", price="$559,900",
+     ask="HOW DOES THIS SELLER NEGOTIATE?", ask_at=7, tail="N378WT",
+     panels=[("tom.png", 2, "THIS LISTING VS. THE DEALER'S USUAL"), ("cuts.png", 14, "LISTING HISTORY"), ("norm.png", 15, None)],
+     calls=[(0, (42, 118, 350, 142), 7, None), (0, (42, 76, 210, 116), 12, None), (1, (50, 76, 200, 122), 14, None),
+            (2, (40, 78, 520, 120), 15, None)],
+     chip1=("3 CUTS SINCE AUGUST \u00b7 $40,000 OFF", 14), stamp=("222 DAYS VS. 55", 12)),
  "demo_sr22n25": dict(hook="hook.jpg", back="back.jpg", label="2006 CIRRUS SR22 · FOR SALE NOW", price="$309,900",
      ask="HAS IT EVER BEEN IN AN ACCIDENT?", ask_at=12, tail="N25HW",
      panels=[("hdr.png", 3, "AT THE TOP OF THE REPORT"), ("pct.png", 10, "PRICE POSITION VS. MARKET"),
