@@ -45,7 +45,8 @@ Read memory `feedback-plain-language-videos`, `feedback-no-source-sites`, `feedb
   top vs bottom ask for the same model and year). Exact figure on screen, plain dollars in the VO, basis on screen in a few words
   ("ASKING PRICES · US · <date>"); asking prices are never called sale prices. Kinds so far: typical cut (`num_dol_c182cut`, `num_dol_pa46cut`;
   `dollar=True`) and same model + same year, lowest vs highest ask (`num_dol_g36gap`, `range=[asks]` + `axis=` in `NUM`: price
-  axis with one dot per airplane, bracket, the gap); check FAA year/serial and every ad of each tail before using a range.
+  axis with one dot per airplane, bracket, the gap); check FAA year/serial and every ad of each tail before using a range
+  (second edition `num_dol_c182qgap`, 1978 182Q, 8 dots: end labels now sit above the tallest dot stack; filter one variant, e.g. `^182Q`, not `^182`, which mixes in the 182RG).
   Keep `grid_note` and `subject` short (about 45 / 38 characters) or they run past the panel edge; drop parts planes and
   odd currency-converted first asks (count the cut from the next recorded price).
   If the VO runs over 15.0 s, set a per-slug `SPEED` (≤ 1.1) in gen_vo.py rather than cutting the opening question. Opening: the buyer's question about that model,

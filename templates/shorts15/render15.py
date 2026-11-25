@@ -212,6 +212,9 @@ CAPS = {
  "demo_sr22tn378": [(1, "You found this SR22T.", 0, 6), (1, "Do you know how this seller negotiates?", 7, 13),
                    (2, "The report: this dealer", 0, 3), (2, "usually sells in 55 days.", 4, 8),
                    (2, "This one: over 7 months,", 9, 13), (2, "three cuts.", 14, 15)],
+ "num_dol_c182qgap": [(1, "Buying a 1978 Cessna 182Q?", 0, 7), (1, "What should it cost?", 8, 11),
+                      (2, "Eight are for sale,", 0, 3), (2, "priced almost $240,000 apart.", 4, 11),
+                      (2, "See what's behind yours.", 12, 15)],
  "num_dol_g36gap": [(1, "Buying a 2008 Bonanza G36?", 0, 7), (1, "What should it cost?", 8, 11),
                     (2, "Six are for sale,", 0, 3), (2, "priced almost $250,000 apart.", 4, 11),
                     (2, "See what's behind yours.", 12, 15)],
@@ -1620,6 +1623,16 @@ NUM = {
  # row per tail; FAA year and serial match on all six; DATA: campaign/numbers/DATA_20261119.md): six for sale, asks $519,000,
  # $599,000, $599,500, $680,000, $699,000, $764,900 -> top minus bottom $245,900. range=... switches scene_num to the price-range
  # layout: count, a price axis with one dot per airplane (lowest and highest labelled), then the gap (money) and the stamp.
+ # 2026-11-25 ONE DOLLAR FIGURE (post day Sun 2026-11-29), Cessna 182Q Skylane model year 1978 (US, N-number, piston_single,
+ # seen in the last 4 days, one row per tail; FAA year and serial match on all eight; 182RG excluded; DATA:
+ # campaign/numbers/DATA_20261125.md): eight for sale, asks $139,900 ... $379,000 -> top minus bottom $239,100.
+ "num_dol_c182qgap": dict(kind="WHAT SHOULD IT COST?", q1="BUYING A 1978", q2="CESSNA 182Q?", hook="hook.jpg", find="find.jpg",
+                          photo_note="PHOTO: REPRESENTATIVE SKYLANE", dollar=True,
+                          subject="1978 CESSNA 182Qs FOR SALE", sub="ASKING PRICES · US · NOV 25, 2026",
+                          n=8, label="SAME MODEL · SAME YEAR", n_at=0,
+                          range=[139900, 163200, 167500, 199000, 209000, 219000, 234900, 379000], axis=(100000, 400000, 100000),
+                          money=239100, money_at=5, m1="APART", m2="LOWEST vs HIGHEST ASK",
+                          stamp="SEE WHAT'S BEHIND YOURS", ask_at=12),
  "num_dol_g36gap": dict(kind="WHAT SHOULD IT COST?", q1="BUYING A 2008", q2="BONANZA G36?", hook="hook.jpg", find="find.jpg",
                         photo_note="PHOTO: REPRESENTATIVE G36", dollar=True,
                         subject="2008 BONANZA G36s FOR SALE", sub="ASKING PRICES · US · NOV 19, 2026",
@@ -1697,6 +1710,9 @@ def scene_num(im, tt):
             d.line([px(v), AY - 10, px(v), AY + 10], fill=(*GREY, int(200 * la)), width=3)
             d.text((px(v), AY + 34), f"${v // 1000}K", font=SMR(24), fill=(*GREY, int(255 * la)), anchor="mm")
         pr = sorted(c["range"]); placed = []
+        _pl = []; [_pl.append(px(q)) for q in pr]
+        maxlvl = max(sum(1 for q in _pl[:i] if abs(q - x) < 30) for i, x in enumerate(_pl))
+        ly = AY - 36 - 40 * maxlvl - 44   # end labels sit above the tallest dot stack (2026-11-25: a stacked dot covered "$139,900")
         for k, v in enumerate(pr):
             tk = t0 + 0.25 + 0.16 * k
             pa = ease((tt - tk) / 0.18) * la
@@ -1708,7 +1724,7 @@ def scene_num(im, tt):
             d.line([x, y + r, x, AY], fill=(*(CYAN if end else OFF), int(150 * pa)), width=2)
             d.ellipse([x - r, y - r, x + r, y + r], fill=(*(CYAN if end else OFF), int(255 * pa)))
             if end:
-                d.text((x, y - 44), money(v), font=SMB(30), fill=(*CYAN, int(255 * pa)), anchor="mm")
+                d.text((x, min(y - 44, ly)), money(v), font=SMB(30), fill=(*CYAN, int(255 * pa)), anchor="mm")
         d.text((W / 2, AY + 80), "ONE DOT = ONE AIRPLANE FOR SALE", font=SMR(24), fill=(*GREY, int(255 * la)), anchor="mm")
         t1 = wt(2, c["money_at"]) - 0.1   # bracket from lowest to highest when the gap is spoken
         ba = ease((tt - t1) / 0.3) * la

@@ -194,6 +194,10 @@ S={
  # market, expected ~$599,450, 46 comps). Doubt: SELLER. campaign/demo/DATA_20261124_N378WT.md
  "demo_sr22tn378":["You found this S R twenty-two Turbo. Do you know how this seller negotiates?",
                    "The report: this dealer usually sells in fifty-five days. This one: over seven months, three cuts.", CTA],
+ # 2026-11-25 daily run: ONE DOLLAR FIGURE (post day Sun 2026-11-29), 1978 Cessna 182Q: eight for sale, $139,900 to $379,000,
+ # gap $239,100. campaign/numbers/DATA_20261125.md
+ "num_dol_c182qgap":["Buying a nineteen seventy-eight Cessna one eighty-two Q? What should it cost?",
+                     "Eight are for sale, priced almost two hundred forty thousand dollars apart. See what's behind yours.", CTA],
  "num_dol_g36gap":["Buying a two thousand eight Bonanza G thirty-six? What should it cost?",
                    "Six are for sale, priced almost two hundred fifty thousand dollars apart. See what's behind yours.", CTA],
  # 2026-11-20 daily run: ONE DOLLAR FIGURE (post day Sat 2026-11-21, Director slot empty and tomorrow), Piper PA-46 piston
@@ -253,7 +257,7 @@ S["sdl_f33a"]=["Do you know the selling strategy of the dealer behind this airpl
 # usage: gen_vo.py [slug]  -> only that slug (no need to delete the pilot entries)
 if len(sys.argv) > 1: S = {sys.argv[1]: S[sys.argv[1]]}
 # optional per-slug delivery speed (ElevenLabs voice_settings.speed, 0.7-1.2) when a clip runs over 15.0 s at the default pace
-SPEED={"demo_sr22tn378":1.1, "demo_sr22n25":1.1, "sdl_f33a":1.1, "num_dol_g36gap":1.1, "num_dol_pa46cut":1.1}
+SPEED={"demo_sr22tn378":1.1, "demo_sr22n25":1.1, "sdl_f33a":1.1, "num_dol_g36gap":1.1, "num_dol_pa46cut":1.1, "num_dol_c182qgap":1.1}
 def gen(bid,text):
     if os.path.exists(f"{OUT}/{bid}.json"): return
     vs={"stability":0.62,"similarity_boost":0.85,"style":0.25,"use_speaker_boost":True}
