@@ -135,6 +135,11 @@ for sale right now (status active, last_seen_at within 4 days, US N-number, aski
   (find the y with a downscaled contact sheet; full.png is 1x and the page column is offset). Never show the dealer name, HQ
   city, map or the "Listed by" row. Use the approved opening without the price in the VO ("You found this SR22 Turbo. Do you
   know how this seller negotiates?") — with the price spoken, b1 ran 6.1 s and the clip 16.5 s.
+- TWO LIVE ADS price angle (first: demo_sr20n643, 2026-11-26): when one tail has two active ads at different prices (same
+  serial), open on the HIGHER ask ("You found this SR20 at $419,000. Is that the right price?") and answer with the listing-history
+  banner "Live ads disagree on price" (crop sec_02 from x 36 so the push-in keeps the prices; blur both seller names) plus the cut
+  row of the lower ad. Do not put the estimated value on screen when the report's engine time is unknown or its total time comes
+  from the other ad.
 - Log format = REPORT DEMO, subformat = PRICE | TIME ON MARKET | SELLER | ACCIDENT RECORD | USAGE | ENGINE.
 
 ## 2. Script (≈30–36 words, three beats)

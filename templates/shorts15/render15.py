@@ -209,6 +209,8 @@ CAPS = {
  "demo_sr22n25": [(1, "You found this SR22 at $309,900.", 0, 11), (1, "Has it ever been in an accident?", 12, 18),
                   (2, "The report: yes,", 0, 2), (2, "a federal accident record,", 3, 6), (2, "October 2022.", 7, 9),
                   (2, "Still priced mid-market.", 10, 12)],
+ "demo_sr20n643": [(1, "You found this SR20 at $419,000.", 0, 11), (1, "Is that the right price?", 12, 16),
+                   (2, "The report: the same airplane", 0, 4), (2, "has a second live ad,", 5, 9), (2, "$44,000 lower.", 10, 13)],
  "demo_sr22tn378": [(1, "You found this SR22T.", 0, 6), (1, "Do you know how this seller negotiates?", 7, 13),
                    (2, "The report: this dealer", 0, 3), (2, "usually sells in 55 days.", 4, 8),
                    (2, "This one: over 7 months,", 9, 13), (2, "three cuts.", 14, 15)],
@@ -1821,6 +1823,14 @@ DEMO = {
              ("value.png", 11, "ESTIMATED MARKET VALUE")],
      calls=[(0, (488, 50, 922, 106), 5, None), (1, (36, 62, 150, 116), 11, None), (2, (52, 50, 490, 148), 12, None)],
      chip1=("ACCIDENT RECORD · OCT 23, 2022", 7), stamp=("PRICED MID-MARKET", 12)),
+ # 2020 Cirrus SR20 G6 N643LV (serial 2632). Two live ads: $419,000 (since Jul 4 2026) and $375,000 (dealer ad first seen Apr 18
+ # 2026 at $419,000, cut Jul 9 2026 by $44,000). Report captured 2026-11-26: Listing history "Live ads disagree on price" (both
+ # seller names masked), the Jul 9 cut row. Doubt: PRICE. campaign/demo/DATA_20261126_N643LV.md
+ "demo_sr20n643": dict(hook="hook.jpg", back="back.jpg", label="2020 CIRRUS SR20 \u00b7 FOR SALE NOW", price="$419,000",
+     ask="IS THAT THE RIGHT PRICE?", ask_at=12, tail="N643LV",
+     panels=[("ads.png", 1, "LISTING HISTORY"), ("cut.png", 10, "THE OTHER AD")],
+     calls=[(0, (36, 54, 156, 126), 7, None), (1, (172, 6, 512, 56), 11, None)],
+     chip1=("SAME AIRPLANE \u00b7 TWO LIVE ADS", 7), stamp=("$44,000 LOWER", 11)),
 }
 _DP = {}
 def demo_panel(fn, w):
