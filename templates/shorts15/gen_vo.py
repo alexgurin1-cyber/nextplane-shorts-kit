@@ -209,6 +209,10 @@ S={
  # 2026-11-20 daily run: ONE DOLLAR FIGURE (post day Sat 2026-11-21, Director slot empty and tomorrow), Piper PA-46 piston
  # (Malibu, Mirage, Matrix, M350; US, N-number, seen in the last 7 days, parts plane N504EZ dropped): 17 of 57 ask less than their
  # first recorded ask; median cut $52,000. campaign/numbers/DATA_20261120.md
+ # 2026-11-27 daily run: ONE DOLLAR FIGURE (post day Sat 2026-11-28, Director slot empty and tomorrow), Beechcraft A36 Bonanza
+ # (US, N-number, seen in the last 7 days): 38 of 77 ask less than their first recorded ask; median cut $25,000. DATA_20261127.md
+ "num_dol_a36cut":["Shopping for a Bonanza A thirty-six? How much do sellers cut?",
+                   "About half have cut the price. The typical cut: twenty-five thousand dollars. See every cut on yours.", CTA],
  "num_dol_pa46cut":["Shopping for a Piper Malibu? How much do sellers cut?",
                     "Almost three in ten have cut the price. The typical cut: fifty-two thousand dollars. See every cut on yours.", CTA],
  "num_dol_c182cut":["Shopping for a Cessna one eighty-two? How much do sellers cut?",
@@ -263,7 +267,7 @@ S["sdl_f33a"]=["Do you know the selling strategy of the dealer behind this airpl
 # usage: gen_vo.py [slug]  -> only that slug (no need to delete the pilot entries)
 if len(sys.argv) > 1: S = {sys.argv[1]: S[sys.argv[1]]}
 # optional per-slug delivery speed (ElevenLabs voice_settings.speed, 0.7-1.2) when a clip runs over 15.0 s at the default pace
-SPEED={"demo_sr20n643":1.1, "demo_sr22tn378":1.1, "demo_sr22n25":1.1, "sdl_f33a":1.1, "num_dol_g36gap":1.1, "num_dol_pa46cut":1.1, "num_dol_c182qgap":1.1}
+SPEED={"demo_sr20n643":1.1, "demo_sr22tn378":1.1, "demo_sr22n25":1.1, "sdl_f33a":1.1, "num_dol_g36gap":1.1, "num_dol_pa46cut":1.1, "num_dol_c182qgap":1.1, "num_dol_a36cut":1.1}
 def gen(bid,text):
     if os.path.exists(f"{OUT}/{bid}.json"): return
     vs={"stability":0.62,"similarity_boost":0.85,"style":0.25,"use_speaker_boost":True}

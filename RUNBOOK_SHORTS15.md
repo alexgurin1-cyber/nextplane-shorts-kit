@@ -47,6 +47,8 @@ Read memory `feedback-plain-language-videos`, `feedback-no-source-sites`, `feedb
   `dollar=True`) and same model + same year, lowest vs highest ask (`num_dol_g36gap`, `range=[asks]` + `axis=` in `NUM`: price
   axis with one dot per airplane, bracket, the gap); check FAA year/serial and every ad of each tail before using a range
   (second edition `num_dol_c182qgap`, 1978 182Q, 8 dots: end labels now sit above the tallest dot stack; filter one variant, e.g. `^182Q`, not `^182`, which mixes in the 182RG).
+  Typical-cut third edition `num_dol_a36cut` (2026-11-27, A36 Bonanza, 38 of 77, $25,000; word anchors as c182cut). If
+  `lib/photos.py fetch` hangs, take the Flickr page → `live.staticflickr.com/..._b.jpg` URL with a browser User-Agent.
   Keep `grid_note` and `subject` short (about 45 / 38 characters) or they run past the panel edge; drop parts planes and
   odd currency-converted first asks (count the cut from the next recorded price).
   If the VO runs over 15.0 s, set a per-slug `SPEED` (≤ 1.1) in gen_vo.py rather than cutting the opening question. Opening: the buyer's question about that model,
