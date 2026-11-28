@@ -264,10 +264,13 @@ S["llc6"]=[None, "One LLC, one airplane, one ad all year. Three cuts, thirty tho
 S["sdl_f33a"]=["Do you know the selling strategy of the dealer behind this airplane?",
  "This one asks sixteen percent over market, then cuts half. This Bonanza: five months, two cuts.",
  "Before you call the broker, find out their strategy at NextPlane dot U S."]
+S["sow_v35b"]=["Do you know the selling strategy of the owner behind this airplane?",
+ "A private owner, no other airplane for sale this year. Two cuts in November, twenty-two thousand off.",
+ "Before you call, find out their strategy at NextPlane dot U S."]
 # usage: gen_vo.py [slug]  -> only that slug (no need to delete the pilot entries)
 if len(sys.argv) > 1: S = {sys.argv[1]: S[sys.argv[1]]}
 # optional per-slug delivery speed (ElevenLabs voice_settings.speed, 0.7-1.2) when a clip runs over 15.0 s at the default pace
-SPEED={"demo_sr20n643":1.1, "demo_sr22tn378":1.1, "demo_sr22n25":1.1, "sdl_f33a":1.1, "num_dol_g36gap":1.1, "num_dol_pa46cut":1.1, "num_dol_c182qgap":1.1, "num_dol_a36cut":1.1}
+SPEED={"sow_v35b":1.1, "demo_sr20n643":1.1, "demo_sr22tn378":1.1, "demo_sr22n25":1.1, "sdl_f33a":1.1, "num_dol_g36gap":1.1, "num_dol_pa46cut":1.1, "num_dol_c182qgap":1.1, "num_dol_a36cut":1.1}
 def gen(bid,text):
     if os.path.exists(f"{OUT}/{bid}.json"): return
     vs={"stability":0.62,"similarity_boost":0.85,"style":0.25,"use_speaker_boost":True}

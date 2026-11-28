@@ -61,6 +61,10 @@ NF = int(TOTAL * FPS)
 
 # ---------------- captions ----------------
 CAPS = {
+ "sow_v35b": [(1, "Do you know the selling strategy", 0, 5), (1, "of the owner behind this airplane?", 6, 11),
+          (2, "A private owner,", 0, 2), (2, "no other airplane", 3, 5), (2, "for sale this year.", 6, 9),
+          (2, "Two cuts in November,", 10, 13), (2, "$22,000 off.", 14, 16),
+          (3, "Before you call,", 0, 2), (3, "find out their strategy", 3, 6)],
  "sdl_f33a": [(1, "Do you know the selling strategy", 0, 5), (1, "of the dealer behind this airplane?", 6, 11),
           (2, "This one asks", 0, 2), (2, "16% over market,", 3, 6), (2, "then cuts half.", 7, 9),
           (2, "This Bonanza:", 10, 11), (2, "five months, two cuts.", 12, 15),
@@ -2188,6 +2192,53 @@ def scene_sdl(im, tt):
     st, w2 = c["stamp"]
     stamp(im, W / 2, 1220 + yo, st, ease((tt - wt(2, w2)) / 0.25) * a, ang=-4, col=CYAN, size=54)
 
+# ---- SELLER STRATEGY — OWNER daily clips (sow_<x>): generic scene_sow() driven by SOW[slug] (from pilot scene_llc6) ----
+# All three must hold (RUNBOOK §1b): ad seller_type private; registered owner (aircraft_master, LLC or individual) holds exactly
+# 1 aircraft; the ad seller_name is on exactly 1 tail in aircraft_listings this year. Never the owner's name/city/state or the tail.
+# chips: rows of (text, beat-2 word); pts: (xfrac, price, label) for the step chart (drawn from the start of beat 2);
+# off: (total cut in dollars, beat-2 word); stamp: (text, beat-2 word).
+SOW = {
+ # N17988 1977 Beechcraft V35B Bonanza s/n D-10026 (FAA year+serial match), registrant type 1 (individual) with 1 aircraft;
+ # ad tap_2461525 seller_type private, seller name on 1 tail; first seen Oct 17 2026 at $186,500, cuts Nov 5 -> $179,500 and
+ # Nov 13 -> $164,500 (aircraft_price_history), still listed Nov 25. x axis Oct 17 -> Nov 28 (42 days).
+ "sow_v35b": dict(hook="hook.jpg", back="back.jpg", hook_chip="PRIVATE SELLER \u00b7 NAME WITHHELD", hook_at=8,
+     chips=[[("FOR SALE BY OWNER", 0), ("A PRIVATE OWNER", 1)], [("NO OTHER AIRPLANE FOR SALE IN 2026", 3)]],
+     pts=[(0.0, 186500, "OCT 17"), (19 / 42, 179500, False), (27 / 42, 164500, "NOV 13")], ymin=155000, ymax=195000,
+     off=(22000, 14), stamp=("2 CUTS IN NOVEMBER", 11)),
+}
+
+def scene_sow(im, tt):
+    c = SOW[V]
+    hook = tt < T_B2 + 0.3
+    im.alpha_composite(blur_backdrop(f"{PH}/{c['hook'] if hook else c['back']}", 0.5 if hook else 0.34))
+    im.alpha_composite(GRAD)
+    d = ImageDraw.Draw(im, "RGBA")
+    brand_bug(im)
+    if tt < T_B2 + 0.25:
+        hook_question(im, d, tt, "OWNER'S", f"{PH}/{c['hook']}", c["hook_chip"], c["hook_at"])
+        return
+    a = ease((tt - T_B2 - 0.1) / 0.3) * (1 - ease((tt - T_LOOK) / 0.2))
+    if a <= 0: return
+    yo = lerp(40, 0, eout((tt - T_B2 - 0.1) / 0.35))
+    panel(d, (64, 330 + yo, 948, 1290 + yo), a, title="NEXTPLANE SELLER PROFILE", sub="NAME WITHHELD")
+    for r, row in enumerate(c["chips"]):
+        x = 110
+        for txt, wi in row:
+            ca = ease((tt - wt(2, wi) + 0.05) / 0.2) * a
+            if ca > 0: x += chip(d, x, 460 + r * 76 + yo, txt, ca, f=SMB(30)) + 16
+            else: x += d.textlength(txt, font=SMB(30)) + 60
+    box = (120, 680 + yo, 880, 1060 + yo)
+    X, Y = step_chart(d, box, c["pts"], T_B2 + 0.3, wt(2, c["off"][1] - 1, True), tt, c["ymin"], c["ymax"], a)
+    off, wo = c["off"]
+    ba = ease((tt - wt(2, wo)) / 0.3) * a
+    if ba > 0:
+        v = counter(off, tt, wt(2, wo), 0.5)
+        yc = Y(c["ymax"] - (c["ymax"] - c["ymin"]) * 0.12)
+        d.rounded_rectangle([590, yc - 42, 880, yc + 42], radius=12, fill=(8, 20, 31, int(230 * ba)), outline=(*CYAN, int(200 * ba)), width=3)
+        d.text((735, yc), "-" + money(round(v / 100) * 100), font=BCB(64), fill=(*CYAN, int(255 * ba)), anchor="mm")
+    st, ws = c["stamp"]
+    stamp(im, W / 2, 1195 + yo, st, ease((tt - wt(2, ws)) / 0.25) * a, ang=-4, col=WHITE, size=52)
+
 _EB = []
 def endbg():
     if not _EB:
@@ -2198,7 +2249,7 @@ def endbg():
         _EB.append(g.resize((W, H)).convert("RGBA"))
     return _EB[0]
 
-SCENE = scene_sdl if V.startswith("sdl_") else scene_demo if V.startswith("demo_") else scene_liq if V.startswith("liq") else scene_cuts if V.startswith("cuts") else scene_num if V.startswith("num_") else {"sr20": scene_sr20, "a36": scene_a36, "mirage": scene_mirage, "pa32": scene_pa32, "m20k": scene_m20k, "sr22t": scene_sr22t, "a36cut": scene_a36cut, "sr20g6": scene_sr20g6, "arrow3": scene_arrow3, "c182n": scene_c182n, "c172s": scene_c172s, "c182p": scene_c182p, "sr20bm": scene_sr20bm, "f33a": scene_f33a, "g36up": scene_g36up, "sr22tup": scene_sr22tup, "a36eng": scene_a36eng, "dlr182": scene_dlr182, "llcf33": scene_llcf33, "dlr3": scene_dlr3, "llc3": scene_llc3, "dlr4": scene_dlr3, "llc4": scene_llc3, "dlr5": scene_dlr5, "llc6": scene_llc6}[V]
+SCENE = scene_sdl if V.startswith("sdl_") else scene_sow if V.startswith("sow_") else scene_demo if V.startswith("demo_") else scene_liq if V.startswith("liq") else scene_cuts if V.startswith("cuts") else scene_num if V.startswith("num_") else {"sr20": scene_sr20, "a36": scene_a36, "mirage": scene_mirage, "pa32": scene_pa32, "m20k": scene_m20k, "sr22t": scene_sr22t, "a36cut": scene_a36cut, "sr20g6": scene_sr20g6, "arrow3": scene_arrow3, "c182n": scene_c182n, "c172s": scene_c172s, "c182p": scene_c182p, "sr20bm": scene_sr20bm, "f33a": scene_f33a, "g36up": scene_g36up, "sr22tup": scene_sr22tup, "a36eng": scene_a36eng, "dlr182": scene_dlr182, "llcf33": scene_llcf33, "dlr3": scene_dlr3, "llc3": scene_llc3, "dlr4": scene_dlr3, "llc4": scene_llc3, "dlr5": scene_dlr5, "llc6": scene_llc6}[V]
 TAILS = ["YOUR N-NUMBER"] if V.startswith(("sdl_", "sow_")) else [DEMO[V]["tail"]] if V.startswith("demo_") else ["YOUR N-NUMBER"] if V.startswith(("liq", "cuts", "num_")) else {"sr20": ["N881PF"], "a36": ["N29DL", "N72MD"], "mirage": ["N27RZ"], "pa32": ["N123BE"], "m20k": ["N231HB", "N3594H"], "sr22t": ["N236CB"], "a36cut": ["N614MM"], "sr20g6": ["N665M", "N34AS"], "arrow3": ["N41GF", "N6089H"], "c182n": ["N9051G", "N9164G"], "c172s": ["N20818"], "c182p": ["N9802E"], "sr20bm": ["N190BM"], "f33a": ["N22099"], "g36up": ["N6980B"], "sr22tup": ["N784RJ"], "a36eng": ["N8088J", "N85BB"], "dlr182": ["YOUR N-NUMBER"], "llcf33": ["YOUR N-NUMBER"], "dlr3": ["YOUR N-NUMBER"], "llc3": ["YOUR N-NUMBER"], "dlr4": ["YOUR N-NUMBER"], "llc4": ["YOUR N-NUMBER"], "dlr5": ["YOUR N-NUMBER"], "llc6": ["YOUR N-NUMBER"]}[V]
 
 def frame(i):
