@@ -48,7 +48,7 @@ Read memory `feedback-plain-language-videos`, `feedback-no-source-sites`, `feedb
   axis with one dot per airplane, bracket, the gap); check FAA year/serial and every ad of each tail before using a range
   (second edition `num_dol_c182qgap`, 1978 182Q, 8 dots: end labels now sit above the tallest dot stack; filter one variant, e.g. `^182Q`, not `^182`, which mixes in the 182RG).
   Typical-cut third edition `num_dol_a36cut` (2026-11-27, A36 Bonanza, 38 of 77, $25,000; word anchors as c182cut). If
-  `lib/photos.py fetch` hangs, take the Flickr page → `live.staticflickr.com/..._b.jpg` URL with a browser User-Agent.
+  `lib/photos.py fetch` hangs (an Openverse 429 "throttled" makes it back off for minutes), call `photos.flickr_page("<query>")` directly, or take the Flickr page → `live.staticflickr.com/..._b.jpg` URL with a browser User-Agent.
   Keep `grid_note` and `subject` short (about 45 / 38 characters) or they run past the panel edge; drop parts planes and
   odd currency-converted first asks (count the cut from the next recorded price).
   If the VO runs over 15.0 s, set a per-slug `SPEED` (≤ 1.1) in gen_vo.py rather than cutting the opening question. Opening: the buyer's question about that model,
@@ -85,8 +85,11 @@ airplane as the example. Alternate (check the last `subformat=` in `social_short
 - Production (daily clips, from 2026-11-22): DEALER clips use slug `sdl_<x>` → generic `scene_sdl()` driven by `DLR[slug]`
   (hook/back photos, header line, three rows (value, label, beat-2 word, typical-dealer value), stamp); add `CAPS[slug]`,
   `S[slug]`, `P[slug]` and nothing else — the `STRAT` flag (slugs `sdl_`/`sow_`, pilots dlr5/llc6) switches on the strategy CTA,
-  lookup title and 2.6 s end card. First clip `sdl_f33a` (14.7 s; b2 at SPEED 1.1). OWNER clips: slug `sow_<x>`, copy
-  `scene_llc6()` into a `scene_sow()` the same way. Pilots: `hook_question()`, `scene_dlr5()` (dealer), `scene_llc6()` (owner) in render15.py (lookup title "FIND OUT THEIR
+  lookup title and 2.6 s end card. First clip `sdl_f33a` (14.7 s; b2 at SPEED 1.1). OWNER clips: slug `sow_<x>` → generic
+  `scene_sow()` driven by `SOW[slug]` (hook/back photos, chip rows with beat-2 words, step-chart points, total-off box, stamp); add
+  `CAPS`, `S`, `P` only. First clip `sow_v35b` (2026-11-28, 1977 V35B, private owner, 2 cuts in November, −$22,000; 14.4 s at SPEED
+  1.1 — "twenty-two thousand off"; with "dollars" it ran 15.07 s). Candidate SQL: active private ads with >= 2 cuts joined to
+  aircraft_master (registrant name count = 1) and seller_name tail count = 1; reject tails with a second ad whose seller or serial differs. Pilots: `hook_question()`, `scene_dlr5()` (dealer), `scene_llc6()` (owner) in render15.py (lookup title "FIND OUT THEIR
   STRATEGY", end card from "at NextPlane", 2.6 s). If the kit lacks scene_dlr5, apply Drive file 1zpQZFBY6qHuVVJQtBwiiPSCj68I6L9ye
   ("nextplane-kit-patch-seller-strategy-2026-11-15.patch") with `git am` and push. Copy the scene per clip; change only numbers,
   word anchors, chips, photos.
